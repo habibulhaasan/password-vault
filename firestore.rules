@@ -1,0 +1,82 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isNonEmptyString(val, maxLen) {
+      return val is string && val.size() > 0 && val.size() <= maxLen;
+    }
+
+    function isOptionalString(data, field, maxLen) {
+      return !(field in data) || (data[field] is string && data[field].size() <= maxLen);
+    }
+
+    function isValidTagList(tags) {
+      return tags is list && tags.size() <= 20;
+    }
+
+    // Default deny for all unmatched collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // User scope: All user-specific data lives strictly under /users/{userId}
+    match /users/{userId} {
+      // User root doc: basic profile/metadata
+      allow read, write: if isOwner(userId);
+
+      // Credentials collection
+      match /credentials/{credentialId} {
+        allow read, delete: if isOwner(userId);
+
+        allow create: if isOwner(userId)
+          && isNonEmptyString(request.resource.data.title, 100)
+          && isNonEmptyString(request.resource.data.encryptedUsername, 2048)
+          && isNonEmptyString(request.resource.data.encryptedPassword, 4096)
+          && isOptionalString(request.resource.data, 'encryptedNotes', 10000)
+          && isOptionalString(request.resource.data, 'websiteUrl', 2048)
+          && isOptionalString(request.resource.data, 'categoryId', 50)
+          && (!('tags' in request.resource.data) || isValidTagList(request.resource.data.tags))
+          && (!('lastLoginAt' in request.resource.data) || request.resource.data.lastLoginAt is timestamp)
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.updatedAt is timestamp;
+
+        allow update: if isOwner(userId)
+          && isNonEmptyString(request.resource.data.title, 100)
+          && isNonEmptyString(request.resource.data.encryptedUsername, 2048)
+          && isNonEmptyString(request.resource.data.encryptedPassword, 4096)
+          && isOptionalString(request.resource.data, 'encryptedNotes', 10000)
+          && isOptionalString(request.resource.data, 'websiteUrl', 2048)
+          && isOptionalString(request.resource.data, 'categoryId', 50)
+          && (!('tags' in request.resource.data) || isValidTagList(request.resource.data.tags))
+          && (!('lastLoginAt' in request.resource.data) || request.resource.data.lastLoginAt is timestamp)
+          && request.resource.data.createdAt == resource.data.createdAt
+          && request.resource.data.updatedAt is timestamp;
+      }
+
+      // Categories collection (for user-created custom categories)
+      match /categories/{categoryId} {
+        allow read, delete: if isOwner(userId);
+
+        allow create, update: if isOwner(userId)
+          && isNonEmptyString(request.resource.data.label, 50)
+          && isOptionalString(request.resource.data, 'icon', 50);
+      }
+
+      // Settings collection (e.g. vault preferences)
+      match /settings/{settingId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+  }
+}
+

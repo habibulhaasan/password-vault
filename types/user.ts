@@ -1,1 +1,6 @@
-// User type definitions — will be implemented in Step 4
+export interface VaultUser {
+  uid: string;
+  email: string | null;
+  displayName: string | null;
+  photoURL: string | null;
+}

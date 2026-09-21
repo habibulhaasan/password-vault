@@ -1,0 +1,31 @@
+import { Header } from "@/components/layout/header";
+import { Sidebar } from "@/components/layout/sidebar";
+import { MobileNav } from "@/components/layout/mobile-nav";
+import { AuthGuard } from "@/components/auth/auth-guard";
+import { VaultProvider } from "@/providers/vault-provider";
+import { VaultGate } from "@/components/vault/vault-gate";
+
+export default function VaultLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <AuthGuard>
+      <VaultProvider>
+        <div className="flex h-screen flex-col">
+          <Header />
+          <div className="flex flex-1 overflow-hidden">
+            <aside className="hidden w-60 shrink-0 overflow-y-auto border-r md:block">
+              <Sidebar />
+            </aside>
+            <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
+              <VaultGate>{children}</VaultGate>
+            </main>
+          </div>
+          <MobileNav />
+        </div>
+      </VaultProvider>
+    </AuthGuard>
+  );
+}
