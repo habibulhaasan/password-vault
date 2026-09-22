@@ -33,6 +33,8 @@ import {
 } from "lucide-react";
 import { formatDaysSinceLastLogin } from "@/lib/utils/date";
 import { announce } from "@/lib/a11y/announcer";
+import { CredentialDetailSkeleton } from "@/components/credentials/credential-skeleton";
+import { sanitizeErrorMessage } from "@/lib/utils/error-sanitizer";
 import type { DecryptedCredential } from "@/types/credential";
 
 export default function CredentialDetailPage({
@@ -71,9 +73,9 @@ export default function CredentialDetailPage({
         if (!isMounted) return;
         setCredential(decrypted);
         setLoading(false);
-      } catch {
+      } catch (err) {
         if (!isMounted) return;
-        setError("Failed to decrypt credential. Verify vault is unlocked.");
+        setError(sanitizeErrorMessage(err, "Failed to decrypt credential. Verify vault is unlocked."));
         setLoading(false);
       }
     }
@@ -147,21 +149,14 @@ export default function CredentialDetailPage({
       announce(`Credential ${credential?.title || ""} deleted`);
       router.push("/dashboard");
     } catch (err) {
-      console.warn("Failed to delete credential:", err);
+      console.warn("Failed to delete credential:", (err as Error)?.name);
       setIsDeleting(false);
-      setError("Failed to delete credential.");
+      setError(sanitizeErrorMessage(err, "Failed to delete credential."));
     }
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-2 text-muted-foreground">
-          <Loader2 className="size-6 animate-spin text-primary" />
-          <p className="text-sm">Decrypting credential...</p>
-        </div>
-      </div>
-    );
+    return <CredentialDetailSkeleton />;
   }
 
   if (error || !credential) {

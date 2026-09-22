@@ -7,6 +7,7 @@ import { useCredentials } from "@/hooks/use-credentials";
 import { useCategories } from "@/hooks/use-categories";
 import { useDebounce } from "@/hooks/use-debounce";
 import { CredentialCard } from "@/components/credentials/credential-card";
+import { CredentialGridSkeleton } from "@/components/credentials/credential-skeleton";
 import { EmptyState } from "@/components/credentials/empty-state";
 import { announce } from "@/lib/a11y/announcer";
 import {
@@ -19,7 +20,7 @@ import {
 } from "@/lib/utils/date";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus } from "lucide-react";
 import type { EncryptedCredential } from "@/types/credential";
 
 function DashboardContent() {
@@ -208,61 +209,31 @@ function DashboardContent() {
       )}
 
       {/* Loading Skeletons */}
-      {loading && (
-        <div
-          role="status"
-          aria-label="Loading credentials"
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
-        >
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-44 rounded-xl border border-border/60 bg-muted/30 p-4 animate-pulse space-y-3"
-            >
-              <div className="flex items-center gap-3">
-                <div className="size-8 rounded-lg bg-muted" />
-                <div className="space-y-1.5 flex-1">
-                  <div className="h-4 w-28 rounded bg-muted" />
-                  <div className="h-3 w-16 rounded bg-muted/60" />
-                </div>
-              </div>
-              <div className="space-y-2 pt-2">
-                <div className="h-3 w-36 rounded bg-muted/60" />
-                <div className="h-3 w-24 rounded bg-muted/60" />
-              </div>
-            </div>
-          ))}
-          <span className="sr-only">Loading encrypted credentials...</span>
-        </div>
-      )}
+      {loading && <CredentialGridSkeleton count={6} />}
 
-      {/* Empty Vault State */}
+      {/* Empty Vault State (Section 26) */}
       {!loading && credentials.length === 0 && (
         <EmptyState
-          title="No credentials stored yet"
-          description="Your vault is currently empty. Click below to add your first password or account."
-          actionText="Add First Credential"
+          variant="vault-empty"
           actionHref="/credentials/new"
         />
       )}
 
-      {/* Empty Search/Filter Results State */}
+      {/* Empty Search/Filter Results State (Section 26) */}
       {!loading && credentials.length > 0 && filteredCredentials.length === 0 && (
-        <div className="flex min-h-[35vh] flex-col items-center justify-center rounded-xl border border-dashed border-border p-8 text-center animate-in fade-in-50">
-          <h3 className="text-base font-semibold">No matching credentials found</h3>
-          <p className="mt-1 max-w-sm text-xs text-muted-foreground">
-            No credentials matched your current search term or filter criteria.
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleResetFilters}
-            aria-label="Clear active filters"
-            className="mt-4"
-          >
-            Clear Filters
-          </Button>
-        </div>
+        selectedCategory && !searchQuery.trim() && !selectedTag && lastLoginFilter === "all" ? (
+          <EmptyState
+            variant="no-category-items"
+            categoryName={getCategory(selectedCategory)?.label}
+            onResetFilters={handleResetFilters}
+            actionHref="/credentials/new"
+          />
+        ) : (
+          <EmptyState
+            variant="no-search-results"
+            onResetFilters={handleResetFilters}
+          />
+        )
       )}
 
       {/* Credential Grid */}
@@ -287,8 +258,8 @@ export default function DashboardPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-[50vh] items-center justify-center">
-          <Loader2 className="size-6 animate-spin text-primary" />
+        <div className="container max-w-7xl py-6 px-4 space-y-6">
+          <CredentialGridSkeleton count={6} />
         </div>
       }
     >

@@ -9,6 +9,7 @@ import { DeleteTagDialog } from "@/components/tags/delete-tag-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   Tag,
   Search,
@@ -17,6 +18,7 @@ import {
   TrendingUp,
   Layers,
   Plus,
+  SearchX,
 } from "lucide-react";
 import type { TagWithCount, TagSortOption } from "@/types/tag";
 
@@ -180,13 +182,27 @@ export default function TagsPage() {
 
       {/* Loading Skeletons */}
       {loading && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          role="status"
+          aria-label="Loading tags"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="h-28 rounded-xl border border-border/60 bg-muted/30 p-4 animate-pulse"
-            />
+              className="h-28 rounded-xl border border-border/60 bg-muted/20 p-4 animate-pulse space-y-3"
+            >
+              <div className="flex items-center justify-between">
+                <div className="h-5 w-24 rounded-full bg-muted" />
+                <div className="flex gap-1">
+                  <div className="size-6 rounded bg-muted" />
+                  <div className="size-6 rounded bg-muted" />
+                </div>
+              </div>
+              <div className="h-3 w-20 rounded bg-muted/60" />
+            </div>
           ))}
+          <span className="sr-only">Loading tags...</span>
         </div>
       )}
 
@@ -194,40 +210,27 @@ export default function TagsPage() {
       {!loading && (
         <>
           {tags.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/70 p-10 text-center">
-              <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <Tag className="size-6" />
-              </div>
-              <h3 className="mt-3 text-sm font-semibold">No tags created yet</h3>
-              <p className="mt-1 max-w-xs text-xs text-muted-foreground">
-                Tags help you cross-reference credentials across categories (e.g. #2FA, #work, #subscription).
-                Add tags when creating or editing credentials to see them here.
-              </p>
-              <Button
-                size="sm"
-                variant="outline"
-                render={<Link href="/credentials/new" />}
-                className="mt-4 gap-1.5"
-              >
-                <Plus className="size-3.5" />
-                <span>Add First Tagged Credential</span>
-              </Button>
-            </div>
+            <EmptyState
+              icon={Tag}
+              title="No tags created yet"
+              description="Tags help you cross-reference credentials across categories (e.g. #2FA, #work, #subscription). Add tags when creating or editing credentials to see them here."
+              action={{
+                label: "Add First Tagged Credential",
+                href: "/credentials/new",
+                icon: Plus,
+              }}
+            />
           ) : processedTags.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/70 p-8 text-center">
-              <h3 className="text-sm font-semibold">No matching tags found</h3>
-              <p className="mt-1 text-xs text-muted-foreground">
-                No tags matched &ldquo;{searchQuery}&rdquo;.
-              </p>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setSearchQuery("")}
-                className="mt-4"
-              >
-                Clear Search
-              </Button>
-            </div>
+            <EmptyState
+              icon={SearchX}
+              title="No matching tags found"
+              description={`No tags matched "${searchQuery}".`}
+              action={{
+                label: "Clear Search",
+                onClick: () => setSearchQuery(""),
+                variant: "outline",
+              }}
+            />
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {processedTags.map((tag) => (

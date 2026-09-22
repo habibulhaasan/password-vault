@@ -9,6 +9,7 @@ import { DeleteCategoryDialog } from "@/components/categories/delete-category-di
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   Plus,
   Search,
@@ -17,6 +18,7 @@ import {
   Layers,
   Sparkles,
   ShieldAlert,
+  SearchX,
 } from "lucide-react";
 import type { Category, CategoryFormData } from "@/types/category";
 
@@ -162,102 +164,120 @@ export default function CategoriesPage() {
 
       {/* Loading Skeletons */}
       {loading && (
-        <div className="space-y-6">
-          <div className="h-6 w-36 rounded bg-muted animate-pulse" />
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-28 rounded-xl border border-border/60 bg-muted/30 p-4 animate-pulse"
-              />
-            ))}
-          </div>
+        <div
+          role="status"
+          aria-label="Loading categories"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="h-28 rounded-xl border border-border/60 bg-muted/20 p-4 animate-pulse space-y-3"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="size-8 rounded-lg bg-muted" />
+                  <div className="h-4 w-24 rounded bg-muted" />
+                </div>
+              </div>
+              <div className="h-3 w-16 rounded bg-muted/60" />
+            </div>
+          ))}
+          <span className="sr-only">Loading categories...</span>
         </div>
       )}
 
       {!loading && (
         <>
-          {/* Custom Categories Section */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg font-semibold tracking-tight">
-                  Custom Categories
-                </h2>
-                <Badge variant="outline" className="text-xs">
-                  {customCategories.length}
-                </Badge>
-              </div>
-            </div>
-
-            {customCategories.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/70 p-8 text-center">
-                <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <FolderPlus className="size-6" />
+          {/* Global Search Empty Result across all categories */}
+          {searchQuery && filteredCustom.length === 0 && filteredSystem.length === 0 ? (
+            <EmptyState
+              icon={SearchX}
+              title="No categories found"
+              description={`No categories match "${searchQuery}".`}
+              action={{
+                label: "Clear Search",
+                onClick: () => setSearchQuery(""),
+                variant: "outline",
+              }}
+            />
+          ) : (
+            <>
+              {/* Custom Categories Section */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg font-semibold tracking-tight">
+                      Custom Categories
+                    </h2>
+                    <Badge variant="outline" className="text-xs">
+                      {customCategories.length}
+                    </Badge>
+                  </div>
                 </div>
-                <h3 className="mt-3 text-sm font-semibold">No custom categories yet</h3>
-                <p className="mt-1 max-w-xs text-xs text-muted-foreground">
-                  Create custom categories to tailor your vault organization to your
-                  personal workflow.
-                </p>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setIsCreateOpen(true)}
-                  className="mt-4 gap-1.5"
-                >
-                  <Plus className="size-3.5" />
-                  <span>Create Your First Category</span>
-                </Button>
-              </div>
-            ) : filteredCustom.length === 0 ? (
-              <p className="text-xs text-muted-foreground italic">
-                No custom categories match &ldquo;{searchQuery}&rdquo;
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredCustom.map((cat) => (
-                  <CategoryItem
-                    key={cat.id}
-                    category={cat}
-                    credentialCount={countsByCategory[cat.id] || 0}
-                    onEdit={setCategoryToEdit}
-                    onDelete={setCategoryToDelete}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
 
-          {/* System Categories Section */}
-          <div className="space-y-4 pt-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg font-semibold tracking-tight">
-                  Standard Categories
-                </h2>
-                <Badge variant="outline" className="text-xs">
-                  {systemCategories.length}
-                </Badge>
-              </div>
-            </div>
-
-            {filteredSystem.length === 0 ? (
-              <p className="text-xs text-muted-foreground italic">
-                No standard categories match &ldquo;{searchQuery}&rdquo;
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredSystem.map((cat) => (
-                  <CategoryItem
-                    key={cat.id}
-                    category={cat}
-                    credentialCount={countsByCategory[cat.id] || 0}
+                {customCategories.length === 0 ? (
+                  <EmptyState
+                    icon={FolderPlus}
+                    title="No custom categories yet"
+                    description="Create custom categories to tailor your vault organization to your personal workflow."
+                    action={{
+                      label: "Create Your First Category",
+                      onClick: () => setIsCreateOpen(true),
+                      icon: Plus,
+                      variant: "outline",
+                    }}
                   />
-                ))}
+                ) : filteredCustom.length === 0 ? (
+                  <p className="text-xs text-muted-foreground italic">
+                    No custom categories match &ldquo;{searchQuery}&rdquo;
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredCustom.map((cat) => (
+                      <CategoryItem
+                        key={cat.id}
+                        category={cat}
+                        credentialCount={countsByCategory[cat.id] || 0}
+                        onEdit={setCategoryToEdit}
+                        onDelete={setCategoryToDelete}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+
+              {/* System Categories Section */}
+              <div className="space-y-4 pt-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg font-semibold tracking-tight">
+                      Standard Categories
+                    </h2>
+                    <Badge variant="outline" className="text-xs">
+                      {systemCategories.length}
+                    </Badge>
+                  </div>
+                </div>
+
+                {filteredSystem.length === 0 ? (
+                  <p className="text-xs text-muted-foreground italic">
+                    No standard categories match &ldquo;{searchQuery}&rdquo;
+                  </p>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {filteredSystem.map((cat) => (
+                      <CategoryItem
+                        key={cat.id}
+                        category={cat}
+                        credentialCount={countsByCategory[cat.id] || 0}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
         </>
       )}
 

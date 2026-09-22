@@ -17,10 +17,15 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="flex flex-col items-center gap-2 text-muted-foreground">
-          <Loader2 className="size-6 animate-spin text-primary" />
-          <p className="text-sm">Verifying session...</p>
+      <div
+        role="status"
+        aria-live="polite"
+        className="flex min-h-screen items-center justify-center bg-background"
+      >
+        <div className="flex flex-col items-center gap-3 text-muted-foreground p-6 rounded-xl border border-border/40 bg-card shadow-sm">
+          <Loader2 className="size-6 animate-spin text-primary" aria-hidden="true" />
+          <p className="text-xs font-medium text-foreground">Verifying authentication session...</p>
+          <span className="sr-only">Checking session status...</span>
         </div>
       </div>
     );

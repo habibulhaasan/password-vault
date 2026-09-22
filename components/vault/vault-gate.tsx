@@ -10,10 +10,15 @@ export function VaultGate({ children }: { children: React.ReactNode }) {
 
   if (status === "loading") {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-2 text-muted-foreground">
-          <Loader2 className="size-6 animate-spin text-primary" />
-          <p className="text-sm">Checking vault status...</p>
+      <div
+        role="status"
+        aria-live="polite"
+        className="flex min-h-[60vh] items-center justify-center animate-in fade-in-50"
+      >
+        <div className="flex flex-col items-center gap-3 text-muted-foreground p-6 rounded-xl border border-border/40 bg-card/50">
+          <Loader2 className="size-6 animate-spin text-primary" aria-hidden="true" />
+          <p className="text-xs font-medium text-foreground">Verifying secure vault status...</p>
+          <span className="sr-only">Checking encryption status...</span>
         </div>
       </div>
     );

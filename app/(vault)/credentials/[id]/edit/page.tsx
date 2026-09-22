@@ -4,8 +4,10 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCredentials } from "@/hooks/use-credentials";
 import { CredentialForm } from "@/components/credentials/credential-form";
+import { CredentialFormSkeleton } from "@/components/credentials/credential-form-skeleton";
+import { sanitizeErrorMessage } from "@/lib/utils/error-sanitizer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import type { CredentialFormData } from "@/types/credential";
 
 export default function EditCredentialPage({
@@ -47,9 +49,9 @@ export default function EditCredentialPage({
           notes: decrypted.notes || "",
         });
         setLoading(false);
-      } catch {
+      } catch (err) {
         if (!isMounted) return;
-        setError("Failed to decrypt credential for editing.");
+        setError(sanitizeErrorMessage(err, "Failed to decrypt credential for editing."));
         setLoading(false);
       }
     }
@@ -67,14 +69,7 @@ export default function EditCredentialPage({
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-2 text-muted-foreground">
-          <Loader2 className="size-6 animate-spin text-primary" />
-          <p className="text-sm">Decrypting credential for editing...</p>
-        </div>
-      </div>
-    );
+    return <CredentialFormSkeleton />;
   }
 
   if (error || !initialData) {

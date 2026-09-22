@@ -4,6 +4,7 @@ import { MobileNav } from "@/components/layout/mobile-nav";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { VaultProvider } from "@/providers/vault-provider";
 import { VaultGate } from "@/components/vault/vault-gate";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 export default function VaultLayout({
   children,
@@ -24,7 +25,9 @@ export default function VaultLayout({
               tabIndex={-1}
               className="flex-1 overflow-y-auto pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] md:pb-0 outline-none"
             >
-              <VaultGate>{children}</VaultGate>
+              <VaultGate>
+                <ErrorBoundary>{children}</ErrorBoundary>
+              </VaultGate>
             </main>
           </div>
           <MobileNav />
