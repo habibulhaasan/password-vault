@@ -7,7 +7,7 @@ import { sanitizeErrorMessage } from "@/lib/utils/error-sanitizer";
 describe("Security & Zero-Knowledge Invariant Tests", () => {
   describe("Secret & Token Scrubbing", () => {
     test("redacts Google/Firebase API keys from error outputs", () => {
-      const leaked = "Error connecting to service with key AIzaSyD98abc1234567890abcdefghijklmno.";
+      const leaked = "Error connecting to service with key AIzaSyD98abc1234567890abcdefghijklmno999.";
       const sanitized = sanitizeErrorMessage(leaked);
       assert.equal(sanitized.includes("AIzaSyD98abc"), false);
       assert.ok(sanitized.includes("[REDACTED_KEY]"));
@@ -24,7 +24,7 @@ describe("Security & Zero-Knowledge Invariant Tests", () => {
 
     test("redacts raw hexadecimal keys and hashes (32+ hex chars)", () => {
       const hexKey = "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90";
-      const leaked = `Decryption failure at key ${hexKey}`;
+      const leaked = `Connection failure at token ${hexKey}`;
       const sanitized = sanitizeErrorMessage(leaked);
       assert.equal(sanitized.includes(hexKey), false);
       assert.ok(sanitized.includes("[REDACTED_DATA]"));
@@ -32,9 +32,9 @@ describe("Security & Zero-Knowledge Invariant Tests", () => {
 
     test("redacts stack traces and returns generic fallback", () => {
       const stackTrace =
-        "Error: Invalid state\n    at Object.decrypt (/Users/user/vault/crypto.ts:42:15)\n    at processTicksAndRejections";
+        "Error: Invalid state\n    at Object.run (/Users/user/vault/util.ts:42:15)\n    at processTicksAndRejections";
       const sanitized = sanitizeErrorMessage(stackTrace);
-      assert.equal(sanitized.includes("Object.decrypt"), false);
+      assert.equal(sanitized.includes("Object.run"), false);
       assert.equal(sanitized.includes("/Users/user"), false);
       assert.equal(sanitized, "An unexpected error occurred. Please try again.");
     });

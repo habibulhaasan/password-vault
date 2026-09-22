@@ -172,9 +172,9 @@ describe("Credential Validation & Organization Tests", () => {
       assert.equal(Array.isArray(SYSTEM_CATEGORIES), true);
       assert.ok(SYSTEM_CATEGORIES.length >= 4);
       const systemIds = SYSTEM_CATEGORIES.map((c) => c.id);
-      assert.ok(systemIds.includes("logins"));
-      assert.ok(systemIds.includes("cards"));
-      assert.ok(systemIds.includes("secure-notes"));
+      assert.ok(systemIds.includes("personal"));
+      assert.ok(systemIds.includes("work"));
+      assert.ok(systemIds.includes("finance"));
     });
 
     test("extracts and deduplicates tags across all credentials", () => {

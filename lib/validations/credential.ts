@@ -13,6 +13,12 @@ export const safeUrlSchema = z
   .refine(
     (val) => {
       if (!val || val.trim() === "") return true;
+      
+      // If it already contains a schema that is NOT http or https, reject it immediately
+      if (/^[a-zA-Z0-9+.-]+:/i.test(val) && !/^https?:/i.test(val)) {
+        return false;
+      }
+      
       const toTest = /^https?:\/\//i.test(val) ? val : `https://${val}`;
       try {
         const parsed = new URL(toTest);

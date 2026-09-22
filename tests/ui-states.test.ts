@@ -121,9 +121,16 @@ describe("UI States, Accessibility & Error Boundary Tests", () => {
         error: new Error("Test error"),
       };
 
+      let nextState: any;
+      boundary.setState = (update) => {
+        nextState = update;
+        Object.assign(boundary.state, update);
+      };
+
       boundary.reset();
+      assert.equal(nextState.hasError, false);
+      assert.equal(nextState.error, null);
       assert.equal(boundary.state.hasError, false);
-      assert.equal(boundary.state.error, null);
     });
   });
 });

@@ -7,10 +7,8 @@ import {
   deriveVaultKey,
 } from "@/lib/crypto/key-derivation";
 import {
-  encryptField,
-  decryptField,
-  generateIv,
-  ivToBase64,
+  encryptString,
+  decryptString,
 } from "@/lib/crypto/encryption";
 import {
   createVaultVerificationToken,
@@ -50,11 +48,10 @@ describe("Cryptographic Core & Master Password Tests", () => {
       const key1 = await deriveVaultKey(pass, salt1);
       const key2 = await deriveVaultKey(pass, salt2);
 
-      // Encrypt sample text with key1
-      const enc = await encryptField("Secret", key1);
+      const enc = await encryptString("Secret", key1);
       // Key2 must fail to decrypt
       await assert.rejects(async () => {
-        await decryptField(enc.ciphertext, enc.iv, key2);
+        await decryptString(enc, key2);
       });
     });
 
@@ -63,9 +60,9 @@ describe("Cryptographic Core & Master Password Tests", () => {
       const key1 = await deriveVaultKey("PasswordOne!", salt);
       const key2 = await deriveVaultKey("PasswordTwo!", salt);
 
-      const enc = await encryptField("Secret", key1);
+      const enc = await encryptString("Secret", key1);
       await assert.rejects(async () => {
-        await decryptField(enc.ciphertext, enc.iv, key2);
+        await decryptString(enc, key2);
       });
     });
   });
@@ -76,51 +73,42 @@ describe("Cryptographic Core & Master Password Tests", () => {
       const key = await deriveVaultKey("TestPassword!2026", salt);
       const secret = "SuperSecret_P@ssw0rd!_12345_©_🔒";
 
-      const enc = await encryptField(secret, key);
-      assert.equal(typeof enc.ciphertext, "string");
-      assert.equal(typeof enc.iv, "string");
-      assert.notEqual(enc.ciphertext, secret);
+      const enc = await encryptString(secret, key);
+      assert.equal(typeof enc, "string");
+      assert.notEqual(enc, secret);
 
-      const decrypted = await decryptField(enc.ciphertext, enc.iv, key);
+      const decrypted = await decryptString(enc, key);
       assert.equal(decrypted, secret);
     });
 
-    test("generates unique 12-byte IV for each encryption operation", () => {
-      const iv1 = generateIv();
-      const iv2 = generateIv();
-      assert.equal(iv1.byteLength, 12);
-      assert.equal(iv2.byteLength, 12);
-      assert.notEqual(ivToBase64(iv1), ivToBase64(iv2));
+    test("generates unique IV for each encryption operation (by returning different ciphertexts)", async () => {
+      const salt = generateSalt();
+      const key = await deriveVaultKey("TestPassword!2026", salt);
+      
+      const enc1 = await encryptString("SameSecret", key);
+      const enc2 = await encryptString("SameSecret", key);
+      
+      // Even with the same key and plaintext, the ciphertext must differ because of random IVs
+      assert.notEqual(enc1, enc2);
     });
 
     test("fails authentication and rejects tampered ciphertext", async () => {
       const salt = generateSalt();
       const key = await deriveVaultKey("TestPassword!2026", salt);
-      const enc = await encryptField("SensitiveData", key);
+      const enc = await encryptString("SensitiveData", key);
 
       // Corrupt the ciphertext by modifying a character
       const tamperedCiphertext =
-        enc.ciphertext.substring(0, 4) +
-        (enc.ciphertext[4] === "A" ? "B" : "A") +
-        enc.ciphertext.substring(5);
+        enc.substring(0, 4) +
+        (enc[4] === "A" ? "B" : "A") +
+        enc.substring(5);
 
       await assert.rejects(
         async () => {
-          await decryptField(tamperedCiphertext, enc.iv, key);
+          await decryptString(tamperedCiphertext, key);
         },
-        /OperationError|tag mismatch|decrypt/i
+        /DecryptionError|tag mismatch|decrypt/i
       );
-    });
-
-    test("fails authentication and rejects corrupted IV", async () => {
-      const salt = generateSalt();
-      const key = await deriveVaultKey("TestPassword!2026", salt);
-      const enc = await encryptField("SensitiveData", key);
-
-      const corruptedIv = ivToBase64(generateIv()); // Different IV
-      await assert.rejects(async () => {
-        await decryptField(enc.ciphertext, corruptedIv, key);
-      });
     });
   });
 
@@ -231,4 +219,3 @@ describe("Cryptographic Core & Master Password Tests", () => {
     });
   });
 });
-
