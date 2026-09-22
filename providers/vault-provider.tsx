@@ -9,10 +9,15 @@ import React, {
 } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import {
+  db,
   getSettingsDocRef,
+  getCredentialsRef,
+  getCredentialDocRef,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
+  writeBatch,
   serverTimestamp,
 } from "@/lib/firebase/firestore";
 import {
@@ -24,6 +29,8 @@ import {
 import {
   createVaultVerificationToken,
   verifyVaultKey,
+  decryptCredentialFields,
+  encryptCredentialFields,
 } from "@/lib/crypto/vault";
 
 export type VaultStatus = "loading" | "uninitialized" | "locked" | "unlocked";
@@ -42,6 +49,10 @@ export interface VaultContextType {
   unlockVault: (masterPassword: string) => Promise<boolean>;
   lockVault: () => void;
   updateAutoLockMinutes: (minutes: number) => Promise<void>;
+  changeMasterPassword: (
+    currentPassword: string,
+    newPassword: string
+  ) => Promise<void>;
 }
 
 export const VaultContext = createContext<VaultContextType | undefined>(undefined);
@@ -213,6 +224,108 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Change master password: securely re-encrypts all credentials and updates settings atomically
+  const changeMasterPassword = async (
+    currentPassword: string,
+    newPassword: string
+  ): Promise<void> => {
+    if (!user) throw new Error("Authentication required to change master password");
+    if (!vaultKey) throw new Error("Vault must be unlocked to change master password");
+    if (!vaultSettings) throw new Error("Vault settings not loaded");
+
+    // 1. Verify current master password
+    const currentSalt = base64ToSalt(vaultSettings.salt);
+    const candidateCurrentKey = await deriveVaultKey(currentPassword, currentSalt);
+    const isValid = await verifyVaultKey(
+      vaultSettings.verificationToken,
+      candidateCurrentKey
+    );
+    if (!isValid) {
+      throw new Error("Current master password is incorrect");
+    }
+
+    // 2. Generate new salt and derive new 256-bit AES-GCM key
+    const newSalt = generateSalt();
+    const newKey = await deriveVaultKey(newPassword, newSalt);
+    const newVerificationToken = await createVaultVerificationToken(newKey);
+    const newSaltBase64 = saltToBase64(newSalt);
+
+    // 3. Fetch all existing encrypted credentials for this user
+    const credsSnap = await getDocs(getCredentialsRef(user.uid));
+
+    // 4. Decrypt each credential using active vaultKey and re-encrypt using newKey
+    const reEncryptedItems: {
+      id: string;
+      encryptedUsername: string;
+      encryptedPassword: string;
+      encryptedNotes: string | null;
+    }[] = [];
+
+    for (const docSnap of credsSnap.docs) {
+      const cred = docSnap.data();
+      const decrypted = await decryptCredentialFields(cred, vaultKey);
+      const reEncrypted = await encryptCredentialFields(
+        {
+          username: decrypted.username,
+          password: decrypted.password,
+          notes: decrypted.notes,
+        },
+        newKey
+      );
+      reEncryptedItems.push({
+        id: docSnap.id,
+        encryptedUsername: reEncrypted.encryptedUsername,
+        encryptedPassword: reEncrypted.encryptedPassword,
+        encryptedNotes: reEncrypted.encryptedNotes ?? null,
+      });
+    }
+
+    // 5. Commit atomically via Firestore writeBatch in chunks <= 400
+    const settingsDocRef = getSettingsDocRef(user.uid, "vault");
+
+    if (reEncryptedItems.length === 0) {
+      await updateDoc(settingsDocRef, {
+        salt: newSaltBase64,
+        verificationToken: newVerificationToken,
+        updatedAt: serverTimestamp(),
+      });
+    } else {
+      const BATCH_SIZE = 400;
+      for (let i = 0; i < reEncryptedItems.length; i += BATCH_SIZE) {
+        const batch = writeBatch(db);
+        const chunk = reEncryptedItems.slice(i, i + BATCH_SIZE);
+        for (const item of chunk) {
+          const docRef = getCredentialDocRef(user.uid, item.id);
+          batch.update(docRef, {
+            encryptedUsername: item.encryptedUsername,
+            encryptedPassword: item.encryptedPassword,
+            encryptedNotes: item.encryptedNotes,
+            updatedAt: serverTimestamp(),
+          });
+        }
+        // Include the settings document in the last batch
+        if (i + BATCH_SIZE >= reEncryptedItems.length) {
+          batch.update(settingsDocRef, {
+            salt: newSaltBase64,
+            verificationToken: newVerificationToken,
+            updatedAt: serverTimestamp(),
+          });
+        }
+        await batch.commit();
+      }
+    }
+
+    // 6. Update in-memory state
+    const updatedSettings: StoredVaultSettings = {
+      salt: newSaltBase64,
+      verificationToken: newVerificationToken,
+      autoLockMinutes,
+    };
+    setVaultSettings(updatedSettings);
+    setVaultKey(newKey);
+    lastActivityRef.current = Date.now();
+  };
+
   return (
     <VaultContext.Provider
       value={{
@@ -223,6 +336,7 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
         unlockVault,
         lockVault,
         updateAutoLockMinutes,
+        changeMasterPassword,
       }}
     >
       {children}

@@ -21,7 +21,11 @@ const mainNav = [
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
-function SidebarContent() {
+interface SidebarProps {
+  onNavigate?: () => void;
+}
+
+function SidebarContent({ onNavigate }: SidebarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentCategory = searchParams.get("category");
@@ -37,6 +41,7 @@ function SidebarContent() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               aria-current={isActive ? "page" : undefined}
               className={cn(
                 "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
@@ -61,6 +66,7 @@ function SidebarContent() {
           </p>
           <Link
             href="/categories"
+            onClick={onNavigate}
             className="text-[11px] text-muted-foreground hover:text-foreground"
           >
             Manage
@@ -75,6 +81,7 @@ function SidebarContent() {
             <Link
               key={category.id}
               href={categoryPath}
+              onClick={onNavigate}
               aria-current={isActive ? "page" : undefined}
               className={cn(
                 "flex items-center justify-between rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
@@ -98,10 +105,10 @@ function SidebarContent() {
   );
 }
 
-export function Sidebar() {
+export function Sidebar({ onNavigate }: SidebarProps) {
   return (
     <Suspense fallback={<nav className="h-full p-3" aria-label="Main navigation" />}>
-      <SidebarContent />
+      <SidebarContent onNavigate={onNavigate} />
     </Suspense>
   );
 }

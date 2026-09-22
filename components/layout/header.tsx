@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import {
   Shield,
@@ -8,6 +9,7 @@ import {
   Unlock,
   Menu,
   LogOut,
+  Sparkles,
   User as UserIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,24 +28,28 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 import { Sidebar } from "@/components/layout/sidebar";
+import { PasswordGeneratorDialog } from "@/components/password-generator/password-generator-dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { useVault } from "@/hooks/use-vault";
 
 export function Header() {
   const { user, signOut } = useAuth();
   const { status, lockVault } = useVault();
+  const [generatorOpen, setGeneratorOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const isUnlocked = status === "unlocked";
 
   return (
-    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between border-b bg-background px-4">
+    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between border-b bg-background px-3 sm:px-4">
       <div className="flex items-center gap-2">
         {/* Mobile menu */}
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger
             render={
-              <Button variant="ghost" size="icon" className="md:hidden" />
+              <Button variant="ghost" size="icon" className="md:hidden size-9" />
             }
           >
             <Menu className="size-5" />
@@ -51,7 +57,7 @@ export function Header() {
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-0">
             <SheetTitle className="sr-only">Navigation menu</SheetTitle>
-            <Sidebar />
+            <Sidebar onNavigate={() => setSheetOpen(false)} />
           </SheetContent>
         </Sheet>
 
@@ -62,6 +68,18 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-1">
+        {/* Password Generator quick tool */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setGeneratorOpen(true)}
+          title="Password Generator"
+          className="size-9 sm:size-8 text-muted-foreground hover:text-foreground"
+        >
+          <Sparkles className="size-4" />
+          <span className="sr-only">Password Generator</span>
+        </Button>
+
         <ThemeToggle />
 
         {/* Lock Vault button */}
@@ -71,7 +89,10 @@ export function Header() {
           disabled={!isUnlocked}
           onClick={isUnlocked ? () => lockVault() : undefined}
           title={isUnlocked ? "Lock vault now" : "Vault is locked"}
-          className={isUnlocked ? "text-amber-600 hover:text-amber-700 dark:text-amber-400" : "opacity-50"}
+          className={cn(
+            "size-9 sm:size-8",
+            isUnlocked ? "text-amber-600 hover:text-amber-700 dark:text-amber-400" : "opacity-50"
+          )}
         >
           {isUnlocked ? <Unlock className="size-4" /> : <Lock className="size-4" />}
           <span className="sr-only">
@@ -85,12 +106,18 @@ export function Header() {
             size="sm"
             render={<Link href="/credentials/new" />}
             title="Add new credential"
+            className="h-9 px-2.5 sm:px-3 gap-1.5"
           >
             <Plus className="size-4" />
             <span className="hidden sm:inline">Add</span>
           </Button>
         ) : (
-          <Button size="sm" disabled title="Unlock vault to add credentials">
+          <Button
+            size="sm"
+            disabled
+            title="Unlock vault to add credentials"
+            className="h-9 px-2.5 sm:px-3 gap-1.5"
+          >
             <Plus className="size-4" />
             <span className="hidden sm:inline">Add</span>
           </Button>
@@ -103,7 +130,7 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full"
+                  className="size-9 sm:size-8 rounded-full"
                   title={user.email || "User profile"}
                 />
               }
@@ -135,6 +162,11 @@ export function Header() {
           </DropdownMenu>
         )}
       </div>
+
+      <PasswordGeneratorDialog
+        open={generatorOpen}
+        onOpenChange={setGeneratorOpen}
+      />
     </header>
   );
 }

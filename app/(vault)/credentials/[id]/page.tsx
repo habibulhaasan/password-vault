@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCredentials } from "@/hooks/use-credentials";
 import { useCategories } from "@/hooks/use-categories";
 import { CategoryIcon } from "@/lib/constants/categories";
+import { useClipboardState, safeOpenUrl } from "@/lib/utils/clipboard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -28,7 +29,9 @@ import {
   Globe,
   Tag,
   Calendar,
+  Clock,
 } from "lucide-react";
+import { formatDaysSinceLastLogin } from "@/lib/utils/date";
 import type { DecryptedCredential } from "@/types/credential";
 
 export default function CredentialDetailPage({
@@ -38,14 +41,15 @@ export default function CredentialDetailPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const { getCredential, decryptCredential, deleteCredential } = useCredentials();
+  const { getCredential, decryptCredential, deleteCredential, markAsLoggedIn } = useCredentials();
   const { getCategory } = useCategories();
+  const { isCopied, copy } = useClipboardState(2000);
 
   const [credential, setCredential] = useState<DecryptedCredential | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [copiedField, setCopiedField] = useState<"username" | "password" | null>(null);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -80,13 +84,48 @@ export default function CredentialDetailPage({
     };
   }, [id, getCredential, decryptCredential]);
 
-  const copyToClipboard = async (text: string, field: "username" | "password") => {
+  const handleCopyUsername = () => {
+    if (credential) {
+      copy(credential.username, "username");
+    }
+  };
+
+  const handleCopyPassword = () => {
+    if (credential) {
+      copy(credential.password, "password", { clearAfterMs: 30000 });
+    }
+  };
+
+  const handleCopyWebsite = () => {
+    if (credential?.websiteUrl) {
+      copy(credential.websiteUrl, "website");
+    }
+  };
+
+  const handleCopyNotes = () => {
+    if (credential?.notes) {
+      copy(credential.notes, "notes");
+    }
+  };
+
+  const handleOpenWebsite = () => {
+    if (credential?.websiteUrl) {
+      safeOpenUrl(credential.websiteUrl);
+    }
+  };
+
+  const handleMarkAsLoggedIn = async () => {
+    if (!credential || isLoggingIn) return;
+    setIsLoggingIn(true);
     try {
-      await navigator.clipboard.writeText(text);
-      setCopiedField(field);
-      setTimeout(() => setCopiedField(null), 2000);
-    } catch {
-      // Fallback
+      await markAsLoggedIn(id);
+      setCredential((prev) =>
+        prev ? { ...prev, lastLoginAt: new Date(), updatedAt: new Date() } : null
+      );
+    } catch (err) {
+      console.warn("Failed to mark as logged in:", err);
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -194,26 +233,33 @@ export default function CredentialDetailPage({
             </div>
 
             {credential.websiteUrl && (
-              <a
-                href={credential.websiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-accent"
+              <button
+                type="button"
+                onClick={handleOpenWebsite}
+                className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-accent cursor-pointer"
               >
                 <Globe className="size-3.5" />
                 Visit Site
                 <ExternalLink className="size-3" />
-              </a>
+              </button>
             )}
           </div>
 
           {credential.tags && credential.tags.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
               {credential.tags.map((tag) => (
-                <Badge key={tag} variant="secondary" className="text-xs">
-                  <Tag className="mr-1 size-2.5" />
-                  {tag}
-                </Badge>
+                <Link
+                  key={tag}
+                  href={`/dashboard?tag=${encodeURIComponent(tag)}`}
+                >
+                  <Badge
+                    variant="secondary"
+                    className="text-xs hover:bg-primary/20 hover:text-primary transition-colors cursor-pointer"
+                  >
+                    <Tag className="mr-1 size-2.5" />
+                    {tag}
+                  </Badge>
+                </Link>
               ))}
             </div>
           )}
@@ -221,20 +267,20 @@ export default function CredentialDetailPage({
 
         <CardContent className="space-y-4 divide-y divide-border">
           {/* Username */}
-          <div className="pt-2 flex items-center justify-between">
-            <div className="space-y-0.5">
+          <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="space-y-0.5 min-w-0 flex-1">
               <p className="text-xs font-medium text-muted-foreground">Username / Email</p>
-              <p className="text-sm font-mono select-all text-foreground">
+              <p className="text-sm font-mono select-all text-foreground break-all">
                 {credential.username}
               </p>
             </div>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => copyToClipboard(credential.username, "username")}
-              className="gap-1.5"
+              onClick={handleCopyUsername}
+              className="gap-1.5 h-9 sm:h-8 w-full sm:w-auto touch-manipulation"
             >
-              {copiedField === "username" ? (
+              {isCopied("username") ? (
                 <>
                   <Check className="size-3.5 text-emerald-500" />
                   Copied
@@ -249,17 +295,18 @@ export default function CredentialDetailPage({
           </div>
 
           {/* Password */}
-          <div className="pt-4 flex items-center justify-between">
-            <div className="space-y-0.5">
+          <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="space-y-0.5 min-w-0 flex-1">
               <p className="text-xs font-medium text-muted-foreground">Password</p>
-              <p className="text-sm font-mono select-all text-foreground">
+              <p className="text-sm font-mono select-all text-foreground break-all">
                 {showPassword ? credential.password : "••••••••••••••••"}
               </p>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 w-full sm:w-auto">
               <Button
                 variant="ghost"
                 size="sm"
+                className="h-9 sm:h-8 px-2.5 touch-manipulation"
                 onClick={() => setShowPassword((prev) => !prev)}
                 title={showPassword ? "Hide password" : "Reveal password"}
               >
@@ -275,10 +322,10 @@ export default function CredentialDetailPage({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => copyToClipboard(credential.password, "password")}
-                className="gap-1.5"
+                onClick={handleCopyPassword}
+                className="gap-1.5 h-9 sm:h-8 flex-1 sm:flex-initial touch-manipulation"
               >
-                {copiedField === "password" ? (
+                {isCopied("password") ? (
                   <>
                     <Check className="size-3.5 text-emerald-500" />
                     Copied
@@ -293,15 +340,117 @@ export default function CredentialDetailPage({
             </div>
           </div>
 
+          {/* Website URL */}
+          {credential.websiteUrl && (
+            <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+              <div className="space-y-0.5 min-w-0 flex-1">
+                <p className="text-xs font-medium text-muted-foreground">Website URL</p>
+                <button
+                  type="button"
+                  onClick={handleOpenWebsite}
+                  className="text-sm font-mono truncate text-primary hover:underline flex items-center gap-1 text-left max-w-full"
+                >
+                  <span className="truncate">{credential.websiteUrl}</span>
+                  <ExternalLink className="size-3 shrink-0" />
+                </button>
+              </div>
+              <div className="flex items-center gap-1.5 w-full sm:w-auto shrink-0">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleOpenWebsite}
+                  className="gap-1.5 h-9 sm:h-8 flex-1 sm:flex-initial touch-manipulation"
+                  title="Open URL in new tab"
+                >
+                  <ExternalLink className="size-3.5" />
+                  Open
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCopyWebsite}
+                  className="gap-1.5 h-9 sm:h-8 flex-1 sm:flex-initial touch-manipulation"
+                >
+                  {isCopied("website") ? (
+                    <>
+                      <Check className="size-3.5 text-emerald-500" />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="size-3.5" />
+                      Copy
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Notes */}
           {credential.notes && (
             <div className="pt-4 space-y-1.5">
-              <p className="text-xs font-medium text-muted-foreground">Notes</p>
-              <div className="rounded-md bg-muted/40 p-3 text-xs whitespace-pre-wrap font-sans text-foreground">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-medium text-muted-foreground">Notes</p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCopyNotes}
+                  className="h-7 sm:h-6 px-2 text-xs gap-1 text-muted-foreground hover:text-foreground touch-manipulation"
+                >
+                  {isCopied("notes") ? (
+                    <>
+                      <Check className="size-3 text-emerald-500" />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="size-3" />
+                      Copy Notes
+                    </>
+                  )}
+                </Button>
+              </div>
+              <div className="rounded-md bg-muted/40 p-3 text-xs whitespace-pre-wrap font-sans text-foreground break-words">
                 {credential.notes}
               </div>
             </div>
           )}
+
+          {/* Last Login Section */}
+          <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div className="space-y-0.5">
+              <p className="text-xs font-medium text-muted-foreground">Last Login</p>
+              <div className="flex items-center gap-1.5 text-sm text-foreground">
+                <Clock className="size-3.5 text-muted-foreground" />
+                <span>{formatDaysSinceLastLogin(credential.lastLoginAt)}</span>
+                {credential.lastLoginAt && (
+                  <span className="text-xs text-muted-foreground">
+                    ({credential.lastLoginAt.toLocaleDateString()})
+                  </span>
+                )}
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleMarkAsLoggedIn}
+              disabled={isLoggingIn}
+              className="gap-1.5 h-9 sm:h-8 w-full sm:w-auto touch-manipulation"
+            >
+              {isLoggingIn ? (
+                <>
+                  <Loader2 className="size-3.5 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                <>
+                  <Clock className="size-3.5" />
+                  Mark as Logged In
+                </>
+              )}
+            </Button>
+          </div>
         </CardContent>
 
         <CardFooter className="flex items-center justify-between border-t text-[11px] text-muted-foreground pt-3">

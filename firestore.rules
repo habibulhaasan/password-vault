@@ -17,7 +17,7 @@ service cloud.firestore {
     }
 
     function isOptionalString(data, field, maxLen) {
-      return !(field in data) || (data[field] is string && data[field].size() <= maxLen);
+      return !(field in data) || data[field] == null || (data[field] is string && data[field].size() <= maxLen);
     }
 
     function isValidTagList(tags) {
@@ -46,7 +46,7 @@ service cloud.firestore {
           && isOptionalString(request.resource.data, 'websiteUrl', 2048)
           && isOptionalString(request.resource.data, 'categoryId', 50)
           && (!('tags' in request.resource.data) || isValidTagList(request.resource.data.tags))
-          && (!('lastLoginAt' in request.resource.data) || request.resource.data.lastLoginAt is timestamp)
+          && (!('lastLoginAt' in request.resource.data) || request.resource.data.lastLoginAt == null || request.resource.data.lastLoginAt is timestamp)
           && request.resource.data.createdAt is timestamp
           && request.resource.data.updatedAt is timestamp;
 
@@ -58,7 +58,7 @@ service cloud.firestore {
           && isOptionalString(request.resource.data, 'websiteUrl', 2048)
           && isOptionalString(request.resource.data, 'categoryId', 50)
           && (!('tags' in request.resource.data) || isValidTagList(request.resource.data.tags))
-          && (!('lastLoginAt' in request.resource.data) || request.resource.data.lastLoginAt is timestamp)
+          && (!('lastLoginAt' in request.resource.data) || request.resource.data.lastLoginAt == null || request.resource.data.lastLoginAt is timestamp)
           && request.resource.data.createdAt == resource.data.createdAt
           && request.resource.data.updatedAt is timestamp;
       }

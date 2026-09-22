@@ -162,6 +162,19 @@ export function useCredentials() {
     [vaultKey]
   );
 
+  // Mark a credential as logged in right now
+  const markAsLoggedIn = useCallback(
+    async (id: string): Promise<void> => {
+      if (!user) throw new Error("Authentication required");
+      const docRef = getCredentialDocRef(user.uid, id);
+      await updateDoc(docRef, {
+        lastLoginAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    },
+    [user]
+  );
+
   return {
     credentials: user ? credentials : [],
     loading: user ? loading : false,
@@ -172,5 +185,6 @@ export function useCredentials() {
     deleteCredential,
     getCredential,
     decryptCredential,
+    markAsLoggedIn,
   };
 }

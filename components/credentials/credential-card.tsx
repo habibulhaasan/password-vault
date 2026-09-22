@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CategoryIcon } from "@/lib/constants/categories";
 import { formatDaysSinceLastLogin } from "@/lib/utils/date";
+import { useClipboardState, safeOpenUrl } from "@/lib/utils/clipboard";
 import { useCredentials } from "@/hooks/use-credentials";
 import { useCategories } from "@/hooks/use-categories";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Globe,
-  Copy,
   Check,
   MoreVertical,
   Edit,
@@ -32,6 +32,8 @@ import {
   ExternalLink,
   Clock,
   Loader2,
+  User,
+  KeyRound,
 } from "lucide-react";
 import type { EncryptedCredential } from "@/types/credential";
 
@@ -40,32 +42,72 @@ interface CredentialCardProps {
 }
 
 export function CredentialCard({ credential }: CredentialCardProps) {
-  const { decryptCredential, deleteCredential } = useCredentials();
+  const { decryptCredential, deleteCredential, markAsLoggedIn } = useCredentials();
   const { getCategory } = useCategories();
-  const [copied, setCopied] = useState(false);
-  const [isCopying, setIsCopying] = useState(false);
+  const { isCopied, copy } = useClipboardState(2000);
+  const [isCopyingUser, setIsCopyingUser] = useState(false);
+  const [isCopyingPass, setIsCopyingPass] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const categoryObj = credential.categoryId
     ? getCategory(credential.categoryId)
     : undefined;
 
+  const handleMarkAsLoggedIn = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isLoggingIn) return;
+    setIsLoggingIn(true);
+    try {
+      await markAsLoggedIn(credential.id);
+    } catch (err) {
+      console.warn("Failed to mark as logged in:", err);
+    } finally {
+      setIsLoggingIn(false);
+    }
+  };
+
+  const handleCopyUsername = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isCopyingUser || isCopied("user")) return;
+
+    setIsCopyingUser(true);
+    try {
+      const decrypted = await decryptCredential(credential);
+      await copy(decrypted.username, "user");
+    } catch (err) {
+      console.warn("Failed to copy username:", err);
+    } finally {
+      setIsCopyingUser(false);
+    }
+  };
+
   const handleCopyPassword = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (isCopying || copied) return;
+    if (isCopyingPass || isCopied("pass")) return;
 
-    setIsCopying(true);
+    setIsCopyingPass(true);
     try {
       const decrypted = await decryptCredential(credential);
-      await navigator.clipboard.writeText(decrypted.password);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await copy(decrypted.password, "pass", { clearAfterMs: 30000 });
     } catch (err) {
       console.warn("Failed to copy password:", err);
     } finally {
-      setIsCopying(false);
+      setIsCopyingPass(false);
+    }
+  };
+
+  const handleOpenWebsite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (credential.websiteUrl) {
+      safeOpenUrl(credential.websiteUrl);
     }
   };
 
@@ -150,6 +192,25 @@ export function CredentialCard({ credential }: CredentialCardProps) {
                 Edit
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleCopyUsername}>
+                <User className="size-3.5" />
+                {isCopied("user") ? "Username Copied!" : "Copy Username"}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleCopyPassword}>
+                <KeyRound className="size-3.5" />
+                {isCopied("pass") ? "Password Copied!" : "Copy Password"}
+              </DropdownMenuItem>
+              {credential.websiteUrl && (
+                <DropdownMenuItem onClick={handleOpenWebsite}>
+                  <ExternalLink className="size-3.5" />
+                  Open Website
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem onClick={handleMarkAsLoggedIn} disabled={isLoggingIn}>
+                <Clock className="size-3.5" />
+                {isLoggingIn ? "Updating..." : "Mark as Logged In"}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
                 onClick={handleDelete}
@@ -168,39 +229,51 @@ export function CredentialCard({ credential }: CredentialCardProps) {
         {displayDomain && (
           <div className="flex items-center gap-1.5 truncate">
             <Globe className="size-3.5 shrink-0" />
-            <a
-              href={
-                /^https?:\/\//i.test(credential.websiteUrl || "")
-                  ? credential.websiteUrl
-                  : `https://${credential.websiteUrl}`
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="truncate hover:text-foreground hover:underline inline-flex items-center gap-1"
+            <button
+              type="button"
+              onClick={handleOpenWebsite}
+              className="truncate hover:text-foreground hover:underline inline-flex items-center gap-1 text-left"
             >
               {displayDomain}
               <ExternalLink className="size-2.5" />
-            </a>
+            </button>
           </div>
         )}
 
         {/* Days since last login */}
-        <div className="flex items-center gap-1.5">
-          <Clock className="size-3.5 shrink-0" />
-          <span>Last login: {formatDaysSinceLastLogin(credential.lastLoginAt)}</span>
+        <div className="flex items-center justify-between gap-1.5">
+          <div className="flex items-center gap-1.5 truncate">
+            <Clock className="size-3.5 shrink-0" />
+            <span className="truncate">Last login: {formatDaysSinceLastLogin(credential.lastLoginAt)}</span>
+          </div>
+          <button
+            type="button"
+            onClick={handleMarkAsLoggedIn}
+            disabled={isLoggingIn}
+            className="text-[10px] font-medium text-primary hover:underline shrink-0 cursor-pointer disabled:opacity-50"
+            title="Mark as logged in right now"
+          >
+            {isLoggingIn ? "Saving..." : "Mark Logged In"}
+          </button>
         </div>
 
         {/* Tags */}
         {credential.tags && credential.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 pt-1">
             {credential.tags.slice(0, 3).map((tag) => (
-              <Badge
+              <Link
                 key={tag}
-                variant="secondary"
-                className="text-[10px] px-1.5 py-0 h-4"
+                href={`/dashboard?tag=${encodeURIComponent(tag)}`}
+                onClick={(e) => e.stopPropagation()}
+                className="inline-block"
               >
-                {tag}
-              </Badge>
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] px-1.5 py-0 h-4 hover:bg-primary/20 hover:text-primary transition-colors cursor-pointer"
+                >
+                  #{tag}
+                </Badge>
+              </Link>
             ))}
             {credential.tags.length > 3 && (
               <span className="text-[10px] text-muted-foreground self-center">
@@ -211,32 +284,68 @@ export function CredentialCard({ credential }: CredentialCardProps) {
         )}
       </CardContent>
 
-      <CardFooter className="flex items-center justify-between border-t bg-muted/20 px-4 py-2 text-xs">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-7 px-2 text-xs gap-1 text-muted-foreground hover:text-foreground"
-          onClick={handleCopyPassword}
-          disabled={isCopying}
-        >
-          {isCopying ? (
-            <Loader2 className="size-3 animate-spin" />
-          ) : copied ? (
-            <Check className="size-3 text-emerald-500" />
-          ) : (
-            <Copy className="size-3" />
-          )}
-          {copied ? "Copied!" : "Copy Password"}
-        </Button>
+      <CardFooter className="flex flex-wrap items-center justify-between gap-1.5 border-t bg-muted/20 px-3 py-2 text-xs">
+        <div className="flex flex-wrap items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 sm:h-7 px-2.5 sm:px-2 text-xs gap-1.5 text-muted-foreground hover:text-foreground touch-manipulation"
+            onClick={handleCopyUsername}
+            disabled={isCopyingUser}
+            title="Copy Username"
+          >
+            {isCopyingUser ? (
+              <Loader2 className="size-3.5 sm:size-3 animate-spin" />
+            ) : isCopied("user") ? (
+              <Check className="size-3.5 sm:size-3 text-emerald-500" />
+            ) : (
+              <User className="size-3.5 sm:size-3" />
+            )}
+            <span>{isCopied("user") ? "Copied!" : "Copy User"}</span>
+          </Button>
 
-        <Button
-          variant="outline"
-          size="sm"
-          render={<Link href={`/credentials/${credential.id}`} />}
-          className="h-7 px-2.5 text-xs"
-        >
-          View
-        </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 sm:h-7 px-2.5 sm:px-2 text-xs gap-1.5 text-muted-foreground hover:text-foreground touch-manipulation"
+            onClick={handleCopyPassword}
+            disabled={isCopyingPass}
+            title="Copy Password"
+          >
+            {isCopyingPass ? (
+              <Loader2 className="size-3.5 sm:size-3 animate-spin" />
+            ) : isCopied("pass") ? (
+              <Check className="size-3.5 sm:size-3 text-emerald-500" />
+            ) : (
+              <KeyRound className="size-3.5 sm:size-3" />
+            )}
+            <span>{isCopied("pass") ? "Copied!" : "Copy Pass"}</span>
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-1">
+          {credential.websiteUrl && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              className="size-8 sm:size-7 text-muted-foreground hover:text-foreground touch-manipulation"
+              onClick={handleOpenWebsite}
+              title="Open Website in new tab"
+            >
+              <ExternalLink className="size-3.5" />
+              <span className="sr-only">Open website</span>
+            </Button>
+          )}
+
+          <Button
+            variant="outline"
+            size="sm"
+            render={<Link href={`/credentials/${credential.id}`} />}
+            className="h-8 sm:h-7 px-3 sm:px-2.5 text-xs touch-manipulation"
+          >
+            View
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

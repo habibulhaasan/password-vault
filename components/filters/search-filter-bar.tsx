@@ -5,6 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCategories } from "@/hooks/use-categories";
+import {
+  type LastLoginFilter,
+  LAST_LOGIN_FILTER_LABELS,
+} from "@/lib/utils/date";
 
 export type SortOption =
   | "updated-desc"
@@ -21,6 +25,8 @@ interface SearchFilterBarProps {
   onCategoryChange: (category: string) => void;
   selectedTag: string;
   onTagChange: (tag: string) => void;
+  selectedLastLogin: LastLoginFilter;
+  onLastLoginChange: (filter: LastLoginFilter) => void;
   availableTags: string[];
   sortBy: SortOption;
   onSortChange: (sort: SortOption) => void;
@@ -34,6 +40,8 @@ export function SearchFilterBar({
   onCategoryChange,
   selectedTag,
   onTagChange,
+  selectedLastLogin,
+  onLastLoginChange,
   availableTags,
   sortBy,
   onSortChange,
@@ -45,6 +53,7 @@ export function SearchFilterBar({
     searchQuery.trim().length > 0 ||
     selectedCategory.length > 0 ||
     selectedTag.length > 0 ||
+    selectedLastLogin !== "all" ||
     sortBy !== "updated-desc";
 
   const activeCategoryObj = selectedCategory
@@ -80,13 +89,13 @@ export function SearchFilterBar({
         </div>
 
         {/* Filter Controls */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
           {/* Category Dropdown */}
-          <div className="relative min-w-36 flex-1 sm:flex-initial">
+          <div className="relative w-full sm:w-auto sm:min-w-36">
             <select
               value={selectedCategory}
               onChange={(e) => onCategoryChange(e.target.value)}
-              className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+              className="flex h-9 sm:h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
               aria-label="Filter by category"
             >
               <option value="" className="bg-popover text-popover-foreground">
@@ -127,11 +136,11 @@ export function SearchFilterBar({
 
           {/* Tag Dropdown */}
           {availableTags.length > 0 && (
-            <div className="relative min-w-28 flex-1 sm:flex-initial">
+            <div className="relative w-full sm:w-auto sm:min-w-28">
               <select
                 value={selectedTag}
                 onChange={(e) => onTagChange(e.target.value)}
-                className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+                className="flex h-9 sm:h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
                 aria-label="Filter by tag"
               >
                 <option value="" className="bg-popover text-popover-foreground">
@@ -150,12 +159,41 @@ export function SearchFilterBar({
             </div>
           )}
 
+          {/* Last Login Filter Dropdown */}
+          <div className="relative w-full sm:w-auto sm:min-w-36">
+            <select
+              value={selectedLastLogin}
+              onChange={(e) => onLastLoginChange(e.target.value as LastLoginFilter)}
+              className="flex h-9 sm:h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+              aria-label="Filter by last login"
+            >
+              <option value="all" className="bg-popover text-popover-foreground">
+                All Logins
+              </option>
+              <option value="today" className="bg-popover text-popover-foreground">
+                Logged in Today
+              </option>
+              <option value="7days" className="bg-popover text-popover-foreground">
+                Within 7 days
+              </option>
+              <option value="30days" className="bg-popover text-popover-foreground">
+                Within 30 days
+              </option>
+              <option value="over30days" className="bg-popover text-popover-foreground">
+                More than 30 days
+              </option>
+              <option value="never" className="bg-popover text-popover-foreground">
+                Never logged in
+              </option>
+            </select>
+          </div>
+
           {/* Sort Dropdown */}
-          <div className="relative min-w-36 flex-1 sm:flex-initial">
+          <div className="relative w-full sm:w-auto sm:min-w-36">
             <select
               value={sortBy}
               onChange={(e) => onSortChange(e.target.value as SortOption)}
-              className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+              className="flex h-9 sm:h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
               aria-label="Sort credentials"
             >
               <option value="updated-desc" className="bg-popover text-popover-foreground">
@@ -224,6 +262,20 @@ export function SearchFilterBar({
               >
                 <X className="size-3" />
                 <span className="sr-only">Remove tag filter</span>
+              </button>
+            </Badge>
+          )}
+
+          {selectedLastLogin !== "all" && (
+            <Badge variant="secondary" className="gap-1 pr-1 text-xs">
+              Login: {LAST_LOGIN_FILTER_LABELS[selectedLastLogin]}
+              <button
+                type="button"
+                onClick={() => onLastLoginChange("all")}
+                className="rounded-full hover:bg-muted-foreground/20 p-0.5"
+              >
+                <X className="size-3" />
+                <span className="sr-only">Remove login filter</span>
               </button>
             </Badge>
           )}

@@ -1,8 +1,5 @@
 import { encryptString, decryptString } from "./encryption";
-import type {
-  EncryptedCredential,
-  CredentialFormData,
-} from "@/types/credential";
+import type { EncryptedCredential } from "@/types/credential";
 
 /**
  * Canary token used to verify that a derived key correctly unlocks a vault
@@ -53,7 +50,7 @@ export interface DecryptedCredentialPayload {
  * Plaintext passwords and notes are converted to AES-GCM ciphertexts.
  */
 export async function encryptCredentialFields(
-  input: CredentialFormData,
+  input: DecryptedCredentialPayload,
   key: CryptoKey
 ): Promise<EncryptedCredentialPayload> {
   const encryptedUsername = await encryptString(input.username, key);

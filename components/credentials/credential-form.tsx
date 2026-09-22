@@ -9,6 +9,7 @@ import {
   type CredentialFormValues,
 } from "@/lib/validations/credential";
 import { useCategories } from "@/hooks/use-categories";
+import { useTags } from "@/hooks/use-tags";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +24,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, X, Loader2 } from "lucide-react";
+import { Plus, X, Loader2, Copy, Check, Sparkles } from "lucide-react";
+import { useClipboardState } from "@/lib/utils/clipboard";
+import { PasswordGeneratorDialog } from "@/components/password-generator/password-generator-dialog";
 import type { CredentialFormData } from "@/types/credential";
 
 interface CredentialFormProps {
@@ -41,8 +44,10 @@ export function CredentialForm({
 }: CredentialFormProps) {
   const router = useRouter();
   const { customCategories, systemCategories } = useCategories();
+  const { suggestTags } = useTags();
   const [error, setError] = useState<string | null>(null);
   const [tagInput, setTagInput] = useState("");
+  const [generatorOpen, setGeneratorOpen] = useState(false);
 
   const {
     control,
@@ -63,7 +68,16 @@ export function CredentialForm({
     },
   });
 
+  const { isCopied, copy } = useClipboardState(2000);
+  const watchedUsername = useWatch({ control, name: "username" });
+  const watchedPassword = useWatch({ control, name: "password" });
   const tags = useWatch({ control, name: "tags" }) || [];
+
+  const suggestions = tagInput.trim() ? suggestTags(tagInput, tags) : [];
+  const suggestedPool =
+    tags.length < 5 && !tagInput.trim()
+      ? suggestTags("", tags).slice(0, 4)
+      : [];
 
   const handleAddTag = () => {
     const trimmed = tagInput.trim().toLowerCase();
@@ -72,6 +86,15 @@ export function CredentialForm({
       setTagInput("");
       return;
     }
+    if (tags.length >= 20) return;
+    setValue("tags", [...tags, trimmed], { shouldValidate: true });
+    setTagInput("");
+  };
+
+  const handleAddSpecificTag = (tagToAdd: string) => {
+    const trimmed = tagToAdd.trim().toLowerCase();
+    if (!trimmed) return;
+    if (tags.includes(trimmed)) return;
     if (tags.length >= 20) return;
     setValue("tags", [...tags, trimmed], { shouldValidate: true });
     setTagInput("");
@@ -89,6 +112,9 @@ export function CredentialForm({
     if (e.key === "Enter") {
       e.preventDefault();
       handleAddTag();
+    } else if (e.key === "Tab" && tagInput.trim() && suggestions.length > 0) {
+      e.preventDefault();
+      handleAddSpecificTag(suggestions[0]);
     }
   };
 
@@ -110,7 +136,8 @@ export function CredentialForm({
   };
 
   return (
-    <Card className="w-full max-w-2xl border-border/80 shadow-md">
+    <>
+      <Card className="w-full max-w-2xl border-border/80 shadow-md">
       <CardHeader>
         <CardTitle className="text-xl">
           {isEdit ? "Edit Credential" : "Add Credential"}
@@ -153,9 +180,31 @@ export function CredentialForm({
           {/* Username & Password */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <Label htmlFor="username">
-                Username / Email <span className="text-destructive">*</span>
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="username">
+                  Username / Email <span className="text-destructive">*</span>
+                </Label>
+                {watchedUsername && (
+                  <button
+                    type="button"
+                    onClick={() => copy(watchedUsername, "form-username")}
+                    className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                    title="Copy Username"
+                  >
+                    {isCopied("form-username") ? (
+                      <>
+                        <Check className="size-3 text-emerald-500" />
+                        <span className="text-emerald-500 font-medium">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="size-3" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
               <Input
                 id="username"
                 placeholder="hasan@example.com"
@@ -172,13 +221,48 @@ export function CredentialForm({
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password">
-                Password <span className="text-destructive">*</span>
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">
+                  Password <span className="text-destructive">*</span>
+                </Label>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setGeneratorOpen(true)}
+                    className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer transition-colors"
+                    title="Generate secure password"
+                  >
+                    <Sparkles className="size-3" />
+                    <span>Generate</span>
+                  </button>
+                  {watchedPassword && (
+                    <button
+                      type="button"
+                      onClick={() => copy(watchedPassword, "form-password", { clearAfterMs: 30000 })}
+                      className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                      title="Copy Password"
+                    >
+                      {isCopied("form-password") ? (
+                        <>
+                          <Check className="size-3 text-emerald-500" />
+                          <span className="text-emerald-500 font-medium">Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="size-3" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
               <PasswordField
                 id="password"
                 placeholder="••••••••••••"
                 disabled={isSubmitting}
+                allowCopy
+                onGenerate={() => setGeneratorOpen(true)}
                 error={errors.password?.message}
                 {...register("password")}
               />
@@ -279,6 +363,43 @@ export function CredentialForm({
               </Button>
             </div>
 
+            {/* Tag matching suggestions while typing */}
+            {suggestions.length > 0 && (
+              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                <span className="text-[11px] text-muted-foreground">Matching:</span>
+                {suggestions.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => handleAddSpecificTag(s)}
+                    disabled={isSubmitting || tags.length >= 20}
+                    className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-0.5 text-[11px] text-accent-foreground hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
+                  >
+                    #{s}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Suggested tags if input is empty */}
+            {suggestedPool.length > 0 && !tagInput.trim() && (
+              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                <span className="text-[11px] text-muted-foreground">Suggested:</span>
+                {suggestedPool.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => handleAddSpecificTag(s)}
+                    disabled={isSubmitting || tags.length >= 20}
+                    className="inline-flex items-center gap-1 rounded-md border border-dashed border-border/80 px-2 py-0.5 text-[11px] text-muted-foreground hover:border-primary hover:text-primary transition-colors cursor-pointer"
+                  >
+                    <Plus className="size-2.5" />
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {tags.length > 0 && (
               <div className="mt-2 flex flex-wrap gap-1.5">
                 {tags.map((tag) => (
@@ -322,16 +443,21 @@ export function CredentialForm({
           </div>
         </CardContent>
 
-        <CardFooter className="flex items-center justify-end gap-2 border-t pt-4">
+        <CardFooter className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 border-t pt-4">
           <Button
             type="button"
             variant="outline"
             disabled={isSubmitting}
             onClick={onCancel || (() => router.back())}
+            className="w-full sm:w-auto h-9 touch-manipulation"
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full sm:w-auto h-9 touch-manipulation"
+          >
             {isSubmitting ? (
               <>
                 <Loader2 className="mr-2 size-4 animate-spin" />
@@ -346,5 +472,17 @@ export function CredentialForm({
         </CardFooter>
       </form>
     </Card>
+
+    <PasswordGeneratorDialog
+      open={generatorOpen}
+      onOpenChange={setGeneratorOpen}
+      onSelectPassword={(newPassword) => {
+        setValue("password", newPassword, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      }}
+    />
+  </>
   );
 }

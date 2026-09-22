@@ -12,6 +12,10 @@ import {
   SearchFilterBar,
   type SortOption,
 } from "@/components/filters/search-filter-bar";
+import {
+  type LastLoginFilter,
+  matchesLastLoginFilter,
+} from "@/lib/utils/date";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Loader2 } from "lucide-react";
@@ -20,6 +24,7 @@ import type { EncryptedCredential } from "@/types/credential";
 function DashboardContent() {
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category") || "";
+  const tagParam = searchParams.get("tag") || "";
 
   const { credentials, loading } = useCredentials();
   const { getCategory } = useCategories();
@@ -28,13 +33,21 @@ function DashboardContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(categoryParam);
   const [prevCategoryParam, setPrevCategoryParam] = useState(categoryParam);
-  const [selectedTag, setSelectedTag] = useState("");
+  const [selectedTag, setSelectedTag] = useState(tagParam);
+  const [prevTagParam, setPrevTagParam] = useState(tagParam);
+  const [lastLoginFilter, setLastLoginFilter] = useState<LastLoginFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("updated-desc");
 
   // Sync category param if URL changes (e.g. user clicked sidebar category)
   if (categoryParam !== prevCategoryParam) {
     setPrevCategoryParam(categoryParam);
     setSelectedCategory(categoryParam);
+  }
+
+  // Sync tag param if URL changes (e.g. user clicked a tag badge)
+  if (tagParam !== prevTagParam) {
+    setPrevTagParam(tagParam);
+    setSelectedTag(tagParam);
   }
 
   // Debounce search query to prevent laggy typing
@@ -74,6 +87,11 @@ function DashboardContent() {
           return false;
         }
 
+        // Last login matching
+        if (!matchesLastLoginFilter(cred.lastLoginAt, lastLoginFilter)) {
+          return false;
+        }
+
         return true;
       })
       .sort((a, b) => {
@@ -105,19 +123,21 @@ function DashboardContent() {
           }
         }
       });
-  }, [credentials, debouncedSearch, selectedCategory, selectedTag, sortBy, getCategory]);
+  }, [credentials, debouncedSearch, selectedCategory, selectedTag, lastLoginFilter, sortBy, getCategory]);
 
   const handleResetFilters = () => {
     setSearchQuery("");
     setSelectedCategory("");
     setSelectedTag("");
+    setLastLoginFilter("all");
     setSortBy("updated-desc");
   };
 
   const isFiltering =
     searchQuery.trim().length > 0 ||
     selectedCategory.length > 0 ||
-    selectedTag.length > 0;
+    selectedTag.length > 0 ||
+    lastLoginFilter !== "all";
 
   return (
     <div className="container max-w-7xl py-6 px-4 space-y-6">
@@ -158,6 +178,8 @@ function DashboardContent() {
           onCategoryChange={setSelectedCategory}
           selectedTag={selectedTag}
           onTagChange={setSelectedTag}
+          selectedLastLogin={lastLoginFilter}
+          onLastLoginChange={setLastLoginFilter}
           availableTags={availableTags}
           sortBy={sortBy}
           onSortChange={setSortBy}

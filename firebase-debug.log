@@ -1,0 +1,342 @@
+[debug] [2026-09-22T07:02:29.551Z] ----------------------------------------------------------------------
+[debug] [2026-09-22T07:02:29.557Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\habib\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js use
+[debug] [2026-09-22T07:02:29.557Z] CLI Version:   15.30.2
+[debug] [2026-09-22T07:02:29.557Z] Platform:      win32
+[debug] [2026-09-22T07:02:29.558Z] Node Version:  v24.11.1
+[debug] [2026-09-22T07:02:29.558Z] Detected Agent: antigravity
+[debug] [2026-09-22T07:02:29.558Z] Time:          Tue Sep 22 2026 13:02:29 GMT+0600 (Bangladesh Standard Time)
+[debug] [2026-09-22T07:02:29.558Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-09-22T07:02:29.594Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-09-22T07:02:29.917Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-09-22T07:02:29.918Z] > authorizing via signed-in user (hasanthp@gmail.com)
+[error] 
+[error] Error: No active project
+[debug] [2026-09-22T07:03:10.347Z] ----------------------------------------------------------------------
+[debug] [2026-09-22T07:03:10.350Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\habib\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js use pass-vault-manager
+[debug] [2026-09-22T07:03:10.350Z] CLI Version:   15.30.2
+[debug] [2026-09-22T07:03:10.351Z] Platform:      win32
+[debug] [2026-09-22T07:03:10.351Z] Node Version:  v24.11.1
+[debug] [2026-09-22T07:03:10.351Z] Detected Agent: antigravity
+[debug] [2026-09-22T07:03:10.351Z] Time:          Tue Sep 22 2026 13:03:10 GMT+0600 (Bangladesh Standard Time)
+[debug] [2026-09-22T07:03:10.351Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-09-22T07:03:10.369Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-09-22T07:03:10.650Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-09-22T07:03:10.650Z] > authorizing via signed-in user (hasanthp@gmail.com)
+[debug] [2026-09-22T07:03:10.653Z] Checked if tokens are valid: false, expires at: 1789727120996
+[debug] [2026-09-22T07:03:10.653Z] Checked if tokens are valid: false, expires at: 1789727120996
+[debug] [2026-09-22T07:03:10.654Z] > refreshing access token with scopes: []
+[debug] [2026-09-22T07:03:10.657Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-09-22T07:03:10.657Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-09-22T07:03:11.013Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-09-22T07:03:11.014Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-09-22T07:03:11.036Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/cloudresourcemanager.googleapis.com [none]
+[debug] [2026-09-22T07:03:11.036Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/cloudresourcemanager.googleapis.com  x-goog-user-project=pass-vault-manager
+[debug] [2026-09-22T07:03:11.434Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-09-22T07:03:11.434Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-09-22T07:03:12.742Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/cloudresourcemanager.googleapis.com 403
+[debug] [2026-09-22T07:03:12.742Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/cloudresourcemanager.googleapis.com [omitted]
+[debug] [2026-09-22T07:03:12.744Z] Unable to check that https://cloudresourcemanager.googleapis.com is enabled on pass-vault-manager. Calls to it will fail if it is not enabled
+[debug] [2026-09-22T07:03:12.744Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:03:12.744Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:03:12.745Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager [none]
+[debug] [2026-09-22T07:03:14.554Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager 403
+[debug] [2026-09-22T07:03:14.554Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[error] 
+[error] Error: Invalid project selection, please verify project pass-vault-manager exists and you have access.
+[debug] [2026-09-22T07:05:03.575Z] ----------------------------------------------------------------------
+[debug] [2026-09-22T07:05:03.578Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\habib\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js projects:list
+[debug] [2026-09-22T07:05:03.579Z] CLI Version:   15.30.2
+[debug] [2026-09-22T07:05:03.579Z] Platform:      win32
+[debug] [2026-09-22T07:05:03.579Z] Node Version:  v24.11.1
+[debug] [2026-09-22T07:05:03.580Z] Detected Agent: antigravity
+[debug] [2026-09-22T07:05:03.580Z] Time:          Tue Sep 22 2026 13:05:03 GMT+0600 (Bangladesh Standard Time)
+[debug] [2026-09-22T07:05:03.580Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-09-22T07:05:03.837Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-09-22T07:05:03.837Z] > authorizing via signed-in user (hasanthp@gmail.com)
+[debug] [2026-09-22T07:05:03.862Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:05:03.863Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:05:03.864Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-09-22T07:05:05.641Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-09-22T07:05:05.641Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] ┌────────────────────────────┬────────────────────────────┬────────────────┬──────────────────────┐
+│ Project Display Name       │ Project ID                 │ Project Number │ Resource Location ID │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ ABSIS-Capital-Sync         │ absis-capital-sync         │ 938799579766   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Donate-Track               │ donate-track               │ 320211882238   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Extra                      │ gen-lang-client-0380429062 │ 1067494861040  │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Hasan-Portfolio            │ habibul-hasan-hasib        │ 152279981472   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Habit-Tacker               │ habit-tacker-a1fc3         │ 685001044702   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ hospitalozy-core           │ hospitalozy-core           │ 46790695604    │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Hospitalozy-2              │ hospitalozy-lab-billing    │ 68041879950    │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ hospitalozy-lab-report     │ hospitalozy-lab-report     │ 49041638029    │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ hospitalozy-ticket-billing │ hospitalozy-ticket-billing │ 943698794107   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ IHT-Rangpur                │ iht-rangpur                │ 702088339795   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Land-Calculator            │ land-calculator-eb567      │ 207772879595   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ MedConnect-BD              │ medconnect-bd              │ 1039758254716  │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ mongodb-                   │ medi-rhyme-academy         │ 1037874351786  │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ MediRhyme-Academy          │ medirhyme-academy          │ 650366577114   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Pension-Calculator         │ pension-calculator-24df4   │ 220165851252   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ prescripty-pharmatrack     │ prescripty-pharmatrack     │ 720378991687   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Nisab-Wallet-Zakat-Tracker │ sharp-crossbar-448311-u9   │ 572595597472   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Friends ERA                │ studio-7780433474-46617    │ 558361075191   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Tarunner-Shokti            │ tarunner-shokti            │ 514011393392   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Teachers-Management-Pro    │ teachers-management-pro    │ 681311965293   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Youth Foundation Saidpur   │ yfs-amal-tracker           │ 414988960583   │ [Not specified]      │
+└────────────────────────────┴────────────────────────────┴────────────────┴──────────────────────┘
+[info] 
+[info] 21 project(s) total.
+[debug] [2026-09-22T07:05:56.977Z] ----------------------------------------------------------------------
+[debug] [2026-09-22T07:05:56.980Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\habib\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js projects:list
+[debug] [2026-09-22T07:05:56.980Z] CLI Version:   15.30.2
+[debug] [2026-09-22T07:05:56.981Z] Platform:      win32
+[debug] [2026-09-22T07:05:56.981Z] Node Version:  v24.11.1
+[debug] [2026-09-22T07:05:56.981Z] Detected Agent: antigravity
+[debug] [2026-09-22T07:05:56.982Z] Time:          Tue Sep 22 2026 13:05:56 GMT+0600 (Bangladesh Standard Time)
+[debug] [2026-09-22T07:05:56.982Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-09-22T07:05:57.228Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-09-22T07:05:57.229Z] > authorizing via signed-in user (hasanthp@gmail.com)
+[debug] [2026-09-22T07:05:57.255Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:05:57.256Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:05:57.257Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2026-09-22T07:05:58.200Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2026-09-22T07:05:58.201Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] ┌────────────────────────────┬────────────────────────────┬────────────────┬──────────────────────┐
+│ Project Display Name       │ Project ID                 │ Project Number │ Resource Location ID │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ ABSIS-Capital-Sync         │ absis-capital-sync         │ 938799579766   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Donate-Track               │ donate-track               │ 320211882238   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Extra                      │ gen-lang-client-0380429062 │ 1067494861040  │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Hasan-Portfolio            │ habibul-hasan-hasib        │ 152279981472   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Habit-Tacker               │ habit-tacker-a1fc3         │ 685001044702   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ hospitalozy-core           │ hospitalozy-core           │ 46790695604    │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Hospitalozy-2              │ hospitalozy-lab-billing    │ 68041879950    │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ hospitalozy-lab-report     │ hospitalozy-lab-report     │ 49041638029    │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ hospitalozy-ticket-billing │ hospitalozy-ticket-billing │ 943698794107   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ IHT-Rangpur                │ iht-rangpur                │ 702088339795   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Land-Calculator            │ land-calculator-eb567      │ 207772879595   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ MedConnect-BD              │ medconnect-bd              │ 1039758254716  │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ mongodb-                   │ medi-rhyme-academy         │ 1037874351786  │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ MediRhyme-Academy          │ medirhyme-academy          │ 650366577114   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Pension-Calculator         │ pension-calculator-24df4   │ 220165851252   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ prescripty-pharmatrack     │ prescripty-pharmatrack     │ 720378991687   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Nisab-Wallet-Zakat-Tracker │ sharp-crossbar-448311-u9   │ 572595597472   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Friends ERA                │ studio-7780433474-46617    │ 558361075191   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Tarunner-Shokti            │ tarunner-shokti            │ 514011393392   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Teachers-Management-Pro    │ teachers-management-pro    │ 681311965293   │ [Not specified]      │
+├────────────────────────────┼────────────────────────────┼────────────────┼──────────────────────┤
+│ Youth Foundation Saidpur   │ yfs-amal-tracker           │ 414988960583   │ [Not specified]      │
+└────────────────────────────┴────────────────────────────┴────────────────┴──────────────────────┘
+[info] 
+[info] 21 project(s) total.
+[debug] [2026-09-22T07:06:33.744Z] ----------------------------------------------------------------------
+[debug] [2026-09-22T07:06:33.747Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\habib\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js login:list
+[debug] [2026-09-22T07:06:33.747Z] CLI Version:   15.30.2
+[debug] [2026-09-22T07:06:33.747Z] Platform:      win32
+[debug] [2026-09-22T07:06:33.748Z] Node Version:  v24.11.1
+[debug] [2026-09-22T07:06:33.748Z] Detected Agent: antigravity
+[debug] [2026-09-22T07:06:33.748Z] Time:          Tue Sep 22 2026 13:06:33 GMT+0600 (Bangladesh Standard Time)
+[debug] [2026-09-22T07:06:33.748Z] ----------------------------------------------------------------------
+[debug] 
+[info] Logged in as hasanthp@gmail.com
+[debug] [2026-09-22T07:09:04.803Z] ----------------------------------------------------------------------
+[debug] [2026-09-22T07:09:04.806Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\habib\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js use pass-vault-manager
+[debug] [2026-09-22T07:09:04.806Z] CLI Version:   15.30.2
+[debug] [2026-09-22T07:09:04.806Z] Platform:      win32
+[debug] [2026-09-22T07:09:04.806Z] Node Version:  v24.11.1
+[debug] [2026-09-22T07:09:04.807Z] Detected Agent: antigravity
+[debug] [2026-09-22T07:09:04.807Z] Time:          Tue Sep 22 2026 13:09:04 GMT+0600 (Bangladesh Standard Time)
+[debug] [2026-09-22T07:09:04.807Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-09-22T07:09:05.071Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-09-22T07:09:05.071Z] > authorizing via signed-in user (hasanthp@gmail.com)
+[debug] [2026-09-22T07:09:05.114Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:09:05.114Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:09:05.116Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/cloudresourcemanager.googleapis.com [none]
+[debug] [2026-09-22T07:09:05.116Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/cloudresourcemanager.googleapis.com  x-goog-user-project=pass-vault-manager
+[debug] [2026-09-22T07:09:07.107Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/cloudresourcemanager.googleapis.com 200
+[debug] [2026-09-22T07:09:07.108Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/cloudresourcemanager.googleapis.com [omitted]
+[debug] [2026-09-22T07:09:07.123Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:09:07.123Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:09:07.123Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager [none]
+[debug] [2026-09-22T07:09:09.015Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager 200
+[debug] [2026-09-22T07:09:09.015Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager {"projectNumber":"296520474076","projectId":"pass-vault-manager","lifecycleState":"ACTIVE","name":"Pass-Vault-manager","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2026-09-22T05:23:58.987Z"}
+[info] Now using project pass-vault-manager
+[debug] [2026-09-22T07:09:30.875Z] ----------------------------------------------------------------------
+[debug] [2026-09-22T07:09:30.881Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\habib\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js deploy --only firestore:rules,firestore:indexes
+[debug] [2026-09-22T07:09:30.881Z] CLI Version:   15.30.2
+[debug] [2026-09-22T07:09:30.881Z] Platform:      win32
+[debug] [2026-09-22T07:09:30.882Z] Node Version:  v24.11.1
+[debug] [2026-09-22T07:09:30.882Z] Detected Agent: antigravity
+[debug] [2026-09-22T07:09:30.882Z] Time:          Tue Sep 22 2026 13:09:30 GMT+0600 (Bangladesh Standard Time)
+[debug] [2026-09-22T07:09:30.882Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-09-22T07:10:16.127Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-09-22T07:10:16.128Z] > authorizing via signed-in user (hasanthp@gmail.com)
+[debug] [2026-09-22T07:10:16.128Z] [iam] checking project pass-vault-manager for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2026-09-22T07:10:16.184Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:16.185Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:16.194Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager:testIamPermissions [none]
+[debug] [2026-09-22T07:10:16.195Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager:testIamPermissions  x-goog-user-project=pass-vault-manager
+[debug] [2026-09-22T07:10:16.195Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[debug] [2026-09-22T07:10:18.067Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager:testIamPermissions 200
+[debug] [2026-09-22T07:10:18.068Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[info] 
+[info] === Deploying to 'pass-vault-manager'...
+[info] 
+[info] i  deploying firestore 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2026-09-22T07:10:18.074Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:18.075Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:18.076Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/firestore.googleapis.com [none]
+[debug] [2026-09-22T07:10:18.076Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/firestore.googleapis.com  x-goog-user-project=pass-vault-manager
+[debug] [2026-09-22T07:10:20.106Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/firestore.googleapis.com 200
+[debug] [2026-09-22T07:10:20.107Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/pass-vault-manager/services/firestore.googleapis.com [omitted]
+[info] +  firestore: required API firestore.googleapis.com is enabled 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2026-09-22T07:10:20.117Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:20.117Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:20.117Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default) [none]
+[debug] [2026-09-22T07:10:20.693Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default) 200
+[debug] [2026-09-22T07:10:20.693Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default) {"name":"projects/pass-vault-manager/databases/(default)","uid":"fdc43e63-ce91-40b3-86c9-2034279b84ee","createTime":"2026-09-22T05:30:04.399261Z","updateTime":"2026-09-22T05:30:04.399261Z","locationId":"asia-south1","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2026-09-22T06:10:20.867179Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"j","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"realtimeUpdatesMode":"REALTIME_UPDATES_MODE_ENABLED","enhancedTextSearchQueryMode":"ENHANCED_QUERY_MODE_ENABLED","etag":"IMLRmfrQgZcDMLme48y6gZcD"}
+[info] i  firestore: reading indexes from firestore.indexes.json... 
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2026-09-22T07:10:20.697Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:20.698Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:20.698Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager:test [none]
+[debug] [2026-09-22T07:10:20.698Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager:test [omitted]
+[debug] [2026-09-22T07:10:22.550Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager:test 200
+[debug] [2026-09-22T07:10:22.550Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager:test {}
+[info] +  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2026-09-22T07:10:22.553Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:22.554Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:22.555Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases pageSize=10&pageToken=
+[debug] [2026-09-22T07:10:23.916Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases 200
+[debug] [2026-09-22T07:10:23.916Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases {"releases":[{"name":"projects/pass-vault-manager/releases/cloud.firestore","rulesetName":"projects/pass-vault-manager/rulesets/46e5165d-5cfb-416a-b6ba-022d3e9726c3","createTime":"2026-09-22T05:30:09.419827Z","updateTime":"2026-09-22T05:30:09.419827Z"}]}
+[debug] [2026-09-22T07:10:23.916Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:23.917Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:23.917Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets/46e5165d-5cfb-416a-b6ba-022d3e9726c3 [none]
+[debug] [2026-09-22T07:10:24.269Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets/46e5165d-5cfb-416a-b6ba-022d3e9726c3 200
+[debug] [2026-09-22T07:10:24.269Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets/46e5165d-5cfb-416a-b6ba-022d3e9726c3 [omitted]
+[info] i  firestore: uploading rules firestore.rules... 
+[debug] [2026-09-22T07:10:24.271Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:24.271Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:24.272Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets [none]
+[debug] [2026-09-22T07:10:24.272Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets [omitted]
+[debug] [2026-09-22T07:10:25.706Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets 200
+[debug] [2026-09-22T07:10:25.707Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets {"name":"projects/pass-vault-manager/rulesets/954f735d-df92-4d46-8f03-3a3724b76b81","source":{"files":[{"content":"rules_version = '2';\n\nservice cloud.firestore {\n  match /databases/{database}/documents {\n\n    // Helper functions\n    function isAuthenticated() {\n      return request.auth != null;\n    }\n\n    function isOwner(userId) {\n      return isAuthenticated() && request.auth.uid == userId;\n    }\n\n    function isNonEmptyString(val, maxLen) {\n      return val is string && val.size() > 0 && val.size() <= maxLen;\n    }\n\n    function isOptionalString(data, field, maxLen) {\n      return !(field in data) || data[field] == null || (data[field] is string && data[field].size() <= maxLen);\n    }\n\n    function isValidTagList(tags) {\n      return tags is list && tags.size() <= 20;\n    }\n\n    // Default deny for all unmatched collections\n    match /{document=**} {\n      allow read, write: if false;\n    }\n\n    // User scope: All user-specific data lives strictly under /users/{userId}\n    match /users/{userId} {\n      // User root doc: basic profile/metadata\n      allow read, write: if isOwner(userId);\n\n      // Credentials collection\n      match /credentials/{credentialId} {\n        allow read, delete: if isOwner(userId);\n\n        allow create: if isOwner(userId)\n          && isNonEmptyString(request.resource.data.title, 100)\n          && isNonEmptyString(request.resource.data.encryptedUsername, 2048)\n          && isNonEmptyString(request.resource.data.encryptedPassword, 4096)\n          && isOptionalString(request.resource.data, 'encryptedNotes', 10000)\n          && isOptionalString(request.resource.data, 'websiteUrl', 2048)\n          && isOptionalString(request.resource.data, 'categoryId', 50)\n          && (!('tags' in request.resource.data) || isValidTagList(request.resource.data.tags))\n          && (!('lastLoginAt' in request.resource.data) || request.resource.data.lastLoginAt == null || request.resource.data.lastLoginAt is timestamp)\n          && request.resource.data.createdAt is timestamp\n          && request.resource.data.updatedAt is timestamp;\n\n        allow update: if isOwner(userId)\n          && isNonEmptyString(request.resource.data.title, 100)\n          && isNonEmptyString(request.resource.data.encryptedUsername, 2048)\n          && isNonEmptyString(request.resource.data.encryptedPassword, 4096)\n          && isOptionalString(request.resource.data, 'encryptedNotes', 10000)\n          && isOptionalString(request.resource.data, 'websiteUrl', 2048)\n          && isOptionalString(request.resource.data, 'categoryId', 50)\n          && (!('tags' in request.resource.data) || isValidTagList(request.resource.data.tags))\n          && (!('lastLoginAt' in request.resource.data) || request.resource.data.lastLoginAt == null || request.resource.data.lastLoginAt is timestamp)\n          && request.resource.data.createdAt == resource.data.createdAt\n          && request.resource.data.updatedAt is timestamp;\n      }\n\n      // Categories collection (for user-created custom categories)\n      match /categories/{categoryId} {\n        allow read, delete: if isOwner(userId);\n\n        allow create, update: if isOwner(userId)\n          && isNonEmptyString(request.resource.data.label, 50)\n          && isOptionalString(request.resource.data, 'icon', 50);\n      }\n\n      // Settings collection (e.g. vault preferences)\n      match /settings/{settingId} {\n        allow read, write: if isOwner(userId);\n      }\n    }\n  }\n}\n\n","name":"firestore.rules"}]},"createTime":"2026-09-22T07:10:25.780095Z","metadata":{"services":["cloud.firestore"]}}
+[debug] [2026-09-22T07:10:25.707Z] [rules] created ruleset projects/pass-vault-manager/rulesets/954f735d-df92-4d46-8f03-3a3724b76b81
+[info] i  firestore: deploying indexes... 
+[debug] [2026-09-22T07:10:25.709Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:25.709Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:25.709Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/-/indexes [none]
+[debug] [2026-09-22T07:10:26.248Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/-/indexes 200
+[debug] [2026-09-22T07:10:26.248Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/-/indexes {}
+[debug] [2026-09-22T07:10:26.248Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:26.248Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:26.249Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* [none]
+[debug] [2026-09-22T07:10:26.502Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* 200
+[debug] [2026-09-22T07:10:26.502Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/-/fields?filter=indexConfig.usesAncestorConfig=false OR ttlConfig:* {"fields":[{"name":"projects/pass-vault-manager/databases/(default)/collectionGroups/__default__/fields/*","indexConfig":{"indexes":[{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"ASCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","order":"DESCENDING"}],"state":"READY"},{"queryScope":"COLLECTION","fields":[{"fieldPath":"*","arrayConfig":"CONTAINS"}],"state":"READY"}]}}]}
+[debug] [2026-09-22T07:10:26.503Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:26.503Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:26.503Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default) [none]
+[debug] [2026-09-22T07:10:26.609Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default) 200
+[debug] [2026-09-22T07:10:26.609Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default) {"name":"projects/pass-vault-manager/databases/(default)","uid":"fdc43e63-ce91-40b3-86c9-2034279b84ee","createTime":"2026-09-22T05:30:04.399261Z","updateTime":"2026-09-22T05:30:04.399261Z","locationId":"asia-south1","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2026-09-22T06:10:26.799821Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"j","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"realtimeUpdatesMode":"REALTIME_UPDATES_MODE_ENABLED","enhancedTextSearchQueryMode":"ENHANCED_QUERY_MODE_ENABLED","etag":"IJreg/3QgZcDMLme48y6gZcD"}
+[debug] [2026-09-22T07:10:26.609Z] Creating new index: {"collectionGroup":"credentials","queryScope":"COLLECTION","fields":[{"fieldPath":"categoryId","order":"ASCENDING"},{"fieldPath":"updatedAt","order":"DESCENDING"}]}
+[debug] [2026-09-22T07:10:26.610Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:26.610Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:26.610Z] >>> [apiv2][query] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes [none]
+[debug] [2026-09-22T07:10:26.610Z] >>> [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"fields":[{"fieldPath":"categoryId","order":"ASCENDING"},{"fieldPath":"updatedAt","order":"DESCENDING"}],"queryScope":"COLLECTION"}
+[debug] [2026-09-22T07:10:26.817Z] <<< [apiv2][status] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes 200
+[debug] [2026-09-22T07:10:26.818Z] <<< [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"name":"projects/pass-vault-manager/databases/(default)/operations/S0U0aFhqT2dBQ0lDDCoDIDA1OWM2ZmQ1NGFjYS01NDdhLTU1NzQtZDcxZi00ZmUwZTY2ZCQac2VuaWxlcGlwCQpBEg","metadata":{"@type":"type.googleapis.com/google.firestore.admin.v1.IndexOperationMetadata","startTime":"2026-09-22T07:10:26.986962Z","index":"projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes/CICAgOjXh4EK","state":"INITIALIZING"}}
+[debug] [2026-09-22T07:10:26.818Z] Creating new index: {"collectionGroup":"credentials","queryScope":"COLLECTION","fields":[{"fieldPath":"categoryId","order":"ASCENDING"},{"fieldPath":"lastLoginAt","order":"DESCENDING"}]}
+[debug] [2026-09-22T07:10:26.818Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:26.818Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:26.818Z] >>> [apiv2][query] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes [none]
+[debug] [2026-09-22T07:10:26.818Z] >>> [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"fields":[{"fieldPath":"categoryId","order":"ASCENDING"},{"fieldPath":"lastLoginAt","order":"DESCENDING"}],"queryScope":"COLLECTION"}
+[debug] [2026-09-22T07:10:27.048Z] <<< [apiv2][status] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes 200
+[debug] [2026-09-22T07:10:27.048Z] <<< [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"name":"projects/pass-vault-manager/databases/(default)/operations/S01vcFVpSmdBQ0lDDCoDIDA5MmEyMWU4ODc3Zi1iOTNhLTg5NTQtMzgwYi1iZDdkMzViNCQac2VuaWxlcGlwCQpBEg","metadata":{"@type":"type.googleapis.com/google.firestore.admin.v1.IndexOperationMetadata","startTime":"2026-09-22T07:10:27.213934Z","index":"projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes/CICAgJiUpoMK","state":"INITIALIZING"}}
+[debug] [2026-09-22T07:10:27.048Z] Creating new index: {"collectionGroup":"credentials","queryScope":"COLLECTION","fields":[{"fieldPath":"categoryId","order":"ASCENDING"},{"fieldPath":"title","order":"ASCENDING"}]}
+[debug] [2026-09-22T07:10:27.048Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:27.048Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:27.048Z] >>> [apiv2][query] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes [none]
+[debug] [2026-09-22T07:10:27.048Z] >>> [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"fields":[{"fieldPath":"categoryId","order":"ASCENDING"},{"fieldPath":"title","order":"ASCENDING"}],"queryScope":"COLLECTION"}
+[debug] [2026-09-22T07:10:27.257Z] <<< [apiv2][status] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes 200
+[debug] [2026-09-22T07:10:27.257Z] <<< [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"name":"projects/pass-vault-manager/databases/(default)/operations/S0E0MW1pSmdBQ0lDDCoDIDU3YmJlZmJiZGYwOS1mNGM4LTIxMDQtNjE5YS00N2Y5OWE2NCQac2VuaWxlcGlwCQpBEg","metadata":{"@type":"type.googleapis.com/google.firestore.admin.v1.IndexOperationMetadata","startTime":"2026-09-22T07:10:27.425315Z","index":"projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes/CICAgJim14AK","state":"INITIALIZING"}}
+[debug] [2026-09-22T07:10:27.257Z] Creating new index: {"collectionGroup":"credentials","queryScope":"COLLECTION","fields":[{"fieldPath":"tags","arrayConfig":"CONTAINS"},{"fieldPath":"updatedAt","order":"DESCENDING"}]}
+[debug] [2026-09-22T07:10:27.258Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:27.258Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:27.258Z] >>> [apiv2][query] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes [none]
+[debug] [2026-09-22T07:10:27.258Z] >>> [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"fields":[{"fieldPath":"tags","arrayConfig":"CONTAINS"},{"fieldPath":"updatedAt","order":"DESCENDING"}],"queryScope":"COLLECTION"}
+[debug] [2026-09-22T07:10:27.447Z] <<< [apiv2][status] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes 200
+[debug] [2026-09-22T07:10:27.447Z] <<< [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"name":"projects/pass-vault-manager/databases/(default)/operations/S0lvOUZqSmdBQ0lDDCoDIGZkNDc1YTczZTYwZS1iMTI5LTgxNzQtZGVhNy1mNGYxMmIyNyQac2VuaWxlcGlwCQpBEg","metadata":{"@type":"type.googleapis.com/google.firestore.admin.v1.IndexOperationMetadata","startTime":"2026-09-22T07:10:27.621485Z","index":"projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes/CICAgJjF9oIK","state":"INITIALIZING"}}
+[debug] [2026-09-22T07:10:27.447Z] Creating new index: {"collectionGroup":"credentials","queryScope":"COLLECTION","fields":[{"fieldPath":"tags","arrayConfig":"CONTAINS"},{"fieldPath":"lastLoginAt","order":"DESCENDING"}]}
+[debug] [2026-09-22T07:10:27.447Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:27.447Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:27.448Z] >>> [apiv2][query] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes [none]
+[debug] [2026-09-22T07:10:27.448Z] >>> [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"fields":[{"fieldPath":"tags","arrayConfig":"CONTAINS"},{"fieldPath":"lastLoginAt","order":"DESCENDING"}],"queryScope":"COLLECTION"}
+[debug] [2026-09-22T07:10:27.602Z] <<< [apiv2][status] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes 200
+[debug] [2026-09-22T07:10:27.603Z] <<< [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"name":"projects/pass-vault-manager/databases/(default)/operations/Sk1vcFVpSmdBQ0lDDCoDIDVlNzA1ZTYxZWM1ZS0yYTZhLTBhOTQtOGVkNC1mODEzYTFhNyQac2VuaWxlcGlwCQpBEg","metadata":{"@type":"type.googleapis.com/google.firestore.admin.v1.IndexOperationMetadata","startTime":"2026-09-22T07:10:27.771418Z","index":"projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes/CICAgJiUpoMJ","state":"INITIALIZING"}}
+[debug] [2026-09-22T07:10:27.603Z] Creating new index: {"collectionGroup":"credentials","queryScope":"COLLECTION","fields":[{"fieldPath":"tags","arrayConfig":"CONTAINS"},{"fieldPath":"title","order":"ASCENDING"}]}
+[debug] [2026-09-22T07:10:27.603Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:27.604Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:27.604Z] >>> [apiv2][query] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes [none]
+[debug] [2026-09-22T07:10:27.604Z] >>> [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"fields":[{"fieldPath":"tags","arrayConfig":"CONTAINS"},{"fieldPath":"title","order":"ASCENDING"}],"queryScope":"COLLECTION"}
+[debug] [2026-09-22T07:10:27.824Z] <<< [apiv2][status] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes 200
+[debug] [2026-09-22T07:10:27.824Z] <<< [apiv2][body] POST https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes {"name":"projects/pass-vault-manager/databases/(default)/operations/S0U0ejdqSmdBQ0lDDCoDIGM5OGJkMzg0MmNhMC1mZmRiLTVmZjQtNTZiNy0wM2I5M2RlYSQac2VuaWxlcGlwCQpBEg","metadata":{"@type":"type.googleapis.com/google.firestore.admin.v1.IndexOperationMetadata","startTime":"2026-09-22T07:10:27.994554Z","index":"projects/pass-vault-manager/databases/(default)/collectionGroups/credentials/indexes/CICAgJj7z4EK","state":"INITIALIZING"}}
+[info] +  firestore: deployed indexes in firestore.indexes.json successfully for (default) database 
+[debug] [2026-09-22T07:10:27.825Z] [rules] releasing cloud.firestore with ruleset projects/pass-vault-manager/rulesets/954f735d-df92-4d46-8f03-3a3724b76b81
+[debug] [2026-09-22T07:10:27.826Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:27.826Z] Checked if tokens are valid: true, expires at: 1790064190014
+[debug] [2026-09-22T07:10:27.826Z] >>> [apiv2][query] PATCH https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases/cloud.firestore [none]
+[debug] [2026-09-22T07:10:27.826Z] >>> [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases/cloud.firestore {"release":{"name":"projects/pass-vault-manager/releases/cloud.firestore","rulesetName":"projects/pass-vault-manager/rulesets/954f735d-df92-4d46-8f03-3a3724b76b81"}}
+[debug] [2026-09-22T07:10:28.464Z] <<< [apiv2][status] PATCH https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases/cloud.firestore 200
+[debug] [2026-09-22T07:10:28.464Z] <<< [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases/cloud.firestore {"name":"projects/pass-vault-manager/releases/cloud.firestore","rulesetName":"projects/pass-vault-manager/rulesets/954f735d-df92-4d46-8f03-3a3724b76b81","createTime":"2026-09-22T05:30:09.419827Z","updateTime":"2026-09-22T07:10:28.542806Z"}
+[debug] [2026-09-22T07:10:28.464Z] [rules] updated release projects/pass-vault-manager/releases/cloud.firestore
+[info] +  firestore: released rules firestore.rules to cloud.firestore 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/pass-vault-manager/overview
