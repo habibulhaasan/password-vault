@@ -18,12 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CheckCircle2, Loader2 } from "lucide-react";
-
-const forgotPasswordSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-});
-
-type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
+import { forgotPasswordSchema, type ForgotPasswordFormValues } from "@/lib/validations/auth";
 
 export function ForgotPasswordForm() {
   const [error, setError] = useState<string | null>(null);
