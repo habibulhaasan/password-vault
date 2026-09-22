@@ -19,7 +19,11 @@ export default function VaultLayout({
             <aside className="hidden w-60 shrink-0 overflow-y-auto border-r md:block">
               <Sidebar />
             </aside>
-            <main className="flex-1 overflow-y-auto pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] md:pb-0">
+            <main
+              id="main-content"
+              tabIndex={-1}
+              className="flex-1 overflow-y-auto pb-[calc(4.75rem+env(safe-area-inset-bottom,0px))] md:pb-0 outline-none"
+            >
               <VaultGate>{children}</VaultGate>
             </main>
           </div>

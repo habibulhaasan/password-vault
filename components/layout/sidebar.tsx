@@ -68,6 +68,7 @@ function SidebarContent({ onNavigate }: SidebarProps) {
             href="/categories"
             onClick={onNavigate}
             className="text-[11px] text-muted-foreground hover:text-foreground"
+            aria-label="Manage categories"
           >
             Manage
           </Link>
@@ -95,7 +96,10 @@ function SidebarContent({ onNavigate }: SidebarProps) {
                 <span className="truncate">{category.label}</span>
               </div>
               {category.isCustom && (
-                <span className="size-1.5 rounded-full bg-primary/70 shrink-0" />
+                <>
+                  <span className="size-1.5 rounded-full bg-primary/70 shrink-0" aria-hidden="true" />
+                  <span className="sr-only">(custom)</span>
+                </>
               )}
             </Link>
           );

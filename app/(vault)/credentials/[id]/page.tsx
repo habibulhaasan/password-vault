@@ -32,6 +32,7 @@ import {
   Clock,
 } from "lucide-react";
 import { formatDaysSinceLastLogin } from "@/lib/utils/date";
+import { announce } from "@/lib/a11y/announcer";
 import type { DecryptedCredential } from "@/types/credential";
 
 export default function CredentialDetailPage({
@@ -87,24 +88,28 @@ export default function CredentialDetailPage({
   const handleCopyUsername = () => {
     if (credential) {
       copy(credential.username, "username");
+      announce(`Username for ${credential.title} copied to clipboard`);
     }
   };
 
   const handleCopyPassword = () => {
     if (credential) {
       copy(credential.password, "password", { clearAfterMs: 30000 });
+      announce(`Password for ${credential.title} copied to clipboard. Clipboard will be cleared in 30 seconds.`);
     }
   };
 
   const handleCopyWebsite = () => {
     if (credential?.websiteUrl) {
       copy(credential.websiteUrl, "website");
+      announce(`Website URL for ${credential.title} copied to clipboard`);
     }
   };
 
   const handleCopyNotes = () => {
     if (credential?.notes) {
       copy(credential.notes, "notes");
+      announce(`Notes for ${credential.title} copied to clipboard`);
     }
   };
 
@@ -122,6 +127,7 @@ export default function CredentialDetailPage({
       setCredential((prev) =>
         prev ? { ...prev, lastLoginAt: new Date(), updatedAt: new Date() } : null
       );
+      announce(`Marked ${credential.title} as logged in`);
     } catch (err) {
       console.warn("Failed to mark as logged in:", err);
     } finally {
@@ -138,8 +144,10 @@ export default function CredentialDetailPage({
     setIsDeleting(true);
     try {
       await deleteCredential(id);
+      announce(`Credential ${credential?.title || ""} deleted`);
       router.push("/dashboard");
-    } catch {
+    } catch (err) {
+      console.warn("Failed to delete credential:", err);
       setIsDeleting(false);
       setError("Failed to delete credential.");
     }
@@ -195,24 +203,26 @@ export default function CredentialDetailPage({
           <Button
             variant="outline"
             size="sm"
-            render={<Link href={`/credentials/${id}/edit`} />}
+            render={<Link href={`/credentials/${id}/edit`} aria-label={`Edit ${credential.title}`} />}
             className="gap-1.5"
           >
-            <Edit className="size-3.5" />
+            <Edit className="size-3.5" aria-hidden="true" />
             Edit
           </Button>
 
           <Button
+            type="button"
             variant="destructive"
             size="sm"
             disabled={isDeleting}
             onClick={handleDelete}
+            aria-label={`Delete ${credential.title}`}
             className="gap-1.5"
           >
             {isDeleting ? (
-              <Loader2 className="size-3.5 animate-spin" />
+              <Loader2 className="size-3.5 animate-spin" aria-hidden="true" />
             ) : (
-              <Trash2 className="size-3.5" />
+              <Trash2 className="size-3.5" aria-hidden="true" />
             )}
             {confirmDelete ? "Confirm Delete?" : "Delete"}
           </Button>
@@ -237,10 +247,11 @@ export default function CredentialDetailPage({
                 type="button"
                 onClick={handleOpenWebsite}
                 className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-accent cursor-pointer"
+                aria-label={`Visit ${credential.websiteUrl} in new tab`}
               >
-                <Globe className="size-3.5" />
+                <Globe className="size-3.5" aria-hidden="true" />
                 Visit Site
-                <ExternalLink className="size-3" />
+                <ExternalLink className="size-3" aria-hidden="true" />
               </button>
             )}
           </div>
@@ -251,12 +262,13 @@ export default function CredentialDetailPage({
                 <Link
                   key={tag}
                   href={`/dashboard?tag=${encodeURIComponent(tag)}`}
+                  aria-label={`Filter by tag #${tag}`}
                 >
                   <Badge
                     variant="secondary"
                     className="text-xs hover:bg-primary/20 hover:text-primary transition-colors cursor-pointer"
                   >
-                    <Tag className="mr-1 size-2.5" />
+                    <Tag className="mr-1 size-2.5" aria-hidden="true" />
                     {tag}
                   </Badge>
                 </Link>
@@ -275,19 +287,22 @@ export default function CredentialDetailPage({
               </p>
             </div>
             <Button
+              type="button"
               variant="outline"
               size="sm"
               onClick={handleCopyUsername}
+              title={`Copy username for ${credential.title}`}
+              aria-label={`Copy username for ${credential.title}`}
               className="gap-1.5 h-9 sm:h-8 w-full sm:w-auto touch-manipulation"
             >
               {isCopied("username") ? (
                 <>
-                  <Check className="size-3.5 text-emerald-500" />
+                  <Check className="size-3.5 text-emerald-500" aria-hidden="true" />
                   Copied
                 </>
               ) : (
                 <>
-                  <Copy className="size-3.5" />
+                  <Copy className="size-3.5" aria-hidden="true" />
                   Copy
                 </>
               )}
@@ -304,35 +319,41 @@ export default function CredentialDetailPage({
             </div>
             <div className="flex items-center gap-1.5 w-full sm:w-auto">
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
                 className="h-9 sm:h-8 px-2.5 touch-manipulation"
                 onClick={() => setShowPassword((prev) => !prev)}
                 title={showPassword ? "Hide password" : "Reveal password"}
+                aria-label={showPassword ? "Hide password" : "Reveal password"}
+                aria-pressed={showPassword}
               >
                 {showPassword ? (
-                  <EyeOff className="size-4" />
+                  <EyeOff className="size-4" aria-hidden="true" />
                 ) : (
-                  <Eye className="size-4" />
+                  <Eye className="size-4" aria-hidden="true" />
                 )}
                 <span className="sr-only">
                   {showPassword ? "Hide password" : "Reveal password"}
                 </span>
               </Button>
               <Button
+                type="button"
                 variant="outline"
                 size="sm"
                 onClick={handleCopyPassword}
+                title={`Copy password for ${credential.title}`}
+                aria-label={`Copy password for ${credential.title}`}
                 className="gap-1.5 h-9 sm:h-8 flex-1 sm:flex-initial touch-manipulation"
               >
                 {isCopied("password") ? (
                   <>
-                    <Check className="size-3.5 text-emerald-500" />
+                    <Check className="size-3.5 text-emerald-500" aria-hidden="true" />
                     Copied
                   </>
                 ) : (
                   <>
-                    <Copy className="size-3.5" />
+                    <Copy className="size-3.5" aria-hidden="true" />
                     Copy
                   </>
                 )}
@@ -348,37 +369,43 @@ export default function CredentialDetailPage({
                 <button
                   type="button"
                   onClick={handleOpenWebsite}
-                  className="text-sm font-mono truncate text-primary hover:underline flex items-center gap-1 text-left max-w-full"
+                  className="text-sm font-mono truncate text-primary hover:underline flex items-center gap-1 text-left max-w-full cursor-pointer"
+                  aria-label={`Open ${credential.websiteUrl} in new tab`}
                 >
                   <span className="truncate">{credential.websiteUrl}</span>
-                  <ExternalLink className="size-3 shrink-0" />
+                  <ExternalLink className="size-3 shrink-0" aria-hidden="true" />
                 </button>
               </div>
               <div className="flex items-center gap-1.5 w-full sm:w-auto shrink-0">
                 <Button
+                  type="button"
                   variant="outline"
                   size="sm"
                   onClick={handleOpenWebsite}
+                  title={`Open website for ${credential.title} in new tab`}
+                  aria-label={`Open website for ${credential.title} in new tab`}
                   className="gap-1.5 h-9 sm:h-8 flex-1 sm:flex-initial touch-manipulation"
-                  title="Open URL in new tab"
                 >
-                  <ExternalLink className="size-3.5" />
-                  Open
+                  <ExternalLink className="size-3.5" aria-hidden="true" />
+                  Visit
                 </Button>
                 <Button
+                  type="button"
                   variant="outline"
                   size="sm"
                   onClick={handleCopyWebsite}
+                  title={`Copy website URL for ${credential.title}`}
+                  aria-label={`Copy website URL for ${credential.title}`}
                   className="gap-1.5 h-9 sm:h-8 flex-1 sm:flex-initial touch-manipulation"
                 >
                   {isCopied("website") ? (
                     <>
-                      <Check className="size-3.5 text-emerald-500" />
+                      <Check className="size-3.5 text-emerald-500" aria-hidden="true" />
                       Copied
                     </>
                   ) : (
                     <>
-                      <Copy className="size-3.5" />
+                      <Copy className="size-3.5" aria-hidden="true" />
                       Copy
                     </>
                   )}

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SkipToContent } from "@/components/layout/skip-to-content";
+import { A11yAnnouncer } from "@/components/layout/a11y-announcer";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -39,6 +41,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col touch-manipulation">
+        <SkipToContent />
+        <A11yAnnouncer />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

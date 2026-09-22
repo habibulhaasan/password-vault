@@ -65,35 +65,41 @@ export function CategoryItem({
         <Link
           href={`/dashboard?category=${encodeURIComponent(category.id)}`}
           className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+          aria-label={`View credentials in ${category.label}`}
         >
           <span>View credentials</span>
-          <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+          <span className="sr-only">in {category.label}</span>
+          <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
         </Link>
 
         {isCustom && (
           <div className="flex items-center gap-1">
             {onEdit && (
               <Button
+                type="button"
                 variant="ghost"
                 size="icon-sm"
                 onClick={() => onEdit(category)}
-                title="Edit category"
-                className="size-7 text-muted-foreground hover:text-foreground"
+                title={`Edit category ${category.label}`}
+                aria-label={`Edit category ${category.label}`}
+                className="size-7 text-muted-foreground hover:text-foreground touch-manipulation"
               >
-                <Edit className="size-3.5" />
-                <span className="sr-only">Edit category</span>
+                <Edit className="size-3.5" aria-hidden="true" />
+                <span className="sr-only">Edit category {category.label}</span>
               </Button>
             )}
             {onDelete && (
               <Button
+                type="button"
                 variant="ghost"
                 size="icon-sm"
                 onClick={() => onDelete(category)}
-                title="Delete category"
-                className="size-7 text-muted-foreground hover:text-destructive"
+                title={`Delete category ${category.label}`}
+                aria-label={`Delete category ${category.label}`}
+                className="size-7 text-muted-foreground hover:text-destructive touch-manipulation"
               >
-                <Trash2 className="size-3.5" />
-                <span className="sr-only">Delete category</span>
+                <Trash2 className="size-3.5" aria-hidden="true" />
+                <span className="sr-only">Delete category {category.label}</span>
               </Button>
             )}
           </div>

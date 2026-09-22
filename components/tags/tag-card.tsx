@@ -49,34 +49,40 @@ export function TagCard({ tag, onRename, onDelete }: TagCardProps) {
         <Link
           href={`/dashboard?tag=${encodeURIComponent(tag.name)}`}
           className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+          aria-label={`View credentials tagged with #${tag.name}`}
         >
           <span>View credentials</span>
-          <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+          <span className="sr-only">tagged with #{tag.name}</span>
+          <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
         </Link>
 
         <div className="flex items-center gap-1">
           {onRename && (
             <Button
+              type="button"
               variant="ghost"
               size="icon-sm"
               onClick={() => onRename(tag)}
-              title="Rename tag"
-              className="size-7 text-muted-foreground hover:text-foreground"
+              title={`Rename tag #${tag.name}`}
+              aria-label={`Rename tag #${tag.name}`}
+              className="size-7 text-muted-foreground hover:text-foreground touch-manipulation"
             >
-              <Edit className="size-3.5" />
-              <span className="sr-only">Rename tag</span>
+              <Edit className="size-3.5" aria-hidden="true" />
+              <span className="sr-only">Rename tag #{tag.name}</span>
             </Button>
           )}
           {onDelete && (
             <Button
+              type="button"
               variant="ghost"
               size="icon-sm"
               onClick={() => onDelete(tag)}
-              title="Delete tag"
-              className="size-7 text-muted-foreground hover:text-destructive"
+              title={`Delete tag #${tag.name}`}
+              aria-label={`Delete tag #${tag.name}`}
+              className="size-7 text-muted-foreground hover:text-destructive touch-manipulation"
             >
-              <Trash2 className="size-3.5" />
-              <span className="sr-only">Delete tag</span>
+              <Trash2 className="size-3.5" aria-hidden="true" />
+              <span className="sr-only">Delete tag #{tag.name}</span>
             </Button>
           )}
         </div>

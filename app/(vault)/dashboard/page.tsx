@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useMemo } from "react";
+import { Suspense, useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCredentials } from "@/hooks/use-credentials";
@@ -8,6 +8,7 @@ import { useCategories } from "@/hooks/use-categories";
 import { useDebounce } from "@/hooks/use-debounce";
 import { CredentialCard } from "@/components/credentials/credential-card";
 import { EmptyState } from "@/components/credentials/empty-state";
+import { announce } from "@/lib/a11y/announcer";
 import {
   SearchFilterBar,
   type SortOption,
@@ -139,6 +140,17 @@ function DashboardContent() {
     selectedTag.length > 0 ||
     lastLoginFilter !== "all";
 
+  // Announce live filter results to screen readers
+  useEffect(() => {
+    if (!loading && isFiltering) {
+      announce(
+        filteredCredentials.length === 0
+          ? "No credentials found matching your filter criteria"
+          : `Showing ${filteredCredentials.length} of ${credentials.length} credentials`
+      );
+    }
+  }, [filteredCredentials.length, isFiltering, loading, credentials.length]);
+
   return (
     <div className="container max-w-7xl py-6 px-4 space-y-6">
       {/* Overview Header */}
@@ -147,7 +159,15 @@ function DashboardContent() {
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold tracking-tight">Credentials</h1>
             {!loading && (
-              <Badge variant="secondary" className="font-mono text-xs">
+              <Badge
+                variant="secondary"
+                className="font-mono text-xs"
+                aria-label={
+                  isFiltering
+                    ? `Showing ${filteredCredentials.length} of ${credentials.length} credentials`
+                    : `${credentials.length} credentials stored`
+                }
+              >
                 {isFiltering
                   ? `${filteredCredentials.length} of ${credentials.length}`
                   : `${credentials.length} stored`}
@@ -161,10 +181,10 @@ function DashboardContent() {
 
         <Button
           size="sm"
-          render={<Link href="/credentials/new" />}
+          render={<Link href="/credentials/new" aria-label="Add new credential" />}
           className="gap-1.5 self-start sm:self-auto"
         >
-          <Plus className="size-4" />
+          <Plus className="size-4" aria-hidden="true" />
           Add Credential
         </Button>
       </div>
@@ -189,7 +209,11 @@ function DashboardContent() {
 
       {/* Loading Skeletons */}
       {loading && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div
+          role="status"
+          aria-label="Loading credentials"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
@@ -208,6 +232,7 @@ function DashboardContent() {
               </div>
             </div>
           ))}
+          <span className="sr-only">Loading encrypted credentials...</span>
         </div>
       )}
 
@@ -232,6 +257,7 @@ function DashboardContent() {
             variant="outline"
             size="sm"
             onClick={handleResetFilters}
+            aria-label="Clear active filters"
             className="mt-4"
           >
             Clear Filters
@@ -241,11 +267,17 @@ function DashboardContent() {
 
       {/* Credential Grid */}
       {!loading && filteredCredentials.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul
+          role="list"
+          aria-label="Credentials list"
+          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 list-none p-0 m-0"
+        >
           {filteredCredentials.map((credential) => (
-            <CredentialCard key={credential.id} credential={credential} />
+            <li key={credential.id} className="list-none">
+              <CredentialCard credential={credential} />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );

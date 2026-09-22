@@ -27,6 +27,7 @@ import {
 import { Plus, X, Loader2, Copy, Check, Sparkles } from "lucide-react";
 import { useClipboardState } from "@/lib/utils/clipboard";
 import { PasswordGeneratorDialog } from "@/components/password-generator/password-generator-dialog";
+import { announce } from "@/lib/a11y/announcer";
 import type { CredentialFormData } from "@/types/credential";
 
 interface CredentialFormProps {
@@ -169,11 +170,16 @@ export function CredentialForm({
               id="title"
               placeholder="e.g. GitHub, Netflix, Personal Email"
               disabled={isSubmitting}
+              required
+              aria-required="true"
               aria-invalid={!!errors.title}
+              aria-describedby={errors.title ? "title-error" : undefined}
               {...register("title")}
             />
             {errors.title && (
-              <p className="text-xs text-destructive">{errors.title.message}</p>
+              <p id="title-error" className="text-xs text-destructive">
+                {errors.title.message}
+              </p>
             )}
           </div>
 
@@ -187,18 +193,22 @@ export function CredentialForm({
                 {watchedUsername && (
                   <button
                     type="button"
-                    onClick={() => copy(watchedUsername, "form-username")}
+                    onClick={() => {
+                      copy(watchedUsername, "form-username");
+                      announce("Username copied to clipboard");
+                    }}
                     className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
                     title="Copy Username"
+                    aria-label="Copy username to clipboard"
                   >
                     {isCopied("form-username") ? (
                       <>
-                        <Check className="size-3 text-emerald-500" />
+                        <Check className="size-3 text-emerald-500" aria-hidden="true" />
                         <span className="text-emerald-500 font-medium">Copied!</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="size-3" />
+                        <Copy className="size-3" aria-hidden="true" />
                         <span>Copy</span>
                       </>
                     )}
@@ -210,11 +220,14 @@ export function CredentialForm({
                 placeholder="hasan@example.com"
                 autoComplete="off"
                 disabled={isSubmitting}
+                required
+                aria-required="true"
                 aria-invalid={!!errors.username}
+                aria-describedby={errors.username ? "username-error" : undefined}
                 {...register("username")}
               />
               {errors.username && (
-                <p className="text-xs text-destructive">
+                <p id="username-error" className="text-xs text-destructive">
                   {errors.username.message}
                 </p>
               )}
@@ -231,25 +244,30 @@ export function CredentialForm({
                     onClick={() => setGeneratorOpen(true)}
                     className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer transition-colors"
                     title="Generate secure password"
+                    aria-label="Open password generator"
                   >
-                    <Sparkles className="size-3" />
+                    <Sparkles className="size-3" aria-hidden="true" />
                     <span>Generate</span>
                   </button>
                   {watchedPassword && (
                     <button
                       type="button"
-                      onClick={() => copy(watchedPassword, "form-password", { clearAfterMs: 30000 })}
+                      onClick={() => {
+                        copy(watchedPassword, "form-password", { clearAfterMs: 30000 });
+                        announce("Password copied to clipboard. Clipboard will be cleared in 30 seconds.");
+                      }}
                       className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
                       title="Copy Password"
+                      aria-label="Copy password to clipboard"
                     >
                       {isCopied("form-password") ? (
                         <>
-                          <Check className="size-3 text-emerald-500" />
+                          <Check className="size-3 text-emerald-500" aria-hidden="true" />
                           <span className="text-emerald-500 font-medium">Copied!</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="size-3" />
+                          <Copy className="size-3" aria-hidden="true" />
                           <span>Copy</span>
                         </>
                       )}
@@ -261,6 +279,8 @@ export function CredentialForm({
                 id="password"
                 placeholder="••••••••••••"
                 disabled={isSubmitting}
+                required
+                aria-required="true"
                 allowCopy
                 onGenerate={() => setGeneratorOpen(true)}
                 error={errors.password?.message}
@@ -279,10 +299,11 @@ export function CredentialForm({
                 placeholder="https://example.com"
                 disabled={isSubmitting}
                 aria-invalid={!!errors.websiteUrl}
+                aria-describedby={errors.websiteUrl ? "website-error" : undefined}
                 {...register("websiteUrl")}
               />
               {errors.websiteUrl && (
-                <p className="text-xs text-destructive">
+                <p id="website-error" className="text-xs text-destructive">
                   {errors.websiteUrl.message}
                 </p>
               )}

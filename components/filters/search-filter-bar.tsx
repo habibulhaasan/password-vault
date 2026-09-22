@@ -72,6 +72,7 @@ export function SearchFilterBar({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             className="pl-8 pr-8"
+            aria-label="Search credentials by title, domain, or tag"
           />
           {searchQuery && (
             <Button
@@ -81,8 +82,9 @@ export function SearchFilterBar({
               onClick={() => onSearchChange("")}
               className="absolute right-1 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               title="Clear search"
+              aria-label="Clear search input"
             >
-              <X className="size-3.5" />
+              <X className="size-3.5" aria-hidden="true" />
               <span className="sr-only">Clear search</span>
             </Button>
           )}
@@ -299,6 +301,7 @@ export function SearchFilterBar({
             variant="ghost"
             size="sm"
             onClick={onResetFilters}
+            aria-label="Clear all active filters"
             className="h-6 px-2 text-[11px] text-muted-foreground hover:text-foreground"
           >
             Clear all

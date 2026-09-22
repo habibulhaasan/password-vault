@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Copy, Check, Sparkles } from "lucide-react";
 import { copyToClipboard } from "@/lib/utils/clipboard";
+import { announce } from "@/lib/a11y/announcer";
 import { cn } from "@/lib/utils";
 
 export interface PasswordFieldProps
@@ -15,10 +16,12 @@ export interface PasswordFieldProps
 }
 
 export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldProps>(
-  ({ className, error, disabled, allowCopy = false, onGenerate, ...props }, forwardedRef) => {
+  ({ className, error, disabled, allowCopy = false, onGenerate, id, ...props }, forwardedRef) => {
     const [visible, setVisible] = useState(false);
     const [copied, setCopied] = useState(false);
     const innerRef = useRef<HTMLInputElement | null>(null);
+
+    const errorId = id ? `${id}-error` : undefined;
 
     const setRefs = (node: HTMLInputElement | null) => {
       innerRef.current = node;
@@ -35,6 +38,7 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
       const success = await copyToClipboard(val, { clearAfterMs: 30000 });
       if (success) {
         setCopied(true);
+        announce("Password copied to clipboard. Clipboard will be cleared in 30 seconds.");
         setTimeout(() => setCopied(false), 2000);
       }
     };
@@ -44,6 +48,7 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
         <div className="relative flex items-center">
           <Input
             ref={setRefs}
+            id={id}
             type={visible ? "text" : "password"}
             disabled={disabled}
             className={cn(
@@ -55,6 +60,7 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
               className
             )}
             aria-invalid={!!error}
+            aria-describedby={error && errorId ? errorId : props["aria-describedby"]}
             autoComplete="new-password"
             {...props}
           />
@@ -67,9 +73,10 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
                 disabled={disabled}
                 onClick={onGenerate}
                 title="Generate secure password"
-                tabIndex={-1}
+                aria-label="Generate secure password"
+                className="size-7 text-muted-foreground hover:text-primary transition-colors touch-manipulation"
               >
-                <Sparkles className="size-3.5 text-muted-foreground hover:text-primary transition-colors" />
+                <Sparkles className="size-3.5" aria-hidden="true" />
                 <span className="sr-only">Generate secure password</span>
               </Button>
             )}
@@ -81,12 +88,13 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
                 disabled={disabled}
                 onClick={handleCopy}
                 title={copied ? "Password Copied!" : "Copy password"}
-                tabIndex={-1}
+                aria-label={copied ? "Password Copied" : "Copy password"}
+                className="size-7 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
               >
                 {copied ? (
-                  <Check className="size-3.5 text-emerald-500" />
+                  <Check className="size-3.5 text-emerald-500" aria-hidden="true" />
                 ) : (
-                  <Copy className="size-3.5 text-muted-foreground" />
+                  <Copy className="size-3.5" aria-hidden="true" />
                 )}
                 <span className="sr-only">
                   {copied ? "Password Copied" : "Copy password"}
@@ -100,12 +108,14 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
               disabled={disabled}
               onClick={() => setVisible((prev) => !prev)}
               title={visible ? "Hide password" : "Show password"}
-              tabIndex={-1}
+              aria-label={visible ? "Hide password" : "Show password"}
+              aria-pressed={visible}
+              className="size-7 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
             >
               {visible ? (
-                <EyeOff className="size-3.5 text-muted-foreground" />
+                <EyeOff className="size-3.5" aria-hidden="true" />
               ) : (
-                <Eye className="size-3.5 text-muted-foreground" />
+                <Eye className="size-3.5" aria-hidden="true" />
               )}
               <span className="sr-only">
                 {visible ? "Hide password" : "Show password"}
@@ -113,7 +123,11 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
             </Button>
           </div>
         </div>
-        {error && <p className="text-xs text-destructive">{error}</p>}
+        {error && (
+          <p id={errorId} className="text-xs text-destructive">
+            {error}
+          </p>
+        )}
       </div>
     );
   }

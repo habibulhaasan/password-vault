@@ -94,10 +94,16 @@ export function LoginForm() {
               placeholder="name@example.com"
               autoComplete="email"
               disabled={isSubmitting}
+              required
+              aria-required="true"
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? "email-error" : undefined}
               {...register("email")}
             />
             {errors.email && (
-              <p className="text-xs text-destructive">{errors.email.message}</p>
+              <p id="email-error" className="text-xs text-destructive">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
@@ -118,6 +124,10 @@ export function LoginForm() {
                 placeholder="••••••••"
                 autoComplete="current-password"
                 disabled={isSubmitting}
+                required
+                aria-required="true"
+                aria-invalid={!!errors.password}
+                aria-describedby={errors.password ? "password-error" : undefined}
                 className="pr-10"
                 {...register("password")}
               />
@@ -125,14 +135,16 @@ export function LoginForm() {
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="absolute right-0 top-0 h-full px-3 text-muted-foreground hover:text-foreground"
+                className="absolute right-0 top-0 h-full px-3 text-muted-foreground hover:text-foreground touch-manipulation"
                 onClick={() => setShowPassword((prev) => !prev)}
-                tabIndex={-1}
+                title={showPassword ? "Hide password" : "Show password"}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                aria-pressed={showPassword}
               >
                 {showPassword ? (
-                  <EyeOff className="size-4" />
+                  <EyeOff className="size-4" aria-hidden="true" />
                 ) : (
-                  <Eye className="size-4" />
+                  <Eye className="size-4" aria-hidden="true" />
                 )}
                 <span className="sr-only">
                   {showPassword ? "Hide password" : "Show password"}
@@ -140,7 +152,7 @@ export function LoginForm() {
               </Button>
             </div>
             {errors.password && (
-              <p className="text-xs text-destructive">
+              <p id="password-error" className="text-xs text-destructive">
                 {errors.password.message}
               </p>
             )}

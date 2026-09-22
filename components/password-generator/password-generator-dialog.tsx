@@ -28,6 +28,7 @@ import {
   KeyRound,
   Sparkles,
 } from "lucide-react";
+import { announce } from "@/lib/a11y/announcer";
 import { cn } from "@/lib/utils";
 
 export interface PasswordGeneratorDialogProps {
@@ -116,6 +117,7 @@ export function PasswordGeneratorDialog({
   const handleCopy = async () => {
     if (!password) return;
     await copy(password, "generator-modal", { clearAfterMs: 30000 });
+    announce("Generated password copied to clipboard. Clipboard will be cleared in 30 seconds.");
   };
 
   const handleUsePassword = () => {
@@ -275,10 +277,12 @@ export function PasswordGeneratorDialog({
               </Label>
               <div className="flex items-center gap-1.5">
                 <Input
+                  id="length-number"
                   type="number"
                   min={8}
                   max={64}
                   value={length}
+                  aria-label="Password length in characters"
                   onChange={(e) => handleLengthChange(parseInt(e.target.value, 10))}
                   className="h-7 w-16 text-center font-mono text-xs"
                 />
@@ -291,6 +295,10 @@ export function PasswordGeneratorDialog({
               min={8}
               max={64}
               value={length}
+              aria-label="Password length slider"
+              aria-valuemin={8}
+              aria-valuemax={64}
+              aria-valuenow={length}
               onChange={(e) => handleLengthChange(parseInt(e.target.value, 10))}
               className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary touch-manipulation"
             />

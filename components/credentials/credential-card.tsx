@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CategoryIcon } from "@/lib/constants/categories";
 import { formatDaysSinceLastLogin } from "@/lib/utils/date";
 import { useClipboardState, safeOpenUrl } from "@/lib/utils/clipboard";
+import { announce } from "@/lib/a11y/announcer";
 import { useCredentials } from "@/hooks/use-credentials";
 import { useCategories } from "@/hooks/use-categories";
 import { Button } from "@/components/ui/button";
@@ -62,6 +63,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
     setIsLoggingIn(true);
     try {
       await markAsLoggedIn(credential.id);
+      announce(`Marked ${credential.title} as logged in`);
     } catch (err) {
       console.warn("Failed to mark as logged in:", err);
     } finally {
@@ -79,6 +81,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
     try {
       const decrypted = await decryptCredential(credential);
       await copy(decrypted.username, "user");
+      announce(`Username for ${credential.title} copied to clipboard`);
     } catch (err) {
       console.warn("Failed to copy username:", err);
     } finally {
@@ -96,6 +99,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
     try {
       const decrypted = await decryptCredential(credential);
       await copy(decrypted.password, "pass", { clearAfterMs: 30000 });
+      announce(`Password for ${credential.title} copied to clipboard. Clipboard will be cleared in 30 seconds.`);
     } catch (err) {
       console.warn("Failed to copy password:", err);
     } finally {
@@ -119,6 +123,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
       setIsDeleting(true);
       try {
         await deleteCredential(credential.id);
+        announce(`Credential ${credential.title} deleted`);
       } catch (err) {
         console.warn("Failed to delete credential:", err);
         setIsDeleting(false);
@@ -176,8 +181,8 @@ export function CredentialCard({ credential }: CredentialCardProps) {
                 />
               }
             >
-              <MoreVertical className="size-4" />
-              <span className="sr-only">Credential options</span>
+              <MoreVertical className="size-4" aria-hidden="true" />
+              <span className="sr-only">Options for {credential.title}</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
@@ -188,26 +193,26 @@ export function CredentialCard({ credential }: CredentialCardProps) {
               <DropdownMenuItem
                 render={<Link href={`/credentials/${credential.id}/edit`} />}
               >
-                <Edit className="size-3.5" />
+                <Edit className="size-3.5" aria-hidden="true" />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleCopyUsername}>
-                <User className="size-3.5" />
+                <User className="size-3.5" aria-hidden="true" />
                 {isCopied("user") ? "Username Copied!" : "Copy Username"}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleCopyPassword}>
-                <KeyRound className="size-3.5" />
+                <KeyRound className="size-3.5" aria-hidden="true" />
                 {isCopied("pass") ? "Password Copied!" : "Copy Password"}
               </DropdownMenuItem>
               {credential.websiteUrl && (
                 <DropdownMenuItem onClick={handleOpenWebsite}>
-                  <ExternalLink className="size-3.5" />
+                  <ExternalLink className="size-3.5" aria-hidden="true" />
                   Open Website
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem onClick={handleMarkAsLoggedIn} disabled={isLoggingIn}>
-                <Clock className="size-3.5" />
+                <Clock className="size-3.5" aria-hidden="true" />
                 {isLoggingIn ? "Updating..." : "Mark as Logged In"}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -216,7 +221,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
                 onClick={handleDelete}
                 disabled={isDeleting}
               >
-                <Trash2 className="size-3.5" />
+                <Trash2 className="size-3.5" aria-hidden="true" />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -228,14 +233,15 @@ export function CredentialCard({ credential }: CredentialCardProps) {
         {/* Domain link */}
         {displayDomain && (
           <div className="flex items-center gap-1.5 truncate">
-            <Globe className="size-3.5 shrink-0" />
+            <Globe className="size-3.5 shrink-0" aria-hidden="true" />
             <button
               type="button"
               onClick={handleOpenWebsite}
-              className="truncate hover:text-foreground hover:underline inline-flex items-center gap-1 text-left"
+              className="truncate hover:text-foreground hover:underline inline-flex items-center gap-1 text-left cursor-pointer"
+              aria-label={`Open ${displayDomain} in new tab`}
             >
               {displayDomain}
-              <ExternalLink className="size-2.5" />
+              <ExternalLink className="size-2.5" aria-hidden="true" />
             </button>
           </div>
         )}
@@ -243,7 +249,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
         {/* Days since last login */}
         <div className="flex items-center justify-between gap-1.5">
           <div className="flex items-center gap-1.5 truncate">
-            <Clock className="size-3.5 shrink-0" />
+            <Clock className="size-3.5 shrink-0" aria-hidden="true" />
             <span className="truncate">Last login: {formatDaysSinceLastLogin(credential.lastLoginAt)}</span>
           </div>
           <button
@@ -251,7 +257,8 @@ export function CredentialCard({ credential }: CredentialCardProps) {
             onClick={handleMarkAsLoggedIn}
             disabled={isLoggingIn}
             className="text-[10px] font-medium text-primary hover:underline shrink-0 cursor-pointer disabled:opacity-50"
-            title="Mark as logged in right now"
+            title={`Mark ${credential.title} as logged in right now`}
+            aria-label={`Mark ${credential.title} as logged in right now`}
           >
             {isLoggingIn ? "Saving..." : "Mark Logged In"}
           </button>
@@ -266,6 +273,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
                 href={`/dashboard?tag=${encodeURIComponent(tag)}`}
                 onClick={(e) => e.stopPropagation()}
                 className="inline-block"
+                aria-label={`Filter by tag #${tag}`}
               >
                 <Badge
                   variant="secondary"
@@ -287,37 +295,41 @@ export function CredentialCard({ credential }: CredentialCardProps) {
       <CardFooter className="flex flex-wrap items-center justify-between gap-1.5 border-t bg-muted/20 px-3 py-2 text-xs">
         <div className="flex flex-wrap items-center gap-1">
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             className="h-8 sm:h-7 px-2.5 sm:px-2 text-xs gap-1.5 text-muted-foreground hover:text-foreground touch-manipulation"
             onClick={handleCopyUsername}
             disabled={isCopyingUser}
-            title="Copy Username"
+            title={`Copy username for ${credential.title}`}
+            aria-label={`Copy username for ${credential.title}`}
           >
             {isCopyingUser ? (
-              <Loader2 className="size-3.5 sm:size-3 animate-spin" />
+              <Loader2 className="size-3.5 sm:size-3 animate-spin" aria-hidden="true" />
             ) : isCopied("user") ? (
-              <Check className="size-3.5 sm:size-3 text-emerald-500" />
+              <Check className="size-3.5 sm:size-3 text-emerald-500" aria-hidden="true" />
             ) : (
-              <User className="size-3.5 sm:size-3" />
+              <User className="size-3.5 sm:size-3" aria-hidden="true" />
             )}
             <span>{isCopied("user") ? "Copied!" : "Copy User"}</span>
           </Button>
 
           <Button
+            type="button"
             variant="ghost"
             size="sm"
             className="h-8 sm:h-7 px-2.5 sm:px-2 text-xs gap-1.5 text-muted-foreground hover:text-foreground touch-manipulation"
             onClick={handleCopyPassword}
             disabled={isCopyingPass}
-            title="Copy Password"
+            title={`Copy password for ${credential.title}`}
+            aria-label={`Copy password for ${credential.title}`}
           >
             {isCopyingPass ? (
-              <Loader2 className="size-3.5 sm:size-3 animate-spin" />
+              <Loader2 className="size-3.5 sm:size-3 animate-spin" aria-hidden="true" />
             ) : isCopied("pass") ? (
-              <Check className="size-3.5 sm:size-3 text-emerald-500" />
+              <Check className="size-3.5 sm:size-3 text-emerald-500" aria-hidden="true" />
             ) : (
-              <KeyRound className="size-3.5 sm:size-3" />
+              <KeyRound className="size-3.5 sm:size-3" aria-hidden="true" />
             )}
             <span>{isCopied("pass") ? "Copied!" : "Copy Pass"}</span>
           </Button>
@@ -326,24 +338,32 @@ export function CredentialCard({ credential }: CredentialCardProps) {
         <div className="flex items-center gap-1">
           {credential.websiteUrl && (
             <Button
+              type="button"
               variant="ghost"
               size="icon-sm"
               className="size-8 sm:size-7 text-muted-foreground hover:text-foreground touch-manipulation"
               onClick={handleOpenWebsite}
-              title="Open Website in new tab"
+              title={`Open website for ${credential.title} in new tab`}
+              aria-label={`Open website for ${credential.title} in new tab`}
             >
-              <ExternalLink className="size-3.5" />
-              <span className="sr-only">Open website</span>
+              <ExternalLink className="size-3.5" aria-hidden="true" />
+              <span className="sr-only">Open website for {credential.title}</span>
             </Button>
           )}
 
           <Button
             variant="outline"
             size="sm"
-            render={<Link href={`/credentials/${credential.id}`} />}
+            render={
+              <Link
+                href={`/credentials/${credential.id}`}
+                aria-label={`View details for ${credential.title}`}
+              />
+            }
             className="h-8 sm:h-7 px-3 sm:px-2.5 text-xs touch-manipulation"
           >
             View
+            <span className="sr-only">details for {credential.title}</span>
           </Button>
         </div>
       </CardFooter>

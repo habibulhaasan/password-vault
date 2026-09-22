@@ -5,6 +5,7 @@ import { useVault } from "@/hooks/use-vault";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, ShieldAlert, CheckCircle2, Lock } from "lucide-react";
+import { announce } from "@/lib/a11y/announcer";
 import { cn } from "@/lib/utils";
 
 interface AutoLockOption {
@@ -41,14 +42,15 @@ export function AutoLockCard() {
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
-  const handleSelectOption = async (minutes: number) => {
-    if (minutes === autoLockMinutes || saving) return;
+  const handleSelectOption = async (option: AutoLockOption) => {
+    if (option.minutes === autoLockMinutes || saving) return;
 
     setSaving(true);
     setSavedSuccess(false);
     try {
-      await updateAutoLockMinutes(minutes);
+      await updateAutoLockMinutes(option.minutes);
       setSavedSuccess(true);
+      announce(`Auto-lock timeout updated to ${option.label}`);
       setTimeout(() => setSavedSuccess(false), 2500);
     } catch (err) {
       console.error("Failed to update auto-lock policy:", err);
@@ -92,10 +94,12 @@ export function AutoLockCard() {
               <button
                 key={option.minutes}
                 type="button"
-                onClick={() => handleSelectOption(option.minutes)}
+                onClick={() => handleSelectOption(option)}
                 disabled={saving}
+                aria-pressed={isSelected}
+                aria-label={`Set auto-lock to ${option.label}`}
                 className={cn(
-                  "relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                  "relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 touch-manipulation",
                   isSelected
                     ? "border-primary bg-primary/5 text-foreground shadow-xs ring-1 ring-primary"
                     : "border-border/70 hover:border-border hover:bg-muted/50 text-foreground"
