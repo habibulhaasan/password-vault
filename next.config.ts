@@ -14,6 +14,11 @@ const cspHeader = `
 `.replace(/\s{2,}/g, ' ').trim();
 
 const nextConfig: NextConfig = {
+  compiler: {
+    removeConsole: {
+      exclude: ["error", "warn"],
+    },
+  },
   async headers() {
     return [
       {
