@@ -5,6 +5,7 @@ import { AuthGuard } from "@/components/auth/auth-guard";
 import { VaultProvider } from "@/providers/vault-provider";
 import { VaultGate } from "@/components/vault/vault-gate";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { FloatingTimers } from "@/components/layout/floating-timers";
 
 export default function VaultLayout({
   children,
@@ -27,6 +28,7 @@ export default function VaultLayout({
             >
               <VaultGate>
                 <ErrorBoundary>{children}</ErrorBoundary>
+                <FloatingTimers />
               </VaultGate>
             </main>
           </div>

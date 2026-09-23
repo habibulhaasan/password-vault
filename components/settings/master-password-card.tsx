@@ -35,12 +35,6 @@ export function MasterPasswordCard() {
                 </CardDescription>
               </div>
             </div>
-            <Badge
-              variant="outline"
-              className="border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[11px]"
-            >
-              Configured
-            </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">

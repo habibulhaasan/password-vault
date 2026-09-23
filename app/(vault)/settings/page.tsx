@@ -4,62 +4,73 @@ import { useVault } from "@/hooks/use-vault";
 import { AutoLockCard } from "@/components/settings/auto-lock-card";
 import { MasterPasswordCard } from "@/components/settings/master-password-card";
 import { ThemeCard } from "@/components/settings/theme-card";
+import { VisualPreferencesCard } from "@/components/settings/visual-preferences-card";
 import { AccountCard } from "@/components/settings/account-card";
 import { SecuritySpecsCard } from "@/components/settings/security-specs-card";
 import { Button } from "@/components/ui/button";
-import { Lock, ShieldCheck } from "lucide-react";
+import { Lock, SlidersHorizontal } from "lucide-react";
 
 export default function SettingsPage() {
   const { lockVault } = useVault();
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 space-y-12 animate-in fade-in-50 duration-500">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-              Vault Settings
-            </h1>
-            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
-              <ShieldCheck className="h-3 w-3" />
-              Encrypted
-            </span>
-          </div>
-          <p className="text-xs text-muted-foreground sm:text-sm">
-            Configure vault encryption, auto-lock timeouts, appearance, and
-            account credentials
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground flex items-center gap-3">
+            <SlidersHorizontal className="size-6 text-muted-foreground" />
+            Preferences
+          </h1>
+          <p className="text-sm text-muted-foreground mt-2 max-w-xl">
+            Manage your vault security, visual appearance, and account settings.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={lockVault}
-            className="h-9 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
-          >
-            <Lock className="h-3.5 w-3.5" />
-            Lock Vault
-          </Button>
-        </div>
+        <Button
+          type="button"
+          onClick={lockVault}
+          variant="outline"
+          className="gap-2 shadow-sm rounded-full px-6"
+        >
+          <Lock className="size-4 text-muted-foreground" />
+          Lock Vault
+        </Button>
       </div>
 
-      {/* Settings Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Security & Preferences (7 cols) */}
-        <div className="lg:col-span-7 space-y-6">
-          <MasterPasswordCard />
-          <AutoLockCard />
-          <ThemeCard />
-        </div>
+      <div className="space-y-16">
+        {/* Security Section */}
+        <section className="space-y-6">
+          <h2 className="text-lg font-medium text-foreground pb-2 border-b border-border/50">
+            Security & Access
+          </h2>
+          <div className="grid gap-6">
+            <MasterPasswordCard />
+            <AutoLockCard />
+          </div>
+        </section>
 
-        {/* Right Column: Account & Transparency (5 cols) */}
-        <div className="lg:col-span-5 space-y-6">
-          <AccountCard />
-          <SecuritySpecsCard />
-        </div>
+        {/* Appearance Section */}
+        <section className="space-y-6">
+          <h2 className="text-lg font-medium text-foreground pb-2 border-b border-border/50">
+            Appearance
+          </h2>
+          <div className="grid gap-6">
+            <ThemeCard />
+            <VisualPreferencesCard />
+          </div>
+        </section>
+
+        {/* Account Section */}
+        <section className="space-y-6">
+          <h2 className="text-lg font-medium text-foreground pb-2 border-b border-border/50">
+            Account Details
+          </h2>
+          <div className="grid gap-6">
+            <AccountCard />
+            <SecuritySpecsCard />
+          </div>
+        </section>
       </div>
     </div>
   );

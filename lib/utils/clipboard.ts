@@ -19,7 +19,7 @@ export interface CopyOptions {
  */
 export async function copyToClipboard(
   text: string,
-  options?: CopyOptions
+  options?: CopyOptions,
 ): Promise<boolean> {
   if (typeof window === "undefined") return false;
 
@@ -55,16 +55,31 @@ export async function copyToClipboard(
 
   // Optional auto-clear timer for sensitive copied data (e.g. passwords)
   if (success && options?.clearAfterMs && options.clearAfterMs > 0) {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("clipboard-timer-start", {
+          detail: { clearAfterMs: options.clearAfterMs },
+        }),
+      );
+    }
     setTimeout(async () => {
       try {
         if (navigator.clipboard && window.isSecureContext) {
-          const currentText = await navigator.clipboard.readText();
-          if (currentText === text) {
-            await navigator.clipboard.writeText("");
-          }
+          // Blindly clear clipboard to avoid readText permission issues
+          await navigator.clipboard.writeText("");
+        } else {
+          // Fallback clear
+          const textarea = document.createElement("textarea");
+          textarea.value = " ";
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textarea);
         }
       } catch {
-        // Silently ignore if readText permissions are not granted
+        // Silently ignore if background writing is blocked by browser
       }
     }, options.clearAfterMs);
   }
@@ -82,7 +97,9 @@ export function safeOpenUrl(rawUrl?: string): boolean {
   const trimmed = rawUrl.trim();
   if (!trimmed) return false;
 
-  const fullUrl = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  const fullUrl = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
 
   try {
     const parsed = new URL(fullUrl);
@@ -105,7 +122,11 @@ export function useClipboardState(durationMs: number = 2000) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const copy = useCallback(
-    async (text: string, key: string = "default", options?: CopyOptions): Promise<boolean> => {
+    async (
+      text: string,
+      key: string = "default",
+      options?: CopyOptions,
+    ): Promise<boolean> => {
       const success = await copyToClipboard(text, options);
       if (success) {
         if (timeoutRef.current) {
@@ -118,7 +139,7 @@ export function useClipboardState(durationMs: number = 2000) {
       }
       return success;
     },
-    [durationMs]
+    [durationMs],
   );
 
   useEffect(() => {
