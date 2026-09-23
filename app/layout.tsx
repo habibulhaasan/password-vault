@@ -56,6 +56,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                let theme = localStorage.getItem('color-theme') || 'indigo';
+                document.documentElement.setAttribute('data-theme', theme);
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col touch-manipulation">
         <SkipToContent />
         <A11yAnnouncer />

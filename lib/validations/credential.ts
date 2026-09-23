@@ -74,6 +74,7 @@ export const credentialFormSchema = z.object({
     .min(1, "Password is required")
     .max(500, "Password must be 500 characters or less"),
   websiteUrl: safeUrlSchema,
+  logoUrl: safeUrlSchema,
   categoryId: z.string().max(50).optional().or(z.literal("")),
   tags: z.array(tagSchema).max(20, "Cannot exceed 20 tags"),
   notes: z

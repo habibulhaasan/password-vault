@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Copy, Check, Sparkles } from "lucide-react";
+import { Eye, EyeOff, Copy, Check, KeyRound } from "lucide-react";
 import { copyToClipboard } from "@/lib/utils/clipboard";
 import { announce } from "@/lib/a11y/announcer";
 import { cn } from "@/lib/utils";
@@ -87,7 +87,7 @@ export const PasswordField = React.forwardRef<
                 aria-label="Generate secure password"
                 className="size-7 text-muted-foreground hover:text-primary transition-colors touch-manipulation"
               >
-                <Sparkles className="size-3.5" aria-hidden="true" />
+                <KeyRound className="size-3.5" aria-hidden="true" />
                 <span className="sr-only">Generate secure password</span>
               </Button>
             )}

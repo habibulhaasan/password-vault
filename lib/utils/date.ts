@@ -66,21 +66,39 @@ export function formatDaysSinceLastLogin(
   dateInput?: Timestamp | Date | null,
   compact: boolean = false
 ): string {
-  const days = getDaysSinceLastLogin(dateInput);
+  if (!dateInput) {
+    return compact ? "Never" : "Never logged in";
+  }
 
+  const date =
+    typeof (dateInput as Timestamp).toDate === "function"
+      ? (dateInput as Timestamp).toDate()
+      : new Date(dateInput as Date);
+
+  if (isNaN(date.getTime())) {
+    return compact ? "Never" : "Never logged in";
+  }
+
+  const days = getDaysSinceLastLogin(dateInput);
+  
   if (days === null) {
     return compact ? "Never" : "Never logged in";
   }
 
-  if (days === 0) return "Today";
-  if (days === 1) return "1 day ago";
-  if (days < 30) return `${days} days ago`;
-  if (days < 365) {
-    const months = Math.floor(days / 30);
-    return months <= 1 ? "1 month ago" : `${months} months ago`;
-  }
-  const years = Math.floor(days / 365);
-  return years <= 1 ? "1 year ago" : `${years} years ago`;
+  // Format the time part (e.g., "10:30 AM")
+  const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  if (days === 0) return compact ? `Today, ${timeString}` : `Today at ${timeString}`;
+  if (days === 1) return compact ? `Yesterday, ${timeString}` : `Yesterday at ${timeString}`;
+  
+  // For older dates, show the actual date and time
+  const dateString = date.toLocaleDateString([], { 
+    month: 'short', 
+    day: 'numeric',
+    year: days > 365 ? 'numeric' : undefined
+  });
+
+  return `${dateString} at ${timeString}`;
 }
 
 /**

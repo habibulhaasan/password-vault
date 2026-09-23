@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { formatDaysSinceLastLogin } from "@/lib/utils/date";
-import { useClipboardState, safeOpenUrl } from "@/lib/utils/clipboard";
+import { copyToClipboard, useClipboardState, safeOpenUrl } from "@/lib/utils/clipboard";
 import { announce } from "@/lib/a11y/announcer";
+import { CredentialIcon } from "@/components/credentials/credential-icon";
 import { useCredentials } from "@/hooks/use-credentials";
 import { useCategories } from "@/hooks/use-categories";
 import { Button } from "@/components/ui/button";
@@ -168,13 +169,7 @@ function TableRow({ credential }: { credential: EncryptedCredential }) {
       <td className="px-4 py-3 align-middle hidden sm:table-cell">
         {displayDomain ? (
           <div className="flex items-center gap-2 truncate">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
-              src={`https://www.google.com/s2/favicons?domain=${displayDomain}&sz=32`} 
-              alt={`${displayDomain} icon`} 
-              className="size-4 shrink-0 rounded-sm"
-              loading="lazy"
-            />
+            <CredentialIcon credential={credential} size={16} className="bg-transparent" />
             <button
               type="button"
               onClick={handleOpenWebsite}

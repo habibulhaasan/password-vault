@@ -13,10 +13,11 @@ export interface EncryptedCredential {
   // Ciphertext payloads (AES-GCM encoded as base64 with IV/salt)
   encryptedUsername: string;
   encryptedPassword: string;
-  encryptedNotes?: string;
+  encryptedNotes?: string | null;
 
   // Non-sensitive metadata queryable for filtering and organization
   websiteUrl?: string;
+  logoUrl?: string | null;
   categoryId?: string;
   tags: string[];
 
@@ -42,9 +43,10 @@ export interface DecryptedCredential {
 
   username: string;
   password: string;
-  notes?: string;
+  notes?: string | null;
 
   websiteUrl?: string;
+  logoUrl?: string | null;
   categoryId?: string;
   tags: string[];
 
@@ -62,6 +64,7 @@ export interface CredentialFormData {
   password: string;
   notes?: string;
   websiteUrl?: string;
+  logoUrl?: string;
   categoryId?: string;
   tags: string[];
 }

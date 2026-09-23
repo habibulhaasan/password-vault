@@ -24,11 +24,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Plus, X, Loader2, Copy, Check, Sparkles } from "lucide-react";
+import { Plus, X, Loader2, Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { useClipboardState } from "@/lib/utils/clipboard";
 import { PasswordGeneratorDialog } from "@/components/password-generator/password-generator-dialog";
-import { announce } from "@/lib/a11y/announcer";
 import type { CredentialFormData } from "@/types/credential";
+import { cn } from "@/lib/utils";
 
 interface CredentialFormProps {
   initialValues?: Partial<CredentialFormData>;
@@ -49,6 +49,7 @@ export function CredentialForm({
   const [error, setError] = useState<string | null>(null);
   const [tagInput, setTagInput] = useState("");
   const [generatorOpen, setGeneratorOpen] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const {
     control,
@@ -63,6 +64,7 @@ export function CredentialForm({
       username: initialValues?.username || "",
       password: initialValues?.password || "",
       websiteUrl: initialValues?.websiteUrl || "",
+      logoUrl: initialValues?.logoUrl || "",
       categoryId: initialValues?.categoryId || "",
       tags: initialValues?.tags || [],
       notes: initialValues?.notes || "",
@@ -71,7 +73,6 @@ export function CredentialForm({
 
   const { isCopied, copy } = useClipboardState(2000);
   const watchedUsername = useWatch({ control, name: "username" });
-  const watchedPassword = useWatch({ control, name: "password" });
   const tags = useWatch({ control, name: "tags" }) || [];
 
   const suggestions = tagInput.trim() ? suggestTags(tagInput, tags) : [];
@@ -127,6 +128,7 @@ export function CredentialForm({
         username: values.username,
         password: values.password,
         websiteUrl: values.websiteUrl || undefined,
+        logoUrl: values.logoUrl || undefined,
         categoryId: values.categoryId || undefined,
         tags: values.tags,
         notes: values.notes || undefined,
@@ -148,69 +150,83 @@ export function CredentialForm({
           <CardDescription>
             {isEdit
               ? "Update your account details. Sensitive fields are re-encrypted before saving."
-              : "Store new account credentials. Sensitive fields are encrypted client-side."}
+              : "Store a new secure credential in your encrypted vault."}
           </CardDescription>
+          {error && (
+            <div
+              role="alert"
+              className="mt-2 rounded-md bg-destructive/15 p-3 text-sm text-destructive border border-destructive/20"
+            >
+              {error}
+            </div>
+          )}
         </CardHeader>
-
         <form onSubmit={handleSubmit(handleFormSubmit)}>
-          <CardContent className="space-y-4">
-            {error && (
-              <div
-                role="alert"
-                className="rounded-md bg-destructive/15 p-3 text-xs text-destructive dark:bg-destructive/20"
-              >
-                {error}
+          <CardContent className="space-y-5">
+            {/* Title & Website */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="title">
+                  Title <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="title"
+                  placeholder="e.g. Google, GitHub"
+                  disabled={isSubmitting}
+                  aria-invalid={!!errors.title}
+                  autoFocus
+                  {...register("title")}
+                />
+                {errors.title && (
+                  <p className="text-xs text-destructive">
+                    {errors.title.message}
+                  </p>
+                )}
               </div>
-            )}
-
-            {/* Title */}
-            <div className="space-y-1.5">
-              <Label htmlFor="title">
-                Title <span className="text-destructive">*</span>
-              </Label>
-              <Input
-                id="title"
-                placeholder="e.g. GitHub, Netflix, Personal Email"
-                disabled={isSubmitting}
-                required
-                aria-required="true"
-                aria-invalid={!!errors.title}
-                aria-describedby={errors.title ? "title-error" : undefined}
-                {...register("title")}
-              />
-              {errors.title && (
-                <p id="title-error" className="text-xs text-destructive">
-                  {errors.title.message}
-                </p>
-              )}
+              <div className="space-y-1.5">
+                <Label htmlFor="websiteUrl">Website URL</Label>
+                <Input
+                  id="websiteUrl"
+                  placeholder="https://example.com"
+                  type="url"
+                  disabled={isSubmitting}
+                  aria-invalid={!!errors.websiteUrl}
+                  {...register("websiteUrl")}
+                />
+                {errors.websiteUrl && (
+                  <p className="text-xs text-destructive">
+                    {errors.websiteUrl.message}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Username & Password */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 bg-muted/20 p-4 rounded-xl border border-border/40">
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="username">
-                    Username / Email <span className="text-destructive">*</span>
+                    Username <span className="text-destructive">*</span>
                   </Label>
-                  {watchedUsername && (
+                  {isEdit && watchedUsername && (
                     <button
                       type="button"
-                      onClick={() => {
-                        copy(watchedUsername, "form-username");
-                        announce("Username copied to clipboard");
-                      }}
-                      className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
-                      title="Copy Username"
-                      aria-label="Copy username to clipboard"
+                      onClick={() =>
+                        copy(watchedUsername, "username", {
+                          clearAfterMs: 30000,
+                        })
+                      }
+                      className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                      disabled={isSubmitting}
                     >
-                      {isCopied("form-username") ? (
+                      {isCopied("username") ? (
                         <>
                           <Check
                             className="size-3 text-emerald-500"
                             aria-hidden="true"
                           />
-                          <span className="text-emerald-500 font-medium">
-                            Copied!
+                          <span className="text-emerald-600 dark:text-emerald-400">
+                            Copied
                           </span>
                         </>
                       ) : (
@@ -224,75 +240,23 @@ export function CredentialForm({
                 </div>
                 <Input
                   id="username"
-                  placeholder="hasan@example.com"
-                  autoComplete="off"
+                  placeholder="Email or username"
                   disabled={isSubmitting}
-                  required
-                  aria-required="true"
                   aria-invalid={!!errors.username}
-                  aria-describedby={
-                    errors.username ? "username-error" : undefined
-                  }
+                  autoComplete="username"
                   {...register("username")}
                 />
                 {errors.username && (
-                  <p id="username-error" className="text-xs text-destructive">
+                  <p className="text-xs text-destructive">
                     {errors.username.message}
                   </p>
                 )}
               </div>
-
+              
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">
-                    Password <span className="text-destructive">*</span>
-                  </Label>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setGeneratorOpen(true)}
-                      className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline cursor-pointer transition-colors"
-                      title="Generate secure password"
-                      aria-label="Open password generator"
-                    >
-                      <Sparkles className="size-3" aria-hidden="true" />
-                      <span>Generate</span>
-                    </button>
-                    {watchedPassword && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          copy(watchedPassword, "form-password", {
-                            clearAfterMs: 30000,
-                          });
-                          announce(
-                            "Password copied to clipboard. Clipboard will be cleared in 30 seconds.",
-                          );
-                        }}
-                        className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
-                        title="Copy Password"
-                        aria-label="Copy password to clipboard"
-                      >
-                        {isCopied("form-password") ? (
-                          <>
-                            <Check
-                              className="size-3 text-emerald-500"
-                              aria-hidden="true"
-                            />
-                            <span className="text-emerald-500 font-medium">
-                              Copied!
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="size-3" aria-hidden="true" />
-                            <span>Copy</span>
-                          </>
-                        )}
-                      </button>
-                    )}
-                  </div>
-                </div>
+                <Label htmlFor="password">
+                  Password <span className="text-destructive">*</span>
+                </Label>
                 <PasswordField
                   id="password"
                   placeholder="••••••••••••"
@@ -307,189 +271,135 @@ export function CredentialForm({
               </div>
             </div>
 
-            {/* Website URL & Category */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-1.5">
-                <Label htmlFor="websiteUrl">Website URL</Label>
-                <Input
-                  id="websiteUrl"
-                  type="text"
-                  placeholder="https://example.com"
-                  disabled={isSubmitting}
-                  aria-invalid={!!errors.websiteUrl}
-                  aria-describedby={
-                    errors.websiteUrl ? "website-error" : undefined
-                  }
-                  {...register("websiteUrl")}
-                />
-                {errors.websiteUrl && (
-                  <p id="website-error" className="text-xs text-destructive">
-                    {errors.websiteUrl.message}
-                  </p>
+            {/* Advanced Options Toggle */}
+            <div className="pt-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="text-xs font-medium text-muted-foreground hover:text-foreground p-0 h-auto"
+                onClick={() => setShowAdvanced(!showAdvanced)}
+              >
+                {showAdvanced ? (
+                  <ChevronUp className="size-3 mr-1.5" />
+                ) : (
+                  <ChevronDown className="size-3 mr-1.5" />
                 )}
-              </div>
+                {showAdvanced ? "Hide Advanced Options" : "Show Advanced Options"}
+              </Button>
+            </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="categoryId">Category</Label>
-                <select
-                  id="categoryId"
-                  className="flex h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30"
-                  disabled={isSubmitting}
-                  {...register("categoryId")}
-                >
-                  <option
-                    value=""
-                    className="bg-popover text-popover-foreground"
+            {/* Advanced Fields Container */}
+            <div className={cn("space-y-5 transition-all duration-300 overflow-hidden", showAdvanced ? "opacity-100 max-h-[1000px] mt-4" : "opacity-0 max-h-0 m-0")}>
+              
+              {/* Category & Logo */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="categoryId">Category</Label>
+                  <select
+                    id="categoryId"
+                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={isSubmitting}
+                    {...register("categoryId")}
                   >
-                    Select a category...
-                  </option>
-                  {customCategories.length > 0 && (
-                    <optgroup
-                      label="Custom Categories"
-                      className="bg-popover text-popover-foreground"
-                    >
-                      {customCategories.map((cat) => (
-                        <option
-                          key={cat.id}
-                          value={cat.id}
-                          className="bg-popover text-popover-foreground"
-                        >
+                    <option value="" className="bg-popover text-popover-foreground">
+                      No Category
+                    </option>
+                    {customCategories.length > 0 && (
+                      <optgroup label="Custom Categories" className="bg-popover text-popover-foreground">
+                        {customCategories.map((cat) => (
+                          <option key={cat.id} value={cat.id} className="bg-popover text-popover-foreground">
+                            {cat.label}
+                          </option>
+                        ))}
+                      </optgroup>
+                    )}
+                    <optgroup label="Standard Categories" className="bg-popover text-popover-foreground">
+                      {systemCategories.map((cat) => (
+                        <option key={cat.id} value={cat.id} className="bg-popover text-popover-foreground">
                           {cat.label}
                         </option>
                       ))}
                     </optgroup>
+                  </select>
+                  {errors.categoryId && (
+                    <p className="text-xs text-destructive">{errors.categoryId.message}</p>
                   )}
-                  <optgroup
-                    label="Standard Categories"
-                    className="bg-popover text-popover-foreground"
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="logoUrl">Custom Logo URL</Label>
+                  <Input
+                    id="logoUrl"
+                    placeholder="https://example.com/logo.png"
+                    type="url"
+                    disabled={isSubmitting}
+                    aria-invalid={!!errors.logoUrl}
+                    {...register("logoUrl")}
+                  />
+                  {errors.logoUrl && (
+                    <p className="text-xs text-destructive">
+                      {errors.logoUrl.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Tags Manager */}
+              <div className="space-y-1.5">
+                <Label htmlFor="tags">Tags (up to 20)</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="tags"
+                    placeholder="Add a tag (press Enter)"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyDown={handleKeyDownTag}
+                    disabled={isSubmitting || tags.length >= 20}
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAddTag}
+                    disabled={!tagInput.trim() || isSubmitting || tags.length >= 20}
                   >
-                    {systemCategories.map((cat) => (
-                      <option
-                        key={cat.id}
-                        value={cat.id}
-                        className="bg-popover text-popover-foreground"
-                      >
-                        {cat.label}
-                      </option>
+                    <Plus className="size-3.5" />
+                    Add
+                  </Button>
+                </div>
+                {tags.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {tags.map((tag) => (
+                      <Badge key={tag} variant="secondary" className="gap-1 pr-1">
+                        {tag}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveTag(tag)}
+                          className="rounded-full p-0.5 hover:bg-muted-foreground/20"
+                          disabled={isSubmitting}
+                        >
+                          <X className="size-3" />
+                          <span className="sr-only">Remove {tag}</span>
+                        </button>
+                      </Badge>
                     ))}
-                  </optgroup>
-                </select>
-                {errors.categoryId && (
-                  <p className="text-xs text-destructive">
-                    {errors.categoryId.message}
-                  </p>
+                  </div>
                 )}
               </div>
-            </div>
 
-            {/* Tags Manager */}
-            <div className="space-y-1.5">
-              <Label htmlFor="tags">Tags (up to 20)</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="tags"
-                  placeholder="Add a tag (press Enter)"
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={handleKeyDownTag}
-                  disabled={isSubmitting || tags.length >= 20}
-                  className="flex-1"
+              {/* Notes */}
+              <div className="space-y-1.5">
+                <Label htmlFor="notes">Comments / Notes</Label>
+                <Textarea
+                  id="notes"
+                  placeholder="Additional notes, security questions, or backup codes (encrypted)"
+                  rows={3}
+                  disabled={isSubmitting}
+                  {...register("notes")}
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleAddTag}
-                  disabled={
-                    !tagInput.trim() || isSubmitting || tags.length >= 20
-                  }
-                >
-                  <Plus className="size-3.5" />
-                  Add
-                </Button>
               </div>
-
-              {/* Tag matching suggestions while typing */}
-              {suggestions.length > 0 && (
-                <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                  <span className="text-[11px] text-muted-foreground">
-                    Matching:
-                  </span>
-                  {suggestions.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => handleAddSpecificTag(s)}
-                      disabled={isSubmitting || tags.length >= 20}
-                      className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-0.5 text-[11px] text-accent-foreground hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
-                    >
-                      #{s}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {/* Suggested tags if input is empty */}
-              {suggestedPool.length > 0 && !tagInput.trim() && (
-                <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                  <span className="text-[11px] text-muted-foreground">
-                    Suggested:
-                  </span>
-                  {suggestedPool.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => handleAddSpecificTag(s)}
-                      disabled={isSubmitting || tags.length >= 20}
-                      className="inline-flex items-center gap-1 rounded-md border border-dashed border-border/80 px-2 py-0.5 text-[11px] text-muted-foreground hover:border-primary hover:text-primary transition-colors cursor-pointer"
-                    >
-                      <Plus className="size-2.5" />
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              {tags.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="gap-1 pr-1">
-                      {tag}
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveTag(tag)}
-                        className="rounded-full p-0.5 hover:bg-muted-foreground/20"
-                        disabled={isSubmitting}
-                      >
-                        <X className="size-3" />
-                        <span className="sr-only">Remove {tag}</span>
-                      </button>
-                    </Badge>
-                  ))}
-                </div>
-              )}
-              {errors.tags && (
-                <p className="text-xs text-destructive">
-                  {errors.tags.message}
-                </p>
-              )}
-            </div>
-
-            {/* Notes */}
-            <div className="space-y-1.5">
-              <Label htmlFor="notes">Comments / Notes</Label>
-              <Textarea
-                id="notes"
-                placeholder="Additional notes, security questions, or backup codes (encrypted)"
-                rows={3}
-                disabled={isSubmitting}
-                {...register("notes")}
-              />
-              {errors.notes && (
-                <p className="text-xs text-destructive">
-                  {errors.notes.message}
-                </p>
-              )}
             </div>
           </CardContent>
 

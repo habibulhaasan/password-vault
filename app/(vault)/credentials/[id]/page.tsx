@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCredentials } from "@/hooks/use-credentials";
 import { useCategories } from "@/hooks/use-categories";
 import { CategoryIcon } from "@/lib/constants/categories";
+import { CredentialIcon } from "@/components/credentials/credential-icon";
 import { useClipboardState, safeOpenUrl } from "@/lib/utils/clipboard";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -275,17 +276,7 @@ export default function CredentialDetailPage({
                 className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-accent cursor-pointer"
                 aria-label={`Visit ${credential.websiteUrl} in new tab`}
               >
-                {displayDomain ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    src={`https://www.google.com/s2/favicons?domain=${displayDomain}&sz=32`}
-                    className="size-3.5 rounded-sm"
-                    alt=""
-                    loading="lazy"
-                  />
-                ) : (
-                  <Globe className="size-3.5" aria-hidden="true" />
-                )}
+                <CredentialIcon credential={credential} size={14} className="bg-transparent" />
                 Visit Site
                 <ExternalLink className="size-3" aria-hidden="true" />
               </button>

@@ -4,7 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { CategoryIcon } from "@/lib/constants/categories";
 import { formatDaysSinceLastLogin } from "@/lib/utils/date";
-import { useClipboardState, safeOpenUrl } from "@/lib/utils/clipboard";
+import { copyToClipboard, useClipboardState, safeOpenUrl } from "@/lib/utils/clipboard";
+import { CredentialIcon } from "@/components/credentials/credential-icon";
 import { announce } from "@/lib/a11y/announcer";
 import { useCredentials } from "@/hooks/use-credentials";
 import { useCategories } from "@/hooks/use-categories";
@@ -238,13 +239,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
         {/* Domain link */}
         {displayDomain && (
           <div className="flex items-center gap-2 truncate bg-muted/30 px-2 py-1.5 rounded-md border border-border/50 hover:bg-muted/50 transition-colors">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`https://www.google.com/s2/favicons?domain=${displayDomain}&sz=32`}
-              alt={`${displayDomain} icon`}
-              className="size-4 shrink-0 rounded-sm"
-              loading="lazy"
-            />
+            <CredentialIcon credential={credential} size={16} className="bg-transparent" />
             <button
               type="button"
               onClick={handleOpenWebsite}
