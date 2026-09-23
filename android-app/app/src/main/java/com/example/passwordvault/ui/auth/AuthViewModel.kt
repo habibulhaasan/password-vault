@@ -3,6 +3,7 @@ package com.example.passwordvault.ui.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,33 +13,44 @@ import kotlinx.coroutines.tasks.await
 sealed class AuthState {
     object Idle : AuthState()
     object Loading : AuthState()
-    data class Authenticated(val uid: String) : AuthState()
+    data class Authenticated(val uid: String, val salt: String?) : AuthState()
     data class Error(val message: String) : AuthState()
 }
 
 class AuthViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
+    private val db = FirebaseFirestore.getInstance()
     
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
     
     init {
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            _authState.value = AuthState.Authenticated(currentUser.uid)
+        if (auth.currentUser != null) {
+            auth.signOut()
         }
     }
 
-    fun login(email: String, masterPassword: String) {
+    fun login(email: String, masterPassword: String, onSaltFetched: (String) -> Unit) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
             try {
-                // Wait for Firebase Auth
                 val result = auth.signInWithEmailAndPassword(email, masterPassword).await()
                 val user = result.user
                 
                 if (user != null) {
-                    _authState.value = AuthState.Authenticated(user.uid)
+                    val settingsDoc = db.collection("users").document(user.uid)
+                        .collection("settings").document("vault")
+                        .get().await()
+                        
+                    val salt = settingsDoc.getString("salt")
+                    if (salt != null) {
+                        // Pass the salt back to the UI BEFORE changing state
+                        onSaltFetched(salt)
+                        _authState.value = AuthState.Authenticated(user.uid, salt)
+                    } else {
+                        _authState.value = AuthState.Error("Vault not initialized on web yet.")
+                        auth.signOut()
+                    }
                 } else {
                     _authState.value = AuthState.Error("Login failed")
                 }
@@ -53,4 +65,3 @@ class AuthViewModel : ViewModel() {
         _authState.value = AuthState.Idle
     }
 }
-

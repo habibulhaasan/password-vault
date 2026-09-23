@@ -67,6 +67,9 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime.compose)
   implementation(libs.androidx.lifecycle.viewmodel.compose)
 
+    // Compose Icons
+  implementation("androidx.compose.material:material-icons-extended")
+
   // Compose
   implementation(libs.androidx.compose.ui)
   implementation(libs.androidx.compose.ui.tooling.preview)
@@ -86,6 +89,9 @@ dependencies {
   androidTestImplementation(libs.androidx.test.ext.junit)
   androidTestImplementation(libs.androidx.test.runner)
   androidTestImplementation(libs.androidx.test.espresso.core)
+
+    // Navigation Compose
+  implementation(libs.androidx.navigation.compose)
 
   // Navigation
   implementation(libs.androidx.navigation3.ui)

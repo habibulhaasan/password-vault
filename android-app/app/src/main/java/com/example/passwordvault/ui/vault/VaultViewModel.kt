@@ -7,15 +7,18 @@ import com.example.passwordvault.models.DecryptedCredential
 import com.example.passwordvault.models.EncryptedCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.crypto.spec.SecretKeySpec
 
 sealed class VaultState {
     object Idle : VaultState()
+    object DerivingKey : VaultState()
     object Loading : VaultState()
     data class Success(val credentials: List<DecryptedCredential>) : VaultState()
     data class Error(val message: String) : VaultState()
@@ -28,15 +31,20 @@ class VaultViewModel : ViewModel() {
     private val _vaultState = MutableStateFlow<VaultState>(VaultState.Idle)
     val vaultState: StateFlow<VaultState> = _vaultState.asStateFlow()
 
-    // Note: In a production app, the derived key is kept in memory securely,
-    // potentially wrapped by the Android Keystore.
     private var vaultKey: SecretKeySpec? = null
 
-    fun setMasterKey(masterPassword: String, saltBase64: String) {
+    fun initializeVault(masterPassword: String, saltBase64: String) {
         viewModelScope.launch {
+            _vaultState.value = VaultState.DerivingKey
             try {
-                val saltBytes = CryptoEngine.base64ToBytes(saltBase64)
-                vaultKey = CryptoEngine.deriveVaultKey(masterPassword, saltBytes)
+                // PBKDF2 with 600k iterations takes 1-3 seconds on mobile. Must run on IO!
+                val key = withContext(Dispatchers.IO) {
+                    val saltBytes = CryptoEngine.base64ToBytes(saltBase64)
+                    CryptoEngine.deriveVaultKey(masterPassword, saltBytes)
+                }
+                vaultKey = key
+                // Key derived! Now fetch credentials automatically
+                loadCredentials()
             } catch (e: Exception) {
                 _vaultState.value = VaultState.Error("Key derivation failed: ${e.message}")
             }
@@ -58,7 +66,6 @@ class VaultViewModel : ViewModel() {
         viewModelScope.launch {
             _vaultState.value = VaultState.Loading
             try {
-                // Fetch credentials from Firestore: /users/{uid}/credentials
                 val snapshot = db.collection("users").document(uid)
                     .collection("credentials")
                     .get()
@@ -66,26 +73,28 @@ class VaultViewModel : ViewModel() {
                     
                 val decryptedList = mutableListOf<DecryptedCredential>()
                 
-                for (doc in snapshot.documents) {
-                    val encrypted = doc.toObject(EncryptedCredential::class.java)
-                    if (encrypted != null) {
-                        try {
-                            val decUser = CryptoEngine.decryptString(encrypted.encryptedUsername, key)
-                            val decPass = CryptoEngine.decryptString(encrypted.encryptedPassword, key)
-                            
-                            decryptedList.add(
-                                DecryptedCredential(
-                                    id = doc.id,
-                                    title = encrypted.title,
-                                    username = decUser,
-                                    password = decPass,
-                                    websiteUrl = encrypted.websiteUrl,
-                                    categoryId = encrypted.categoryId
+                // Offload decryption to IO thread
+                withContext(Dispatchers.IO) {
+                    for (doc in snapshot.documents) {
+                        val encrypted = doc.toObject(EncryptedCredential::class.java)
+                        if (encrypted != null) {
+                            try {
+                                val decUser = CryptoEngine.decryptString(encrypted.encryptedUsername, key)
+                                val decPass = CryptoEngine.decryptString(encrypted.encryptedPassword, key)
+                                
+                                decryptedList.add(
+                                    DecryptedCredential(
+                                        id = doc.id,
+                                        title = encrypted.title,
+                                        username = decUser,
+                                        password = decPass,
+                                        websiteUrl = encrypted.websiteUrl,
+                                        categoryId = encrypted.categoryId
+                                    )
                                 )
-                            )
-                        } catch (e: Exception) {
-                            // Skip corrupted or un-decryptable items
-                            e.printStackTrace()
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
                         }
                     }
                 }
@@ -97,4 +106,3 @@ class VaultViewModel : ViewModel() {
         }
     }
 }
-
