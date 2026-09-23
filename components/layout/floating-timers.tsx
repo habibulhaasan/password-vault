@@ -109,18 +109,13 @@ export function FloatingTimers() {
       return;
     }
 
-    let lastActivity = Date.now();
-    const handleActivity = () => {
-      lastActivity = Date.now();
-    };
-
-    const events = ["mousedown", "keydown", "touchstart", "scroll"];
-    events.forEach((e) =>
-      window.addEventListener(e, handleActivity, { passive: true }),
-    );
-
     const interval = setInterval(() => {
-      const lockAt = lastActivity + autoLockMinutes * 60 * 1000;
+      const lockAtStr = sessionStorage.getItem("vaultLockTime");
+      if (!lockAtStr) {
+        setVaultTimeLeft(null);
+        return;
+      }
+      const lockAt = parseInt(lockAtStr, 10);
       const remaining = lockAt - Date.now();
       if (remaining <= 0) {
         setVaultTimeLeft(null);
@@ -131,7 +126,6 @@ export function FloatingTimers() {
 
     return () => {
       clearInterval(interval);
-      events.forEach((e) => window.removeEventListener(e, handleActivity));
     };
   }, [status, autoLockMinutes]);
 

@@ -78,8 +78,8 @@ export function AutoLockCard() {
                 Auto-Lock Policy
               </CardTitle>
               <CardDescription className="text-xs">
-                Automatically lock vault and purge decrypted memory after
-                inactivity
+                Automatically lock vault and purge decrypted memory after the
+                specified time
               </CardDescription>
             </div>
           </div>

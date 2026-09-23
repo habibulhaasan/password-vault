@@ -25,6 +25,8 @@ import {
   saltToBase64,
   base64ToSalt,
   deriveVaultKey,
+  bytesToBase64,
+  base64ToBytes,
 } from "@/lib/crypto/key-derivation";
 import {
   createVaultVerificationToken,
@@ -66,42 +68,31 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
     null
   );
 
-  // Initialize ref with 0 to maintain render purity
-  const lastActivityRef = useRef<number>(0);
 
   // Lock the vault, purging the CryptoKey from memory
   const lockVault = useCallback(() => {
     setVaultKey(null);
     setStatus("locked");
+    sessionStorage.removeItem("vaultKey");
+    sessionStorage.removeItem("vaultLockTime");
   }, []);
 
-  // Inactivity auto-lock listener
+  // Auto-lock listener based on session storage
   useEffect(() => {
     if (!vaultKey || autoLockMinutes <= 0) return;
 
-    lastActivityRef.current = Date.now();
-
-    const handleUserActivity = () => {
-      lastActivityRef.current = Date.now();
-    };
-
-    const events = ["mousedown", "keydown", "touchstart", "scroll"];
-    events.forEach((event) => {
-      window.addEventListener(event, handleUserActivity, { passive: true });
-    });
-
     const interval = setInterval(() => {
-      const elapsedMinutes = (Date.now() - lastActivityRef.current) / (1000 * 60);
-      if (elapsedMinutes >= autoLockMinutes) {
-        lockVault();
+      const lockAtStr = sessionStorage.getItem("vaultLockTime");
+      if (lockAtStr) {
+        const lockAt = parseInt(lockAtStr, 10);
+        if (Date.now() >= lockAt) {
+          lockVault();
+        }
       }
-    }, 15000); // Check every 15 seconds
+    }, 1000); // Check every 1 second
 
     return () => {
       clearInterval(interval);
-      events.forEach((event) => {
-        window.removeEventListener(event, handleUserActivity);
-      });
     };
   }, [vaultKey, autoLockMinutes, lockVault]);
 
@@ -115,6 +106,8 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
           setVaultKey(null);
           setVaultSettings(null);
           setStatus("locked");
+          sessionStorage.removeItem("vaultKey");
+          sessionStorage.removeItem("vaultLockTime");
         }
         return;
       }
@@ -137,7 +130,39 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
           };
           setVaultSettings(loadedSettings);
           setAutoLockMinutes(loadedSettings.autoLockMinutes);
-          setStatus("locked");
+
+          // Try to restore from session storage
+          const storedKeyBase64 = sessionStorage.getItem("vaultKey");
+          const storedLockTime = sessionStorage.getItem("vaultLockTime");
+
+          let restored = false;
+          if (storedKeyBase64) {
+            try {
+              const raw = base64ToBytes(storedKeyBase64);
+              const key = await crypto.subtle.importKey(
+                "raw",
+                raw.buffer as ArrayBuffer,
+                "AES-GCM",
+                true,
+                ["encrypt", "decrypt"]
+              );
+
+              if (loadedSettings.autoLockMinutes === 0 || (storedLockTime && Date.now() < parseInt(storedLockTime, 10))) {
+                setVaultKey(key);
+                setStatus("unlocked");
+                restored = true;
+              } else {
+                sessionStorage.removeItem("vaultKey");
+                sessionStorage.removeItem("vaultLockTime");
+              }
+            } catch (e) {
+              console.warn("Failed to restore key", e);
+            }
+          }
+
+          if (!restored) {
+            setStatus("locked");
+          }
         } else {
           setVaultSettings(null);
           setStatus("uninitialized");
@@ -155,6 +180,21 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
       isMounted = false;
     };
   }, [user]);
+
+  const saveSession = async (key: CryptoKey, minutes: number) => {
+    try {
+      const raw = await crypto.subtle.exportKey("raw", key);
+      const base64 = bytesToBase64(new Uint8Array(raw));
+      sessionStorage.setItem("vaultKey", base64);
+      if (minutes > 0) {
+        sessionStorage.setItem("vaultLockTime", (Date.now() + minutes * 60 * 1000).toString());
+      } else {
+        sessionStorage.removeItem("vaultLockTime");
+      }
+    } catch (e) {
+      console.warn("Failed to export key", e);
+    }
+  };
 
   // First-time setup: initialize master password, salt, and canary verification token
   const setupVault = async (masterPassword: string) => {
@@ -180,7 +220,7 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
 
     setVaultSettings(newSettings);
     setVaultKey(key);
-    lastActivityRef.current = Date.now();
+    await saveSession(key, autoLockMinutes);
     setStatus("unlocked");
   };
 
@@ -198,7 +238,7 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
 
       if (isValid) {
         setVaultKey(candidateKey);
-        lastActivityRef.current = Date.now();
+        await saveSession(candidateKey, autoLockMinutes);
         setStatus("unlocked");
         return true;
       }
@@ -211,6 +251,13 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
   // Update auto-lock interval
   const updateAutoLockMinutes = async (minutes: number) => {
     setAutoLockMinutes(minutes);
+    if (vaultKey) {
+      if (minutes > 0) {
+        sessionStorage.setItem("vaultLockTime", (Date.now() + minutes * 60 * 1000).toString());
+      } else {
+        sessionStorage.removeItem("vaultLockTime");
+      }
+    }
     if (user && vaultSettings) {
       try {
         const docRef = getSettingsDocRef(user.uid, "vault");
@@ -323,7 +370,7 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
     };
     setVaultSettings(updatedSettings);
     setVaultKey(newKey);
-    lastActivityRef.current = Date.now();
+    await saveSession(newKey, autoLockMinutes);
   };
 
   return (

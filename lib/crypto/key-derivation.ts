@@ -96,7 +96,7 @@ export async function deriveVaultKey(
       name: "AES-GCM",
       length: 256,
     },
-    false, // non-extractable
+    true, // extractable (for session storage persistence)
     ["encrypt", "decrypt"]
   );
 }
