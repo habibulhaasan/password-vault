@@ -415,3 +415,71 @@
 [info] +  Deploy complete! 
 [info] 
 [info] Project Console: https://console.firebase.google.com/project/pass-vault-manager/overview
+[debug] [2026-09-23T06:22:49.889Z] ----------------------------------------------------------------------
+[debug] [2026-09-23T06:22:49.893Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\habib\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js apps:create android PasswordVault --package-name com.example.passwordvault
+[debug] [2026-09-23T06:22:49.893Z] CLI Version:   15.30.2
+[debug] [2026-09-23T06:22:49.894Z] Platform:      win32
+[debug] [2026-09-23T06:22:49.894Z] Node Version:  v24.11.1
+[debug] [2026-09-23T06:22:49.894Z] Detected Agent: antigravity
+[debug] [2026-09-23T06:22:49.894Z] Time:          Wed Sep 23 2026 12:22:49 GMT+0600 (Bangladesh Standard Time)
+[debug] [2026-09-23T06:22:49.894Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-09-23T06:22:50.211Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-09-23T06:22:50.218Z] > authorizing via signed-in user (hasanthp@gmail.com)
+[info] Create your ANDROID app in project pass-vault-manager:
+[debug] [2026-09-23T06:22:50.249Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:22:50.249Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:22:50.251Z] >>> [apiv2][query] POST https://firebase.googleapis.com/v1beta1/projects/pass-vault-manager/androidApps [none]
+[debug] [2026-09-23T06:22:50.251Z] >>> [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/pass-vault-manager/androidApps {"displayName":"PasswordVault","packageName":"com.example.passwordvault"}
+[debug] [2026-09-23T06:22:53.279Z] <<< [apiv2][status] POST https://firebase.googleapis.com/v1beta1/projects/pass-vault-manager/androidApps 200
+[debug] [2026-09-23T06:22:53.279Z] <<< [apiv2][body] POST https://firebase.googleapis.com/v1beta1/projects/pass-vault-manager/androidApps {"name":"operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk"}
+[debug] [2026-09-23T06:22:53.280Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:22:53.280Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:22:53.280Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk [none]
+[debug] [2026-09-23T06:22:53.803Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk 200
+[debug] [2026-09-23T06:22:53.803Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk {"name":"operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk"}
+[debug] [2026-09-23T06:22:54.310Z] [Create Android app Poller] Retrying task index 0
+[debug] [2026-09-23T06:22:54.310Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:22:54.311Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:22:54.311Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk [none]
+[debug] [2026-09-23T06:22:55.465Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk 200
+[debug] [2026-09-23T06:22:55.465Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk {"name":"operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk"}
+[debug] [2026-09-23T06:22:56.476Z] [Create Android app Poller] Retrying task index 0
+[debug] [2026-09-23T06:22:56.477Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:22:56.477Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:22:56.478Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk [none]
+[debug] [2026-09-23T06:22:57.024Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk 200
+[debug] [2026-09-23T06:22:57.024Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk {"name":"operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk"}
+[debug] [2026-09-23T06:22:59.039Z] [Create Android app Poller] Retrying task index 0
+[debug] [2026-09-23T06:22:59.039Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:22:59.040Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:22:59.040Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk [none]
+[debug] [2026-09-23T06:23:00.361Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk 200
+[debug] [2026-09-23T06:23:00.361Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk {"name":"operations/workflows/ZTA5YWQ5MDUtMjJkMC00NmI3LThkYmItY2Y2ZjVkNWY5ZGVk","done":true,"response":{"@type":"type.googleapis.com/google.firebase.service.v1beta1.AndroidApp","name":"projects/pass-vault-manager/androidApps/1:296520474076:android:658e912cab39cc9f5cc319","appId":"1:296520474076:android:658e912cab39cc9f5cc319","displayName":"PasswordVault","projectId":"pass-vault-manager","packageName":"com.example.passwordvault","apiKeyId":"acc5cdf5-dec5-4963-b236-4f4b20549eec","state":"ACTIVE","expireTime":"1970-01-01T00:00:00Z","framework":{},"etag":"1_806af224-cbce-49cf-b801-db5e0d75cfeb"}}
+[info] 
+[info] 🎉🎉🎉 Your Firebase ANDROID App is ready! 🎉🎉🎉
+[info] 
+[info] App information:
+[info]   - App ID: 1:296520474076:android:658e912cab39cc9f5cc319
+[info]   - Display name: PasswordVault
+[info]   - Package name: com.example.passwordvault
+[info] 
+[info] You can run this command to print out your new app's Google Services config:
+[info]   firebase apps:sdkconfig ANDROID 1:296520474076:android:658e912cab39cc9f5cc319
+[debug] [2026-09-23T06:23:31.196Z] ----------------------------------------------------------------------
+[debug] [2026-09-23T06:23:31.200Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\habib\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js apps:sdkconfig ANDROID 1:296520474076:android:658e912cab39cc9f5cc319 --out android-app/app/google-services.json
+[debug] [2026-09-23T06:23:31.201Z] CLI Version:   15.30.2
+[debug] [2026-09-23T06:23:31.201Z] Platform:      win32
+[debug] [2026-09-23T06:23:31.201Z] Node Version:  v24.11.1
+[debug] [2026-09-23T06:23:31.201Z] Detected Agent: antigravity
+[debug] [2026-09-23T06:23:31.202Z] Time:          Wed Sep 23 2026 12:23:31 GMT+0600 (Bangladesh Standard Time)
+[debug] [2026-09-23T06:23:31.202Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-09-23T06:23:31.480Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-09-23T06:23:31.481Z] > authorizing via signed-in user (hasanthp@gmail.com)
+[debug] [2026-09-23T06:23:31.503Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:23:31.503Z] Checked if tokens are valid: true, expires at: 1790146212113
+[debug] [2026-09-23T06:23:31.505Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/-/androidApps/1:296520474076:android:658e912cab39cc9f5cc319/config [none]
+[debug] [2026-09-23T06:23:33.168Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/androidApps/1:296520474076:android:658e912cab39cc9f5cc319/config 200
+[debug] [2026-09-23T06:23:33.169Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/androidApps/1:296520474076:android:658e912cab39cc9f5cc319/config {"configFilename":"google-services.json","configFileContents":"ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiMjk2NTIwNDc0MDc2IiwKICAgICJwcm9qZWN0X2lkIjogInBhc3MtdmF1bHQtbWFuYWdlciIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAicGFzcy12YXVsdC1tYW5hZ2VyLmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMToyOTY1MjA0NzQwNzY6YW5kcm9pZDo2NThlOTEyY2FiMzljYzlmNWNjMzE5IiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLmV4YW1wbGUucGFzc3dvcmR2YXVsdCIKICAgICAgICB9CiAgICAgIH0sCiAgICAgICJvYXV0aF9jbGllbnQiOiBbXSwKICAgICAgImFwaV9rZXkiOiBbCiAgICAgICAgewogICAgICAgICAgImN1cnJlbnRfa2V5IjogIkFJemFTeUJxRnIwLUUwTkRoMVZmTFdldXNIX1B1anJMZXNDSXUwWSIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJzZXJ2aWNlcyI6IHsKICAgICAgICAiYXBwaW52aXRlX3NlcnZpY2UiOiB7CiAgICAgICAgICAib3RoZXJfcGxhdGZvcm1fb2F1dGhfY2xpZW50IjogW10KICAgICAgICB9CiAgICAgIH0KICAgIH0KICBdLAogICJjb25maWd1cmF0aW9uX3ZlcnNpb24iOiAiMSIKfQ=="}
+[info] App configuration is written in android-app/app/google-services.json
