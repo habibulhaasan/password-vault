@@ -25,7 +25,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Globe,
   Check,
   MoreVertical,
   Edit,
@@ -238,16 +237,25 @@ export function CredentialCard({ credential }: CredentialCardProps) {
       <CardContent className="space-y-3 pb-3 text-xs text-muted-foreground">
         {/* Domain link */}
         {displayDomain && (
-          <div className="flex items-center gap-1.5 truncate">
-            <Globe className="size-3.5 shrink-0" aria-hidden="true" />
+          <div className="flex items-center gap-2 truncate bg-muted/30 px-2 py-1.5 rounded-md border border-border/50 hover:bg-muted/50 transition-colors">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://www.google.com/s2/favicons?domain=${displayDomain}&sz=32`}
+              alt={`${displayDomain} icon`}
+              className="size-4 shrink-0 rounded-sm"
+              loading="lazy"
+            />
             <button
               type="button"
               onClick={handleOpenWebsite}
-              className="truncate hover:text-foreground hover:underline inline-flex items-center gap-1 text-left cursor-pointer"
+              className="truncate font-medium text-foreground hover:underline inline-flex items-center gap-1.5 text-left cursor-pointer flex-1"
               aria-label={`Open ${displayDomain} in new tab`}
             >
               {displayDomain}
-              <ExternalLink className="size-2.5" aria-hidden="true" />
+              <ExternalLink
+                className="size-3 text-muted-foreground opacity-50"
+                aria-hidden="true"
+              />
             </button>
           </div>
         )}
@@ -356,23 +364,6 @@ export function CredentialCard({ credential }: CredentialCardProps) {
         </div>
 
         <div className="flex items-center gap-1">
-          {credential.websiteUrl && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-sm"
-              className="size-8 sm:size-7 text-muted-foreground hover:text-foreground touch-manipulation"
-              onClick={handleOpenWebsite}
-              title={`Open website for ${credential.title} in new tab`}
-              aria-label={`Open website for ${credential.title} in new tab`}
-            >
-              <ExternalLink className="size-3.5" aria-hidden="true" />
-              <span className="sr-only">
-                Open website for {credential.title}
-              </span>
-            </Button>
-          )}
-
           <Button
             variant="outline"
             size="sm"

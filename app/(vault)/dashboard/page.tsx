@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useCredentials } from "@/hooks/use-credentials";
 import { useCategories } from "@/hooks/use-categories";
 import { useDebounce } from "@/hooks/use-debounce";
+import { CredentialTable } from "@/components/credentials/credential-table";
 import { CredentialCard } from "@/components/credentials/credential-card";
 import { CredentialGridSkeleton } from "@/components/credentials/credential-skeleton";
 import { EmptyState } from "@/components/credentials/empty-state";
@@ -17,7 +18,7 @@ import {
 import { type LastLoginFilter, matchesLastLoginFilter } from "@/lib/utils/date";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus } from "lucide-react";
+import { Plus, LayoutGrid, List } from "lucide-react";
 import type { EncryptedCredential } from "@/types/credential";
 
 function DashboardContent() {
@@ -27,6 +28,19 @@ function DashboardContent() {
 
   const { credentials, loading } = useCredentials();
   const { getCategory } = useCategories();
+
+  // View state
+  const [view, setView] = useState<"grid" | "table">("grid");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("vault_view_preference");
+    if (saved === "grid" || saved === "table") setView(saved);
+  }, []);
+
+  const handleViewChange = (v: "grid" | "table") => {
+    setView(v);
+    localStorage.setItem("vault_view_preference", v);
+  };
 
   // Filter & search states
   const [searchQuery, setSearchQuery] = useState("");
@@ -199,16 +213,40 @@ function DashboardContent() {
           </p>
         </div>
 
-        <Button
-          size="sm"
-          render={
-            <Link href="/credentials/new" aria-label="Add new credential" />
-          }
-          className="gap-1.5 self-start sm:self-auto"
-        >
-          <Plus className="size-4" aria-hidden="true" />
-          Add Credential
-        </Button>
+        <div className="flex items-center gap-2">
+          <div className="hidden sm:flex items-center rounded-md border p-0.5 bg-muted/20">
+            <Button
+              variant={view === "grid" ? "secondary" : "ghost"}
+              size="icon-sm"
+              onClick={() => handleViewChange("grid")}
+              className="size-7 rounded-sm shadow-none"
+              aria-label="Grid view"
+            >
+              <LayoutGrid className="size-4" />
+            </Button>
+            <Button
+              variant={view === "table" ? "secondary" : "ghost"}
+              size="icon-sm"
+              onClick={() => handleViewChange("table")}
+              className="size-7 rounded-sm shadow-none"
+              aria-label="Table view"
+            >
+              <List className="size-4" />
+            </Button>
+          </div>
+          <Button
+            size="sm"
+            nativeButton={false}
+            render={
+              <Link href="/credentials/new" aria-label="Add new credential" />
+            }
+            className="gap-1.5 self-start sm:self-auto"
+          >
+            <Plus className="size-4" aria-hidden="true" />
+            <span className="hidden sm:inline">Add Credential</span>
+            <span className="sm:hidden">Add</span>
+          </Button>
+        </div>
       </div>
 
       {/* Search, Filter, and Sort Bar */}
@@ -258,19 +296,23 @@ function DashboardContent() {
           />
         ))}
 
-      {/* Credential Grid */}
+      {/* Credential List */}
       {!loading && filteredCredentials.length > 0 && (
-        <ul
-          role="list"
-          aria-label="Credentials list"
-          className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 list-none p-0 m-0"
-        >
-          {filteredCredentials.map((credential) => (
-            <li key={credential.id} className="list-none">
-              <CredentialCard credential={credential} />
-            </li>
-          ))}
-        </ul>
+        view === "grid" ? (
+          <ul
+            role="list"
+            aria-label="Credentials list"
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 list-none p-0 m-0"
+          >
+            {filteredCredentials.map((credential) => (
+              <li key={credential.id} className="list-none">
+                <CredentialCard credential={credential} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <CredentialTable credentials={filteredCredentials} />
+        )
       )}
     </div>
   );

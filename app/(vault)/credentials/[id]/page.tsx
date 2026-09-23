@@ -193,6 +193,20 @@ export default function CredentialDetailPage({
     ? getCategory(credential.categoryId)
     : undefined;
 
+  let displayDomain: string | null = null;
+  if (credential.websiteUrl) {
+    try {
+      const url = new URL(
+        /^https?:\/\//i.test(credential.websiteUrl)
+          ? credential.websiteUrl
+          : `https://${credential.websiteUrl}`,
+      );
+      displayDomain = url.hostname.replace(/^www\./, "");
+    } catch {
+      displayDomain = credential.websiteUrl;
+    }
+  }
+
   return (
     <div className="container max-w-2xl py-6 px-4 space-y-4">
       <div className="flex items-center justify-between">
@@ -261,7 +275,17 @@ export default function CredentialDetailPage({
                 className="inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors hover:bg-accent cursor-pointer"
                 aria-label={`Visit ${credential.websiteUrl} in new tab`}
               >
-                <Globe className="size-3.5" aria-hidden="true" />
+                {displayDomain ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={`https://www.google.com/s2/favicons?domain=${displayDomain}&sz=32`}
+                    className="size-3.5 rounded-sm"
+                    alt=""
+                    loading="lazy"
+                  />
+                ) : (
+                  <Globe className="size-3.5" aria-hidden="true" />
+                )}
                 Visit Site
                 <ExternalLink className="size-3" aria-hidden="true" />
               </button>

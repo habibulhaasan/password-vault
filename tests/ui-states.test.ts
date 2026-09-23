@@ -121,7 +121,8 @@ describe("UI States, Accessibility & Error Boundary Tests", () => {
         error: new Error("Test error"),
       };
 
-      let nextState: { hasError: boolean; error: Error | null };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let nextState: any;
       boundary.setState = (update) => {
         nextState = update;
         Object.assign(boundary.state, update);
