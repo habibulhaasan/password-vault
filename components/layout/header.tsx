@@ -70,17 +70,17 @@ export function Header() {
 
         <Link
           href="/dashboard"
-          className="flex items-center gap-2 font-semibold tracking-tight hover:opacity-90 transition-opacity"
+          className="flex items-center gap-1.5 sm:gap-2 font-semibold tracking-tight hover:opacity-90 transition-opacity min-w-0"
           aria-label="Password Vault Home"
         >
-          <Shield className="size-5 text-primary" aria-hidden="true" />
-          <span className="text-lg font-semibold tracking-tight">
+          <Shield className="size-5 text-primary shrink-0" aria-hidden="true" />
+          <span className="text-sm sm:text-lg font-semibold tracking-tight whitespace-nowrap truncate">
             Password Vault
           </span>
         </Link>
       </div>
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
         {/* Password Generator quick tool */}
         <Button
           type="button"

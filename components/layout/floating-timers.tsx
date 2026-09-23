@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useVault } from "@/hooks/use-vault";
-import { Lock, ClipboardX } from "lucide-react";
+import { Lock, ClipboardX, GripHorizontal, X } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function FloatingTimers() {
   const { status, autoLockMinutes } = useVault();
@@ -18,6 +19,41 @@ export function FloatingTimers() {
   const [clipboardTimeLeft, setClipboardTimeLeft] = useState<number | null>(
     null,
   );
+  const [isHidden, setIsHidden] = useState(false);
+
+  // Dragging State
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragRef = useRef({ startX: 0, startY: 0, initialX: 0, initialY: 0 });
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Only drag on primary mouse button (0) or touch
+    if (e.button !== 0 && e.pointerType === "mouse") return;
+    
+    e.currentTarget.setPointerCapture(e.pointerId);
+    setIsDragging(true);
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      initialX: position.x,
+      initialY: position.y,
+    };
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragRef.current.startX;
+    const dy = e.clientY - dragRef.current.startY;
+    setPosition({
+      x: dragRef.current.initialX + dx,
+      y: dragRef.current.initialY + dy,
+    });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+    setIsDragging(false);
+  };
 
   useEffect(() => {
     // Load settings
@@ -67,8 +103,6 @@ export function FloatingTimers() {
   }, []);
 
   // Vault Timer Logic
-  // Since VaultProvider uses window activity events to reset its internal lastActivityRef,
-  // we can also track window activity here to sync our timer visually.
   useEffect(() => {
     if (status !== "unlocked" || !autoLockMinutes) {
       setVaultTimeLeft(null);
@@ -110,6 +144,13 @@ export function FloatingTimers() {
     return null;
   }
 
+  // If no timers are shown or active, don't render the widget
+  if (isHidden) return null;
+  if (!showVaultTimer && !showClipboardTimer) return null;
+  if (!showVaultTimer && clipboardTimeLeft === null) return null;
+  if (!showClipboardTimer && vaultTimeLeft === null) return null;
+  if (vaultTimeLeft === null && clipboardTimeLeft === null) return null;
+
   const formatTime = (ms: number) => {
     const totalSeconds = Math.ceil(ms / 1000);
     const m = Math.floor(totalSeconds / 60);
@@ -119,34 +160,61 @@ export function FloatingTimers() {
   };
 
   return (
-    <div className="fixed top-20 right-6 z-50 flex flex-col gap-3 items-end pointer-events-none">
-      {showClipboardTimer && clipboardTimeLeft !== null && (
-        <div className="flex items-center gap-2.5 bg-card/95 border border-border shadow-lg rounded-full px-4 py-2 backdrop-blur-sm animate-in slide-in-from-right-4 fade-in-50">
-          <ClipboardX className="size-4 text-emerald-500" />
-          <div className="flex flex-col">
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider leading-none">
-              Clipboard Clear
-            </span>
-            <span className="text-sm font-mono font-medium text-foreground leading-tight">
-              {formatTime(clipboardTimeLeft)}
-            </span>
-          </div>
-        </div>
+    <div 
+      className={cn(
+        "fixed z-50 flex touch-none select-none animate-in fade-in-50 slide-in-from-top-4",
+        isDragging ? "cursor-grabbing" : "cursor-grab"
       )}
-
-      {showVaultTimer && vaultTimeLeft !== null && (
-        <div className="flex items-center gap-2.5 bg-card/95 border border-border shadow-lg rounded-full px-4 py-2 backdrop-blur-sm animate-in slide-in-from-right-4 fade-in-50">
-          <Lock className="size-4 text-primary" />
-          <div className="flex flex-col">
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider leading-none">
-              Auto-Lock In
-            </span>
-            <span className="text-sm font-mono font-medium text-foreground leading-tight">
-              {formatTime(vaultTimeLeft)}
-            </span>
-          </div>
+      style={{
+        top: '10px',
+        left: '50%',
+        transform: `translate(calc(-50% + ${position.x}px), ${position.y}px)`,
+      }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      title="Drag to move timers"
+    >
+      <div className="flex items-center bg-card/80 backdrop-blur-md border border-border shadow-md rounded-full px-1 py-1 transition-shadow hover:shadow-lg whitespace-nowrap min-w-max">
+        <div className="p-1 text-muted-foreground opacity-50 hover:opacity-100 transition-opacity">
+          <GripHorizontal className="size-3.5" />
         </div>
-      )}
+        
+        <div className="flex items-center gap-2 pr-1">
+          {showClipboardTimer && clipboardTimeLeft !== null && (
+            <div className="flex items-center gap-1.5 border-l border-border/50 pl-2 first:border-l-0 first:pl-1">
+              <ClipboardX className="size-3.5 text-emerald-500 shrink-0" />
+              <span className="text-xs font-mono font-medium text-foreground w-[40px] text-center shrink-0">
+                {formatTime(clipboardTimeLeft)}
+              </span>
+            </div>
+          )}
+          
+          {showVaultTimer && vaultTimeLeft !== null && (
+            <div className="flex items-center gap-1.5 border-l border-border/50 pl-2 first:border-l-0 first:pl-1">
+              <Lock className="size-3.5 text-primary shrink-0" />
+              <span className="text-xs font-mono font-medium text-foreground w-[40px] text-center shrink-0">
+                {formatTime(vaultTimeLeft)}
+              </span>
+            </div>
+          )}
+          
+          <button
+            type="button"
+            className="p-1 rounded-full text-muted-foreground hover:bg-accent hover:text-foreground transition-colors ml-1"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsHidden(true);
+            }}
+            onPointerDown={(e) => e.stopPropagation()}
+            title="Hide timers temporarily"
+            aria-label="Hide timers"
+          >
+            <X className="size-3.5" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
