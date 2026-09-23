@@ -10,6 +10,7 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  setDoc,
   onSnapshot,
   getDocs,
   query,
@@ -26,7 +27,9 @@ import {
 
 export function useCategories() {
   const { user } = useAuth();
-  const [customCategories, setCustomCategories] = useState<Category[]>([]);
+  // In customCategories, we will also store system category overrides.
+  // We can use an additional field like `isDeleted` to mark system categories as deleted.
+  const [customCategories, setCustomCategories] = useState<(Category & { isDeleted?: boolean })[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,9 +43,9 @@ export function useCategories() {
     const unsubscribe = onSnapshot(
       categoriesRef,
       (snapshot) => {
-        const list: Category[] = snapshot.docs.map((doc) => doc.data());
+        const list = snapshot.docs.map((doc) => doc.data() as Category & { isDeleted?: boolean });
         // Sort custom categories by label alphabetically
-        list.sort((a, b) => a.label.localeCompare(b.label));
+        list.sort((a, b) => String(a?.label || "").localeCompare(String(b?.label || "")));
         setCustomCategories(list);
         setLoading(false);
       },
@@ -58,8 +61,38 @@ export function useCategories() {
 
   // Unified list of system and custom categories
   const categories = useMemo(() => {
-    return [...SYSTEM_CATEGORIES, ...customCategories];
+    const customMap = new Map<string, Category & { isDeleted?: boolean }>();
+    customCategories.forEach((c) => customMap.set(c.id, c));
+
+    // Process system categories (allow overrides and deletions)
+    const mergedSystem = SYSTEM_CATEGORIES
+      .map((sys) => {
+        if (customMap.has(sys.id)) {
+          const override = customMap.get(sys.id)!;
+          if (override.isDeleted) return null;
+          return { ...sys, ...override, isCustom: false };
+        }
+        return sys;
+      })
+      .filter(Boolean) as Category[];
+
+    // Process purely custom categories (not system overrides and not deleted)
+    const pureCustom = customCategories.filter(
+      (c) => !c.isDeleted && !SYSTEM_CATEGORIES.some((s) => s.id === c.id)
+    );
+
+    return [...mergedSystem, ...pureCustom];
   }, [customCategories]);
+
+  // Unified system categories to export (for the badge counting, etc)
+  const mergedSystemCategories = useMemo(() => {
+    return categories.filter((c) => !c.isCustom);
+  }, [categories]);
+
+  // Unified pure custom categories to export
+  const mergedCustomCategories = useMemo(() => {
+    return categories.filter((c) => c.isCustom);
+  }, [categories]);
 
   // Lookup helper
   const getCategory = useCallback(
@@ -80,7 +113,7 @@ export function useCategories() {
       const labelTrimmed = validated.label.trim();
       const labelLower = labelTrimmed.toLowerCase();
 
-      // Check for name conflict across all categories
+      // Check for name conflict across all active categories
       const exists = categories.some(
         (c) => c.label.toLowerCase() === labelLower
       );
@@ -102,7 +135,7 @@ export function useCategories() {
     [user, categories]
   );
 
-  // Update custom category
+  // Update category (works for both custom and system overrides)
   const updateCategory = useCallback(
     async (id: string, data: CategoryFormData): Promise<void> => {
       if (!user) {
@@ -110,9 +143,6 @@ export function useCategories() {
       }
 
       const isSystem = SYSTEM_CATEGORIES.some((c) => c.id === id);
-      if (isSystem) {
-        throw new Error("System categories cannot be modified.");
-      }
 
       const validated = categoryFormSchema.parse(data);
       const labelTrimmed = validated.label.trim();
@@ -127,16 +157,20 @@ export function useCategories() {
       }
 
       const docRef = getCategoryDocRef(user.uid, id);
-      await updateDoc(docRef, {
+      
+      // Use setDoc with merge: true to handle system category overrides that don't exist yet
+      await setDoc(docRef, {
         label: labelTrimmed,
         icon: validated.icon.trim(),
+        isCustom: !isSystem, // Keep system flags intact
+        userId: user.uid,
         updatedAt: serverTimestamp(),
-      });
+      }, { merge: true });
     },
     [user, categories]
   );
 
-  // Delete custom category with cascade unlinking of credentials
+  // Delete category with cascade unlinking of credentials
   const deleteCategory = useCallback(
     async (id: string): Promise<void> => {
       if (!user) {
@@ -144,9 +178,7 @@ export function useCategories() {
       }
 
       const isSystem = SYSTEM_CATEGORIES.some((c) => c.id === id);
-      if (isSystem) {
-        throw new Error("System categories cannot be deleted.");
-      }
+      const docRef = getCategoryDocRef(user.uid, id);
 
       // Check for any credentials assigned to this category
       const credsQuery = query(
@@ -156,7 +188,6 @@ export function useCategories() {
       const affectedCreds = await getDocs(credsQuery);
 
       if (!affectedCreds.empty) {
-        // Unlink category from affected credentials and delete category atomically
         const batch = writeBatch(db);
         affectedCreds.forEach((credDoc) => {
           batch.update(credDoc.ref, {
@@ -164,10 +195,19 @@ export function useCategories() {
             updatedAt: serverTimestamp(),
           });
         });
-        batch.delete(getCategoryDocRef(user.uid, id));
+        
+        if (isSystem) {
+          batch.set(docRef, { isDeleted: true, updatedAt: serverTimestamp() }, { merge: true });
+        } else {
+          batch.delete(docRef);
+        }
         await batch.commit();
       } else {
-        await deleteDoc(getCategoryDocRef(user.uid, id));
+        if (isSystem) {
+          await setDoc(docRef, { isDeleted: true, updatedAt: serverTimestamp() }, { merge: true });
+        } else {
+          await deleteDoc(docRef);
+        }
       }
     },
     [user]
@@ -175,8 +215,8 @@ export function useCategories() {
 
   return {
     categories,
-    customCategories,
-    systemCategories: SYSTEM_CATEGORIES,
+    customCategories: mergedCustomCategories,
+    systemCategories: mergedSystemCategories,
     loading,
     error,
     getCategory,

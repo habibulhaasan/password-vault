@@ -9,11 +9,9 @@ import {
   Unlock,
   Menu,
   LogOut,
-  Sparkles,
   User as UserIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +29,6 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { Sidebar } from "@/components/layout/sidebar";
-import { PasswordGeneratorDialog } from "@/components/password-generator/password-generator-dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { useVault } from "@/hooks/use-vault";
 import { announce } from "@/lib/a11y/announcer";
@@ -39,7 +36,6 @@ import { announce } from "@/lib/a11y/announcer";
 export function Header() {
   const { user, signOut } = useAuth();
   const { status, lockVault } = useVault();
-  const [generatorOpen, setGeneratorOpen] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const isUnlocked = status === "unlocked";
@@ -81,22 +77,6 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-        {/* Password Generator quick tool */}
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={() => setGeneratorOpen(true)}
-          title="Password Generator"
-          aria-label="Open password generator"
-          className="size-9 sm:size-8 text-muted-foreground hover:text-foreground"
-        >
-          <Sparkles className="size-4" aria-hidden="true" />
-          <span className="sr-only">Open password generator</span>
-        </Button>
-
-        <ThemeToggle />
-
         {/* Lock Vault button */}
         <Button
           type="button"
@@ -197,11 +177,6 @@ export function Header() {
           </DropdownMenu>
         )}
       </div>
-
-      <PasswordGeneratorDialog
-        open={generatorOpen}
-        onOpenChange={setGeneratorOpen}
-      />
     </header>
   );
 }

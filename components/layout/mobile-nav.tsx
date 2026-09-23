@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, FolderOpen, Tag, Settings } from "lucide-react";
+import { LayoutDashboard, FolderOpen, Tag, Settings, KeyRound } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PasswordGeneratorDialog } from "@/components/password-generator/password-generator-dialog";
 
 const navItems = [
   { href: "/dashboard", label: "Home", icon: LayoutDashboard },
@@ -14,31 +16,48 @@ const navItems = [
 
 export function MobileNav() {
   const pathname = usePathname();
+  const [generatorOpen, setGeneratorOpen] = useState(false);
 
   return (
-    <nav
-      className="fixed bottom-0 left-0 right-0 z-50 flex h-[calc(4rem+env(safe-area-inset-bottom,0px))] items-center justify-around border-t border-border bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom,0px)] md:hidden shadow-xs"
-      aria-label="Mobile navigation"
-    >
-      {navItems.map((item) => {
-        const isActive = pathname === item.href;
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            aria-current={isActive ? "page" : undefined}
-            className={cn(
-              "flex flex-col items-center justify-center gap-1 px-3 py-1.5 min-h-[44px] min-w-[56px] text-[11px] font-medium transition-all rounded-lg active:scale-95",
-              isActive
-                ? "text-primary font-semibold"
-                : "text-muted-foreground hover:text-foreground active:text-foreground",
-            )}
-          >
-            <item.icon className="size-5 shrink-0" />
-            <span className="leading-none">{item.label}</span>
-          </Link>
-        );
-      })}
-    </nav>
+    <>
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-50 flex h-[calc(4rem+env(safe-area-inset-bottom,0px))] items-center justify-around border-t border-border bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom,0px)] md:hidden shadow-xs"
+        aria-label="Mobile navigation"
+      >
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={isActive ? "page" : undefined}
+              className={cn(
+                "flex flex-col items-center justify-center gap-1 px-2 py-1.5 min-h-[44px] min-w-[56px] text-[10px] sm:text-[11px] font-medium transition-all rounded-lg active:scale-95",
+                isActive
+                  ? "text-primary font-semibold"
+                  : "text-muted-foreground hover:text-foreground active:text-foreground",
+              )}
+            >
+              <item.icon className="size-5 shrink-0" />
+              <span className="leading-none">{item.label}</span>
+            </Link>
+          );
+        })}
+        
+        <button
+          type="button"
+          onClick={() => setGeneratorOpen(true)}
+          className="flex flex-col items-center justify-center gap-1 px-2 py-1.5 min-h-[44px] min-w-[56px] text-[10px] sm:text-[11px] font-medium transition-all rounded-lg active:scale-95 text-muted-foreground hover:text-foreground active:text-foreground"
+        >
+          <KeyRound className="size-5 shrink-0" />
+          <span className="leading-none">Generator</span>
+        </button>
+      </nav>
+
+      <PasswordGeneratorDialog
+        open={generatorOpen}
+        onOpenChange={setGeneratorOpen}
+      />
+    </>
   );
 }

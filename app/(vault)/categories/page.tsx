@@ -283,6 +283,8 @@ export default function CategoriesPage() {
                         key={cat.id}
                         category={cat}
                         credentialCount={countsByCategory[cat.id] || 0}
+                        onEdit={setCategoryToEdit}
+                        onDelete={setCategoryToDelete}
                       />
                     ))}
                   </div>

@@ -6,6 +6,7 @@ export interface Category {
   label: string;
   icon: string;
   isCustom?: boolean;
+  isDeleted?: boolean;
   userId?: string;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;

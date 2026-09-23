@@ -73,40 +73,32 @@ export function CategoryItem({
           />
         </Link>
 
-        {isCustom && (
-          <div className="flex items-center gap-1">
-            {onEdit && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => onEdit(category)}
-                title={`Edit category ${category.label}`}
-                aria-label={`Edit category ${category.label}`}
-                className="size-7 text-muted-foreground hover:text-foreground touch-manipulation"
-              >
-                <Edit className="size-3.5" aria-hidden="true" />
-                <span className="sr-only">Edit category {category.label}</span>
-              </Button>
-            )}
-            {onDelete && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => onDelete(category)}
-                title={`Delete category ${category.label}`}
-                aria-label={`Delete category ${category.label}`}
-                className="size-7 text-muted-foreground hover:text-destructive touch-manipulation"
-              >
-                <Trash2 className="size-3.5" aria-hidden="true" />
-                <span className="sr-only">
-                  Delete category {category.label}
-                </span>
-              </Button>
-            )}
-          </div>
-        )}
+        <div className="flex items-center gap-1">
+          {onEdit && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => onEdit(category)}
+              aria-label={`Edit ${category.label} category`}
+              className="size-7 text-muted-foreground hover:text-foreground"
+            >
+              <Edit className="size-3.5" />
+            </Button>
+          )}
+          {onDelete && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => onDelete(category)}
+              aria-label={`Delete ${category.label} category`}
+              className="size-7 text-muted-foreground hover:text-destructive"
+            >
+              <Trash2 className="size-3.5" />
+            </Button>
+          )}
+        </div>
       </CardFooter>
     </Card>
   );

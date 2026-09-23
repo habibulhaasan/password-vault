@@ -63,12 +63,15 @@ service cloud.firestore {
           && request.resource.data.updatedAt is timestamp;
       }
 
-      // Categories collection (for user-created custom categories)
+      // Categories collection (for user-created custom categories & system overrides)
       match /categories/{categoryId} {
         allow read, delete: if isOwner(userId);
 
         allow create, update: if isOwner(userId)
-          && isNonEmptyString(request.resource.data.label, 50)
+          && (
+               (!('label' in request.resource.data) && request.resource.data.isDeleted == true)
+               || isNonEmptyString(request.resource.data.label, 50)
+             )
           && isOptionalString(request.resource.data, 'icon', 50);
       }
 
