@@ -121,7 +121,7 @@ describe("UI States, Accessibility & Error Boundary Tests", () => {
         error: new Error("Test error"),
       };
 
-      let nextState: any;
+      let nextState: { hasError: boolean; error: Error | null };
       boundary.setState = (update) => {
         nextState = update;
         Object.assign(boundary.state, update);
