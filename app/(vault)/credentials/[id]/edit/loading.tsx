@@ -3,4 +3,3 @@ import { CredentialFormSkeleton } from "@/components/credentials/credential-form
 export default function EditCredentialLoading() {
   return <CredentialFormSkeleton />;
 }
-

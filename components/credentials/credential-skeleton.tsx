@@ -134,4 +134,3 @@ export function CredentialDetailSkeleton() {
     </div>
   );
 }
-

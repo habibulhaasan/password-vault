@@ -2,7 +2,13 @@
 
 import React, { useState } from "react";
 import { useVault } from "@/hooks/use-vault";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, ShieldAlert, CheckCircle2, Lock } from "lucide-react";
 import { announce } from "@/lib/a11y/announcer";
@@ -72,7 +78,8 @@ export function AutoLockCard() {
                 Auto-Lock Policy
               </CardTitle>
               <CardDescription className="text-xs">
-                Automatically lock vault and purge decrypted memory after inactivity
+                Automatically lock vault and purge decrypted memory after
+                inactivity
               </CardDescription>
             </div>
           </div>
@@ -102,7 +109,7 @@ export function AutoLockCard() {
                   "relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 touch-manipulation",
                   isSelected
                     ? "border-primary bg-primary/5 text-foreground shadow-xs ring-1 ring-primary"
-                    : "border-border/70 hover:border-border hover:bg-muted/50 text-foreground"
+                    : "border-border/70 hover:border-border hover:bg-muted/50 text-foreground",
                 )}
               >
                 <div className="flex w-full items-center justify-between gap-2">
@@ -135,7 +142,9 @@ export function AutoLockCard() {
           <span>
             Current session timeout:{" "}
             <strong className="text-foreground font-semibold">
-              {autoLockMinutes === 0 ? "Disabled" : `${autoLockMinutes} minutes`}
+              {autoLockMinutes === 0
+                ? "Disabled"
+                : `${autoLockMinutes} minutes`}
             </strong>
           </span>
           <Button
@@ -153,4 +162,3 @@ export function AutoLockCard() {
     </Card>
   );
 }
-

@@ -18,7 +18,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CheckCircle2, Loader2 } from "lucide-react";
-import { forgotPasswordSchema, type ForgotPasswordFormValues } from "@/lib/validations/auth";
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordFormValues,
+} from "@/lib/validations/auth";
 
 export function ForgotPasswordForm() {
   const [error, setError] = useState<string | null>(null);
@@ -139,4 +142,3 @@ export function ForgotPasswordForm() {
     </Card>
   );
 }
-

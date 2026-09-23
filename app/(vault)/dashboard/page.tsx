@@ -14,10 +14,7 @@ import {
   SearchFilterBar,
   type SortOption,
 } from "@/components/filters/search-filter-bar";
-import {
-  type LastLoginFilter,
-  matchesLastLoginFilter,
-} from "@/lib/utils/date";
+import { type LastLoginFilter, matchesLastLoginFilter } from "@/lib/utils/date";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus } from "lucide-react";
@@ -37,7 +34,8 @@ function DashboardContent() {
   const [prevCategoryParam, setPrevCategoryParam] = useState(categoryParam);
   const [selectedTag, setSelectedTag] = useState(tagParam);
   const [prevTagParam, setPrevTagParam] = useState(tagParam);
-  const [lastLoginFilter, setLastLoginFilter] = useState<LastLoginFilter>("all");
+  const [lastLoginFilter, setLastLoginFilter] =
+    useState<LastLoginFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("updated-desc");
 
   // Sync category param if URL changes (e.g. user clicked sidebar category)
@@ -73,10 +71,15 @@ function DashboardContent() {
           const term = debouncedSearch.toLowerCase().trim();
           const matchTitle = cred.title.toLowerCase().includes(term);
           const matchUrl = cred.websiteUrl?.toLowerCase().includes(term);
-          const matchTag = cred.tags?.some((t) => t.toLowerCase().includes(term));
-          const catObj = cred.categoryId ? getCategory(cred.categoryId) : undefined;
+          const matchTag = cred.tags?.some((t) =>
+            t.toLowerCase().includes(term),
+          );
+          const catObj = cred.categoryId
+            ? getCategory(cred.categoryId)
+            : undefined;
           const matchCategory = catObj?.label.toLowerCase().includes(term);
-          if (!matchTitle && !matchUrl && !matchTag && !matchCategory) return false;
+          if (!matchTitle && !matchUrl && !matchTag && !matchCategory)
+            return false;
         }
 
         // Category matching
@@ -108,13 +111,21 @@ function DashboardContent() {
           case "title-desc":
             return b.title.localeCompare(a.title);
           case "login-desc": {
-            const timeA = a.lastLoginAt?.toMillis ? a.lastLoginAt.toMillis() : 0;
-            const timeB = b.lastLoginAt?.toMillis ? b.lastLoginAt.toMillis() : 0;
+            const timeA = a.lastLoginAt?.toMillis
+              ? a.lastLoginAt.toMillis()
+              : 0;
+            const timeB = b.lastLoginAt?.toMillis
+              ? b.lastLoginAt.toMillis()
+              : 0;
             return timeB - timeA;
           }
           case "login-asc": {
-            const timeA = a.lastLoginAt?.toMillis ? a.lastLoginAt.toMillis() : 0;
-            const timeB = b.lastLoginAt?.toMillis ? b.lastLoginAt.toMillis() : 0;
+            const timeA = a.lastLoginAt?.toMillis
+              ? a.lastLoginAt.toMillis()
+              : 0;
+            const timeB = b.lastLoginAt?.toMillis
+              ? b.lastLoginAt.toMillis()
+              : 0;
             return timeA - timeB;
           }
           case "updated-desc":
@@ -125,7 +136,15 @@ function DashboardContent() {
           }
         }
       });
-  }, [credentials, debouncedSearch, selectedCategory, selectedTag, lastLoginFilter, sortBy, getCategory]);
+  }, [
+    credentials,
+    debouncedSearch,
+    selectedCategory,
+    selectedTag,
+    lastLoginFilter,
+    sortBy,
+    getCategory,
+  ]);
 
   const handleResetFilters = () => {
     setSearchQuery("");
@@ -147,7 +166,7 @@ function DashboardContent() {
       announce(
         filteredCredentials.length === 0
           ? "No credentials found matching your filter criteria"
-          : `Showing ${filteredCredentials.length} of ${credentials.length} credentials`
+          : `Showing ${filteredCredentials.length} of ${credentials.length} credentials`,
       );
     }
   }, [filteredCredentials.length, isFiltering, loading, credentials.length]);
@@ -182,7 +201,9 @@ function DashboardContent() {
 
         <Button
           size="sm"
-          render={<Link href="/credentials/new" aria-label="Add new credential" />}
+          render={
+            <Link href="/credentials/new" aria-label="Add new credential" />
+          }
           className="gap-1.5 self-start sm:self-auto"
         >
           <Plus className="size-4" aria-hidden="true" />
@@ -213,15 +234,17 @@ function DashboardContent() {
 
       {/* Empty Vault State (Section 26) */}
       {!loading && credentials.length === 0 && (
-        <EmptyState
-          variant="vault-empty"
-          actionHref="/credentials/new"
-        />
+        <EmptyState variant="vault-empty" actionHref="/credentials/new" />
       )}
 
       {/* Empty Search/Filter Results State (Section 26) */}
-      {!loading && credentials.length > 0 && filteredCredentials.length === 0 && (
-        selectedCategory && !searchQuery.trim() && !selectedTag && lastLoginFilter === "all" ? (
+      {!loading &&
+        credentials.length > 0 &&
+        filteredCredentials.length === 0 &&
+        (selectedCategory &&
+        !searchQuery.trim() &&
+        !selectedTag &&
+        lastLoginFilter === "all" ? (
           <EmptyState
             variant="no-category-items"
             categoryName={getCategory(selectedCategory)?.label}
@@ -233,8 +256,7 @@ function DashboardContent() {
             variant="no-search-results"
             onResetFilters={handleResetFilters}
           />
-        )
-      )}
+        ))}
 
       {/* Credential Grid */}
       {!loading && filteredCredentials.length > 0 && (

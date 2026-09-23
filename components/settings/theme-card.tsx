@@ -2,7 +2,13 @@
 
 import React, { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Sun, Moon, Laptop, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,7 +44,11 @@ const THEME_OPTIONS: ThemeOption[] = [
 
 export function ThemeCard() {
   const { theme, setTheme } = useTheme();
-  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
 
   return (
     <Card className="border-border shadow-xs">
@@ -49,7 +59,9 @@ export function ThemeCard() {
             <Moon className="hidden h-5 w-5 dark:block" />
           </div>
           <div>
-            <CardTitle className="text-base font-semibold">Appearance</CardTitle>
+            <CardTitle className="text-base font-semibold">
+              Appearance
+            </CardTitle>
             <CardDescription className="text-xs">
               Customize the theme and visual appearance of your vault interface
             </CardDescription>
@@ -71,7 +83,7 @@ export function ThemeCard() {
                   "relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   isSelected
                     ? "border-primary bg-primary/5 text-foreground shadow-xs ring-1 ring-primary"
-                    : "border-border/70 hover:border-border hover:bg-muted/50 text-foreground"
+                    : "border-border/70 hover:border-border hover:bg-muted/50 text-foreground",
                 )}
               >
                 <div className="flex w-full items-center justify-between gap-2">

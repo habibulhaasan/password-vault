@@ -23,8 +23,13 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         className="flex min-h-screen items-center justify-center bg-background"
       >
         <div className="flex flex-col items-center gap-3 text-muted-foreground p-6 rounded-xl border border-border/40 bg-card shadow-sm">
-          <Loader2 className="size-6 animate-spin text-primary" aria-hidden="true" />
-          <p className="text-xs font-medium text-foreground">Verifying authentication session...</p>
+          <Loader2
+            className="size-6 animate-spin text-primary"
+            aria-hidden="true"
+          />
+          <p className="text-xs font-medium text-foreground">
+            Verifying authentication session...
+          </p>
           <span className="sr-only">Checking session status...</span>
         </div>
       </div>
@@ -37,4 +42,3 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   return <>{children}</>;
 }
-

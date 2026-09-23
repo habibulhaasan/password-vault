@@ -38,4 +38,3 @@ export function A11yAnnouncer() {
     </div>
   );
 }
-

@@ -18,7 +18,8 @@ export default function NotFound() {
             Page Not Found
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            The page you are looking for does not exist, has been moved, or is no longer accessible.
+            The page you are looking for does not exist, has been moved, or is
+            no longer accessible.
           </p>
         </div>
 
@@ -46,4 +47,3 @@ export default function NotFound() {
     </div>
   );
 }
-

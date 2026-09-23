@@ -81,7 +81,9 @@ export function ChangeMasterPasswordDialog({
     control,
     name: "newPassword",
   });
-  const strength = newPasswordValue ? getPasswordStrength(newPasswordValue) : null;
+  const strength = newPasswordValue
+    ? getPasswordStrength(newPasswordValue)
+    : null;
 
   const handleOpenChange = (newOpen: boolean) => {
     if (isSubmitting) return;
@@ -134,7 +136,8 @@ export function ChangeMasterPasswordDialog({
                   Change Master Password
                 </DialogTitle>
                 <DialogDescription className="text-xs">
-                  Re-encrypt your entire vault with a newly derived 256-bit AES-GCM key
+                  Re-encrypt your entire vault with a newly derived 256-bit
+                  AES-GCM key
                 </DialogDescription>
               </div>
             </div>
@@ -150,7 +153,8 @@ export function ChangeMasterPasswordDialog({
                   Master Password Changed
                 </h4>
                 <p className="mt-1 text-xs text-muted-foreground max-w-xs">
-                  All vault credentials were successfully re-encrypted with your new cryptographic key.
+                  All vault credentials were successfully re-encrypted with your
+                  new cryptographic key.
                 </p>
               </div>
             </div>
@@ -162,7 +166,9 @@ export function ChangeMasterPasswordDialog({
                   Zero-Knowledge Security Warning
                 </div>
                 <p className="text-[11px] leading-relaxed text-amber-700 dark:text-amber-400/90">
-                  Your master password is never stored or sent to any server. If you lose this password, nobody—not even support—can recover your vault data.
+                  Your master password is never stored or sent to any server. If
+                  you lose this password, nobody—not even support—can recover
+                  your vault data.
                 </p>
               </div>
 
@@ -175,8 +181,12 @@ export function ChangeMasterPasswordDialog({
 
               {/* Current Master Password */}
               <div className="space-y-1.5">
-                <Label htmlFor="currentPassword" className="text-xs font-medium">
-                  Current Master Password <span className="text-destructive">*</span>
+                <Label
+                  htmlFor="currentPassword"
+                  className="text-xs font-medium"
+                >
+                  Current Master Password{" "}
+                  <span className="text-destructive">*</span>
                 </Label>
                 <PasswordField
                   id="currentPassword"
@@ -191,13 +201,14 @@ export function ChangeMasterPasswordDialog({
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="newPassword" className="text-xs font-medium">
-                    New Master Password <span className="text-destructive">*</span>
+                    New Master Password{" "}
+                    <span className="text-destructive">*</span>
                   </Label>
                   {strength && (
                     <span
                       className={cn(
                         "text-[10px] font-medium uppercase tracking-wider",
-                        getStrengthTextColor(strength.score)
+                        getStrengthTextColor(strength.score),
                       )}
                     >
                       {strength.label} ({strength.score}/4)
@@ -217,15 +228,15 @@ export function ChangeMasterPasswordDialog({
                 {newPasswordValue && (
                   <div className="flex h-1.5 w-full gap-1 overflow-hidden rounded-full bg-muted/60">
                     {[1, 2, 3, 4].map((step) => {
-                      const isActive = strength ? strength.score >= step : false;
+                      const isActive = strength
+                        ? strength.score >= step
+                        : false;
                       return (
                         <div
                           key={step}
                           className={cn(
                             "h-full flex-1 transition-all duration-300",
-                            isActive
-                              ? strength?.color
-                              : "bg-transparent"
+                            isActive ? strength?.color : "bg-transparent",
                           )}
                         />
                       );
@@ -236,8 +247,12 @@ export function ChangeMasterPasswordDialog({
 
               {/* Confirm New Master Password */}
               <div className="space-y-1.5">
-                <Label htmlFor="confirmNewPassword" className="text-xs font-medium">
-                  Confirm New Master Password <span className="text-destructive">*</span>
+                <Label
+                  htmlFor="confirmNewPassword"
+                  className="text-xs font-medium"
+                >
+                  Confirm New Master Password{" "}
+                  <span className="text-destructive">*</span>
                 </Label>
                 <PasswordField
                   id="confirmNewPassword"

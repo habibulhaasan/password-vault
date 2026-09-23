@@ -57,9 +57,7 @@ export function CategoryItem({
         </div>
       </CardHeader>
 
-      <CardContent className="pt-0 pb-3">
-        {/* Quick action bar */}
-      </CardContent>
+      <CardContent className="pt-0 pb-3">{/* Quick action bar */}</CardContent>
 
       <CardFooter className="flex items-center justify-between border-t border-border/40 pt-3 pb-3">
         <Link
@@ -69,7 +67,10 @@ export function CategoryItem({
         >
           <span>View credentials</span>
           <span className="sr-only">in {category.label}</span>
-          <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+          <ArrowRight
+            className="size-3 transition-transform group-hover:translate-x-0.5"
+            aria-hidden="true"
+          />
         </Link>
 
         {isCustom && (
@@ -99,7 +100,9 @@ export function CategoryItem({
                 className="size-7 text-muted-foreground hover:text-destructive touch-manipulation"
               >
                 <Trash2 className="size-3.5" aria-hidden="true" />
-                <span className="sr-only">Delete category {category.label}</span>
+                <span className="sr-only">
+                  Delete category {category.label}
+                </span>
               </Button>
             )}
           </div>
@@ -108,4 +111,3 @@ export function CategoryItem({
     </Card>
   );
 }
-

@@ -1,7 +1,13 @@
 "use client";
 
 import React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ShieldCheck, Cpu, Key, Lock, Database, EyeOff } from "lucide-react";
 
@@ -10,7 +16,8 @@ export function SecuritySpecsCard() {
     {
       label: "Encryption Cipher",
       value: "AES-GCM 256-bit",
-      description: "Authenticated encryption with fresh 12-byte random IV per record",
+      description:
+        "Authenticated encryption with fresh 12-byte random IV per record",
       icon: Lock,
     },
     {
@@ -28,13 +35,15 @@ export function SecuritySpecsCard() {
     {
       label: "Decryption Verification",
       value: "Canary Auth Token",
-      description: "Authenticates master password without decrypting stored credentials",
+      description:
+        "Authenticates master password without decrypting stored credentials",
       icon: EyeOff,
     },
     {
       label: "Zero-Knowledge Database",
       value: "Encrypted at Rest",
-      description: "Firebase/Firestore only ever holds ciphertext; plaintext never transmits",
+      description:
+        "Firebase/Firestore only ever holds ciphertext; plaintext never transmits",
       icon: Database,
     },
   ];
@@ -97,4 +106,3 @@ export function SecuritySpecsCard() {
     </Card>
   );
 }
-

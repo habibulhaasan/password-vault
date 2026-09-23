@@ -43,7 +43,8 @@ interface CredentialCardProps {
 }
 
 export function CredentialCard({ credential }: CredentialCardProps) {
-  const { decryptCredential, deleteCredential, markAsLoggedIn } = useCredentials();
+  const { decryptCredential, deleteCredential, markAsLoggedIn } =
+    useCredentials();
   const { getCategory } = useCategories();
   const { isCopied, copy } = useClipboardState(2000);
   const [isCopyingUser, setIsCopyingUser] = useState(false);
@@ -99,7 +100,9 @@ export function CredentialCard({ credential }: CredentialCardProps) {
     try {
       const decrypted = await decryptCredential(credential);
       await copy(decrypted.password, "pass", { clearAfterMs: 30000 });
-      announce(`Password for ${credential.title} copied to clipboard. Clipboard will be cleared in 30 seconds.`);
+      announce(
+        `Password for ${credential.title} copied to clipboard. Clipboard will be cleared in 30 seconds.`,
+      );
     } catch (err) {
       console.warn("Failed to copy password:", err);
     } finally {
@@ -138,7 +141,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
       const url = new URL(
         /^https?:\/\//i.test(credential.websiteUrl)
           ? credential.websiteUrl
-          : `https://${credential.websiteUrl}`
+          : `https://${credential.websiteUrl}`,
       );
       displayDomain = url.hostname.replace(/^www\./, "");
     } catch {
@@ -211,7 +214,10 @@ export function CredentialCard({ credential }: CredentialCardProps) {
                   Open Website
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem onClick={handleMarkAsLoggedIn} disabled={isLoggingIn}>
+              <DropdownMenuItem
+                onClick={handleMarkAsLoggedIn}
+                disabled={isLoggingIn}
+              >
                 <Clock className="size-3.5" aria-hidden="true" />
                 {isLoggingIn ? "Updating..." : "Mark as Logged In"}
               </DropdownMenuItem>
@@ -250,7 +256,9 @@ export function CredentialCard({ credential }: CredentialCardProps) {
         <div className="flex items-center justify-between gap-1.5">
           <div className="flex items-center gap-1.5 truncate">
             <Clock className="size-3.5 shrink-0" aria-hidden="true" />
-            <span className="truncate">Last login: {formatDaysSinceLastLogin(credential.lastLoginAt)}</span>
+            <span className="truncate">
+              Last login: {formatDaysSinceLastLogin(credential.lastLoginAt)}
+            </span>
           </div>
           <button
             type="button"
@@ -305,9 +313,15 @@ export function CredentialCard({ credential }: CredentialCardProps) {
             aria-label={`Copy username for ${credential.title}`}
           >
             {isCopyingUser ? (
-              <Loader2 className="size-3.5 sm:size-3 animate-spin" aria-hidden="true" />
+              <Loader2
+                className="size-3.5 sm:size-3 animate-spin"
+                aria-hidden="true"
+              />
             ) : isCopied("user") ? (
-              <Check className="size-3.5 sm:size-3 text-emerald-500" aria-hidden="true" />
+              <Check
+                className="size-3.5 sm:size-3 text-emerald-500"
+                aria-hidden="true"
+              />
             ) : (
               <User className="size-3.5 sm:size-3" aria-hidden="true" />
             )}
@@ -325,9 +339,15 @@ export function CredentialCard({ credential }: CredentialCardProps) {
             aria-label={`Copy password for ${credential.title}`}
           >
             {isCopyingPass ? (
-              <Loader2 className="size-3.5 sm:size-3 animate-spin" aria-hidden="true" />
+              <Loader2
+                className="size-3.5 sm:size-3 animate-spin"
+                aria-hidden="true"
+              />
             ) : isCopied("pass") ? (
-              <Check className="size-3.5 sm:size-3 text-emerald-500" aria-hidden="true" />
+              <Check
+                className="size-3.5 sm:size-3 text-emerald-500"
+                aria-hidden="true"
+              />
             ) : (
               <KeyRound className="size-3.5 sm:size-3" aria-hidden="true" />
             )}
@@ -347,7 +367,9 @@ export function CredentialCard({ credential }: CredentialCardProps) {
               aria-label={`Open website for ${credential.title} in new tab`}
             >
               <ExternalLink className="size-3.5" aria-hidden="true" />
-              <span className="sr-only">Open website for {credential.title}</span>
+              <span className="sr-only">
+                Open website for {credential.title}
+              </span>
             </Button>
           )}
 

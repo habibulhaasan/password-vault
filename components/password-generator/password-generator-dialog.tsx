@@ -51,8 +51,12 @@ export function PasswordGeneratorDialog({
   const { isCopied, copy } = useClipboardState(2000);
 
   const [length, setLength] = useState(defaultLength);
-  const [uppercase, setUppercase] = useState(DEFAULT_GENERATOR_OPTIONS.uppercase);
-  const [lowercase, setLowercase] = useState(DEFAULT_GENERATOR_OPTIONS.lowercase);
+  const [uppercase, setUppercase] = useState(
+    DEFAULT_GENERATOR_OPTIONS.uppercase,
+  );
+  const [lowercase, setLowercase] = useState(
+    DEFAULT_GENERATOR_OPTIONS.lowercase,
+  );
   const [numbers, setNumbers] = useState(DEFAULT_GENERATOR_OPTIONS.numbers);
   const [symbols, setSymbols] = useState(DEFAULT_GENERATOR_OPTIONS.symbols);
   const [avoidAmbiguous, setAvoidAmbiguous] = useState(false);
@@ -67,7 +71,7 @@ export function PasswordGeneratorDialog({
       numbers: DEFAULT_GENERATOR_OPTIONS.numbers,
       symbols: DEFAULT_GENERATOR_OPTIONS.symbols,
       avoidAmbiguous: false,
-    })
+    }),
   );
   const [showPassword, setShowPassword] = useState(true);
 
@@ -82,7 +86,7 @@ export function PasswordGeneratorDialog({
         numbers,
         symbols,
         avoidAmbiguous,
-      })
+      }),
     );
   } else if (!open && prevOpen) {
     setPrevOpen(false);
@@ -117,7 +121,9 @@ export function PasswordGeneratorDialog({
   const handleCopy = async () => {
     if (!password) return;
     await copy(password, "generator-modal", { clearAfterMs: 30000 });
-    announce("Generated password copied to clipboard. Clipboard will be cleared in 30 seconds.");
+    announce(
+      "Generated password copied to clipboard. Clipboard will be cleared in 30 seconds.",
+    );
   };
 
   const handleUsePassword = () => {
@@ -157,10 +163,12 @@ export function PasswordGeneratorDialog({
                 <span
                   className={cn(
                     "block truncate font-mono text-base font-medium select-all text-foreground tracking-wide",
-                    !showPassword && "tracking-widest"
+                    !showPassword && "tracking-widest",
                   )}
                 >
-                  {showPassword ? password : "•".repeat(Math.min(password.length, 28))}
+                  {showPassword
+                    ? password
+                    : "•".repeat(Math.min(password.length, 28))}
                 </span>
               </div>
 
@@ -192,7 +200,7 @@ export function PasswordGeneratorDialog({
                   <RotateCcw
                     className={cn(
                       "size-3.5 text-muted-foreground transition-transform duration-300",
-                      isRotating && "rotate-180 text-foreground"
+                      isRotating && "rotate-180 text-foreground",
                     )}
                   />
                   <span className="sr-only">Regenerate</span>
@@ -231,7 +239,7 @@ export function PasswordGeneratorDialog({
                       strength.score <= 1 && "text-destructive",
                       strength.score === 2 && "text-amber-500",
                       strength.score === 3 && "text-primary",
-                      strength.score === 4 && "text-emerald-500"
+                      strength.score === 4 && "text-emerald-500",
                     )}
                   >
                     {strength.label}
@@ -260,7 +268,7 @@ export function PasswordGeneratorDialog({
                       key={step}
                       className={cn(
                         "rounded-full transition-colors duration-300",
-                        colorClass
+                        colorClass,
                       )}
                     />
                   );
@@ -272,7 +280,10 @@ export function PasswordGeneratorDialog({
           {/* Controls: Length Slider & Numeric Box */}
           <div className="space-y-2">
             <div className="flex items-center justify-between text-xs">
-              <Label htmlFor="length-slider" className="font-medium text-foreground">
+              <Label
+                htmlFor="length-slider"
+                className="font-medium text-foreground"
+              >
                 Password Length
               </Label>
               <div className="flex items-center gap-1.5">
@@ -283,7 +294,9 @@ export function PasswordGeneratorDialog({
                   max={64}
                   value={length}
                   aria-label="Password length in characters"
-                  onChange={(e) => handleLengthChange(parseInt(e.target.value, 10))}
+                  onChange={(e) =>
+                    handleLengthChange(parseInt(e.target.value, 10))
+                  }
                   className="h-7 w-16 text-center font-mono text-xs"
                 />
                 <span className="text-muted-foreground text-xs">chars</span>
@@ -313,13 +326,17 @@ export function PasswordGeneratorDialog({
 
           {/* Controls: Character Sets Checkboxes */}
           <div className="space-y-2 border-t pt-3">
-            <p className="text-xs font-medium text-foreground">Character Types</p>
+            <p className="text-xs font-medium text-foreground">
+              Character Types
+            </p>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <label
                 htmlFor="opt-uppercase"
                 className={cn(
                   "flex items-center gap-2.5 rounded-lg border p-2.5 min-h-[42px] transition-colors cursor-pointer select-none touch-manipulation",
-                  uppercase ? "bg-accent/40 border-primary/30" : "bg-card border-border/70 hover:bg-muted/30"
+                  uppercase
+                    ? "bg-accent/40 border-primary/30"
+                    : "bg-card border-border/70 hover:bg-muted/30",
                 )}
               >
                 <input
@@ -337,7 +354,9 @@ export function PasswordGeneratorDialog({
                 htmlFor="opt-lowercase"
                 className={cn(
                   "flex items-center gap-2.5 rounded-lg border p-2.5 min-h-[42px] transition-colors cursor-pointer select-none touch-manipulation",
-                  lowercase ? "bg-accent/40 border-primary/30" : "bg-card border-border/70 hover:bg-muted/30"
+                  lowercase
+                    ? "bg-accent/40 border-primary/30"
+                    : "bg-card border-border/70 hover:bg-muted/30",
                 )}
               >
                 <input
@@ -355,7 +374,9 @@ export function PasswordGeneratorDialog({
                 htmlFor="opt-numbers"
                 className={cn(
                   "flex items-center gap-2.5 rounded-lg border p-2.5 min-h-[42px] transition-colors cursor-pointer select-none touch-manipulation",
-                  numbers ? "bg-accent/40 border-primary/30" : "bg-card border-border/70 hover:bg-muted/30"
+                  numbers
+                    ? "bg-accent/40 border-primary/30"
+                    : "bg-card border-border/70 hover:bg-muted/30",
                 )}
               >
                 <input
@@ -373,7 +394,9 @@ export function PasswordGeneratorDialog({
                 htmlFor="opt-symbols"
                 className={cn(
                   "flex items-center gap-2.5 rounded-lg border p-2.5 min-h-[42px] transition-colors cursor-pointer select-none touch-manipulation",
-                  symbols ? "bg-accent/40 border-primary/30" : "bg-card border-border/70 hover:bg-muted/30"
+                  symbols
+                    ? "bg-accent/40 border-primary/30"
+                    : "bg-card border-border/70 hover:bg-muted/30",
                 )}
               >
                 <input
@@ -393,7 +416,9 @@ export function PasswordGeneratorDialog({
               htmlFor="opt-ambiguous"
               className={cn(
                 "flex items-center justify-between rounded-lg border p-2.5 min-h-[42px] transition-colors cursor-pointer select-none text-xs touch-manipulation",
-                avoidAmbiguous ? "bg-accent/40 border-primary/30" : "bg-card border-border/70 hover:bg-muted/30"
+                avoidAmbiguous
+                  ? "bg-accent/40 border-primary/30"
+                  : "bg-card border-border/70 hover:bg-muted/30",
               )}
             >
               <div className="space-y-0.5">
@@ -461,4 +486,3 @@ export function PasswordGeneratorDialog({
     </Dialog>
   );
 }
-

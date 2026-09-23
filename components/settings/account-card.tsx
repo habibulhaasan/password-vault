@@ -4,7 +4,13 @@ import React, { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useVault } from "@/hooks/use-vault";
 import { sendPasswordResetEmail, auth } from "@/lib/firebase/auth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   UserCircle,
@@ -67,11 +73,14 @@ export function AccountCard() {
   };
 
   const createdDate = firebaseUser?.metadata.creationTime
-    ? new Date(firebaseUser.metadata.creationTime).toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      })
+    ? new Date(firebaseUser.metadata.creationTime).toLocaleDateString(
+        undefined,
+        {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        },
+      )
     : "Unknown";
 
   return (
@@ -86,7 +95,8 @@ export function AccountCard() {
               Account & Authentication
             </CardTitle>
             <CardDescription className="text-xs">
-              Manage your Firebase account identity and authentication credentials
+              Manage your Firebase account identity and authentication
+              credentials
             </CardDescription>
           </div>
         </div>
@@ -143,7 +153,9 @@ export function AccountCard() {
               {copiedUid ? (
                 <>
                   <Check className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 mr-1" />
-                  <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
+                  <span className="text-emerald-600 dark:text-emerald-400">
+                    Copied
+                  </span>
                 </>
               ) : (
                 <>
@@ -160,7 +172,8 @@ export function AccountCard() {
           <div className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-700 dark:text-emerald-400 animate-in fade-in">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
             <span>
-              Password reset link sent to <strong>{user?.email}</strong>. Check your inbox.
+              Password reset link sent to <strong>{user?.email}</strong>. Check
+              your inbox.
             </span>
           </div>
         )}
@@ -205,4 +218,3 @@ export function AccountCard() {
     </Card>
   );
 }
-

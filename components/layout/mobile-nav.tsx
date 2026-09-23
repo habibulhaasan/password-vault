@@ -31,7 +31,7 @@ export function MobileNav() {
               "flex flex-col items-center justify-center gap-1 px-3 py-1.5 min-h-[44px] min-w-[56px] text-[11px] font-medium transition-all rounded-lg active:scale-95",
               isActive
                 ? "text-primary font-semibold"
-                : "text-muted-foreground hover:text-foreground active:text-foreground"
+                : "text-muted-foreground hover:text-foreground active:text-foreground",
             )}
           >
             <item.icon className="size-5 shrink-0" />
@@ -42,4 +42,3 @@ export function MobileNav() {
     </nav>
   );
 }
-

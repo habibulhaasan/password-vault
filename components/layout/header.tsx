@@ -17,6 +17,7 @@ import { ThemeToggle } from "@/components/layout/theme-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -114,7 +115,9 @@ export function Header() {
           aria-label={isUnlocked ? "Lock vault now" : "Vault is locked"}
           className={cn(
             "size-9 sm:size-8",
-            isUnlocked ? "text-amber-600 hover:text-amber-700 dark:text-amber-400" : "opacity-50"
+            isUnlocked
+              ? "text-amber-600 hover:text-amber-700 dark:text-amber-400"
+              : "opacity-50",
           )}
         >
           {isUnlocked ? (
@@ -169,16 +172,18 @@ export function Header() {
               <span className="sr-only">User account menu</span>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-xs font-medium leading-none text-foreground">
-                    Signed in as
-                  </p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {user.email}
-                  </p>
-                </div>
-              </DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-xs font-medium leading-none text-foreground">
+                      Signed in as
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"

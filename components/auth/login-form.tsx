@@ -55,7 +55,9 @@ export function LoginForm() {
           setError("Too many failed attempts. Please try again later.");
           break;
         default:
-          setError("Failed to sign in. Please verify your connection and try again.");
+          setError(
+            "Failed to sign in. Please verify your connection and try again.",
+          );
           break;
       }
     }
@@ -121,7 +123,9 @@ export function LoginForm() {
                 required
                 aria-required="true"
                 aria-invalid={!!errors.password}
-                aria-describedby={errors.password ? "password-error" : undefined}
+                aria-describedby={
+                  errors.password ? "password-error" : undefined
+                }
                 className="pr-10"
                 {...register("password")}
               />
@@ -179,4 +183,3 @@ export function LoginForm() {
     </Card>
   );
 }
-

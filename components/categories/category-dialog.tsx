@@ -42,7 +42,7 @@ function CategoryFormContent({
 }) {
   const [label, setLabel] = useState(categoryToEdit?.label || "");
   const [selectedIcon, setSelectedIcon] = useState(
-    categoryToEdit?.icon || "folder"
+    categoryToEdit?.icon || "folder",
   );
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -136,7 +136,7 @@ function CategoryFormContent({
                   "flex flex-col items-center justify-center rounded-lg p-2 text-xs transition-all hover:bg-accent",
                   isSelected
                     ? "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <CategoryIcon name={item.name} className="size-5" />
@@ -196,4 +196,3 @@ export function CategoryDialog({
     </Dialog>
   );
 }
-

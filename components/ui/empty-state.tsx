@@ -31,7 +31,10 @@ export function EmptyState({
   secondaryAction,
   className,
 }: EmptyStateProps) {
-  const renderAction = (act: EmptyStateAction | React.ReactNode, isSecondary = false) => {
+  const renderAction = (
+    act: EmptyStateAction | React.ReactNode,
+    isSecondary = false,
+  ) => {
     if (!act) return null;
     if (React.isValidElement(act)) return act;
 
@@ -76,7 +79,7 @@ export function EmptyState({
       aria-label={title}
       className={cn(
         "flex min-h-[35vh] flex-col items-center justify-center rounded-xl border border-dashed border-border/80 p-8 text-center animate-in fade-in-50",
-        className
+        className,
       )}
     >
       <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-3">
@@ -89,7 +92,9 @@ export function EmptyState({
         )}
       </div>
 
-      <h3 className="text-base font-semibold tracking-tight text-foreground">{title}</h3>
+      <h3 className="text-base font-semibold tracking-tight text-foreground">
+        {title}
+      </h3>
 
       {description && (
         <p className="mt-1.5 max-w-sm text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -106,4 +111,3 @@ export function EmptyState({
     </div>
   );
 }
-

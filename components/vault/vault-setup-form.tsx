@@ -67,7 +67,8 @@ export function VaultSetupForm() {
           </div>
           <CardTitle className="text-xl">Create Master Password</CardTitle>
           <CardDescription>
-            Set up the master encryption key that will protect all your saved credentials.
+            Set up the master encryption key that will protect all your saved
+            credentials.
           </CardDescription>
         </CardHeader>
 
@@ -76,9 +77,10 @@ export function VaultSetupForm() {
             <div className="flex items-start gap-2.5 rounded-lg border border-amber-500/20 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-400">
               <ShieldAlert className="mt-0.5 size-4 shrink-0" />
               <p>
-                <strong>Important:</strong> Your Master Password derives the local AES-256
-                encryption key. It is never transmitted to our servers. If you lose this
-                password, your encrypted vault cannot be recovered.
+                <strong>Important:</strong> Your Master Password derives the
+                local AES-256 encryption key. It is never transmitted to our
+                servers. If you lose this password, your encrypted vault cannot
+                be recovered.
               </p>
             </div>
 
@@ -163,4 +165,3 @@ export function VaultSetupForm() {
     </div>
   );
 }
-

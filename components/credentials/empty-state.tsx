@@ -4,7 +4,8 @@ import { EmptyState, type EmptyStateAction } from "@/components/ui/empty-state";
 import { ShieldCheck, Plus, SearchX, FolderOpen } from "lucide-react";
 
 interface CredentialEmptyStateProps {
-  variant?: "vault-empty" | "no-search-results" | "no-category-items" | "custom";
+  variant?:
+    "vault-empty" | "no-search-results" | "no-category-items" | "custom";
   title?: string;
   description?: string;
   actionText?: string;
@@ -71,7 +72,8 @@ export function EmptyStateCredentials({
             : "No credentials in this category.")
         }
         description={
-          description || "Add a credential to this category or clear your selection."
+          description ||
+          "Add a credential to this category or clear your selection."
         }
         action={{
           label: actionText || "Add Credential",

@@ -19,7 +19,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { registerSchema, type RegisterFormValues } from "@/lib/validations/auth";
+import {
+  registerSchema,
+  type RegisterFormValues,
+} from "@/lib/validations/auth";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -115,7 +118,9 @@ export function RegisterForm() {
                 required
                 aria-required="true"
                 aria-invalid={!!errors.password}
-                aria-describedby={errors.password ? "password-error" : undefined}
+                aria-describedby={
+                  errors.password ? "password-error" : undefined
+                }
                 className="pr-10"
                 {...register("password")}
               />
@@ -157,11 +162,16 @@ export function RegisterForm() {
               required
               aria-required="true"
               aria-invalid={!!errors.confirmPassword}
-              aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
+              aria-describedby={
+                errors.confirmPassword ? "confirmPassword-error" : undefined
+              }
               {...register("confirmPassword")}
             />
             {errors.confirmPassword && (
-              <p id="confirmPassword-error" className="text-xs text-destructive">
+              <p
+                id="confirmPassword-error"
+                className="text-xs text-destructive"
+              >
                 {errors.confirmPassword.message}
               </p>
             )}
@@ -194,4 +204,3 @@ export function RegisterForm() {
     </Card>
   );
 }
-

@@ -3,4 +3,3 @@ import { CredentialDetailSkeleton } from "@/components/credentials/credential-sk
 export default function CredentialDetailLoading() {
   return <CredentialDetailSkeleton />;
 }
-

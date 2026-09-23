@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { KeyRound, ShieldAlert, RefreshCw } from "lucide-react";
@@ -24,7 +30,8 @@ export function MasterPasswordCard() {
                   Master Password
                 </CardTitle>
                 <CardDescription className="text-xs">
-                  Your master encryption key used to derive all vault cryptographic operations
+                  Your master encryption key used to derive all vault
+                  cryptographic operations
                 </CardDescription>
               </div>
             </div>
@@ -43,7 +50,8 @@ export function MasterPasswordCard() {
                 Vault Master Encryption Key
               </p>
               <p className="text-xs text-muted-foreground">
-                Protects all passwords, usernames, and notes with AES-GCM 256-bit encryption.
+                Protects all passwords, usernames, and notes with AES-GCM
+                256-bit encryption.
               </p>
             </div>
             <Button
@@ -61,7 +69,9 @@ export function MasterPasswordCard() {
           <div className="flex items-start gap-2 text-xs text-muted-foreground">
             <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
             <span>
-              If you forget your master password, your stored vault credentials cannot be decrypted. We recommend saving it in a secure offline physical location.
+              If you forget your master password, your stored vault credentials
+              cannot be decrypted. We recommend saving it in a secure offline
+              physical location.
             </span>
           </div>
         </CardContent>
@@ -74,4 +84,3 @@ export function MasterPasswordCard() {
     </>
   );
 }
-

@@ -53,7 +53,10 @@ export function TagCard({ tag, onRename, onDelete }: TagCardProps) {
         >
           <span>View credentials</span>
           <span className="sr-only">tagged with #{tag.name}</span>
-          <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+          <ArrowRight
+            className="size-3 transition-transform group-hover:translate-x-0.5"
+            aria-hidden="true"
+          />
         </Link>
 
         <div className="flex items-center gap-1">
@@ -90,4 +93,3 @@ export function TagCard({ tag, onRename, onDelete }: TagCardProps) {
     </Card>
   );
 }
-

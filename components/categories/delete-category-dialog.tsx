@@ -121,4 +121,3 @@ export function DeleteCategoryDialog({
     </Dialog>
   );
 }
-

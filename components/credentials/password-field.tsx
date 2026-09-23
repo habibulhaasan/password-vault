@@ -8,15 +8,20 @@ import { copyToClipboard } from "@/lib/utils/clipboard";
 import { announce } from "@/lib/a11y/announcer";
 import { cn } from "@/lib/utils";
 
-export interface PasswordFieldProps
-  extends React.ComponentProps<typeof Input> {
+export interface PasswordFieldProps extends React.ComponentProps<typeof Input> {
   error?: string;
   allowCopy?: boolean;
   onGenerate?: () => void;
 }
 
-export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldProps>(
-  ({ className, error, disabled, allowCopy = false, onGenerate, id, ...props }, forwardedRef) => {
+export const PasswordField = React.forwardRef<
+  HTMLInputElement,
+  PasswordFieldProps
+>(
+  (
+    { className, error, disabled, allowCopy = false, onGenerate, id, ...props },
+    forwardedRef,
+  ) => {
     const [visible, setVisible] = useState(false);
     const [copied, setCopied] = useState(false);
     const innerRef = useRef<HTMLInputElement | null>(null);
@@ -28,7 +33,9 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
       if (typeof forwardedRef === "function") {
         forwardedRef(node);
       } else if (forwardedRef) {
-        (forwardedRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
+        (
+          forwardedRef as React.MutableRefObject<HTMLInputElement | null>
+        ).current = node;
       }
     };
 
@@ -38,7 +45,9 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
       const success = await copyToClipboard(val, { clearAfterMs: 30000 });
       if (success) {
         setCopied(true);
-        announce("Password copied to clipboard. Clipboard will be cleared in 30 seconds.");
+        announce(
+          "Password copied to clipboard. Clipboard will be cleared in 30 seconds.",
+        );
         setTimeout(() => setCopied(false), 2000);
       }
     };
@@ -55,12 +64,14 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
               onGenerate && allowCopy
                 ? "pr-24"
                 : onGenerate || allowCopy
-                ? "pr-16"
-                : "pr-9",
-              className
+                  ? "pr-16"
+                  : "pr-9",
+              className,
             )}
             aria-invalid={!!error}
-            aria-describedby={error && errorId ? errorId : props["aria-describedby"]}
+            aria-describedby={
+              error && errorId ? errorId : props["aria-describedby"]
+            }
             autoComplete="new-password"
             {...props}
           />
@@ -92,7 +103,10 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
                 className="size-7 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
               >
                 {copied ? (
-                  <Check className="size-3.5 text-emerald-500" aria-hidden="true" />
+                  <Check
+                    className="size-3.5 text-emerald-500"
+                    aria-hidden="true"
+                  />
                 ) : (
                   <Copy className="size-3.5" aria-hidden="true" />
                 )}
@@ -130,7 +144,7 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
         )}
       </div>
     );
-  }
+  },
 );
 
 PasswordField.displayName = "PasswordField";

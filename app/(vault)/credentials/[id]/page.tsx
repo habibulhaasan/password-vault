@@ -44,11 +44,14 @@ export default function CredentialDetailPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const { getCredential, decryptCredential, deleteCredential, markAsLoggedIn } = useCredentials();
+  const { getCredential, decryptCredential, deleteCredential, markAsLoggedIn } =
+    useCredentials();
   const { getCategory } = useCategories();
   const { isCopied, copy } = useClipboardState(2000);
 
-  const [credential, setCredential] = useState<DecryptedCredential | null>(null);
+  const [credential, setCredential] = useState<DecryptedCredential | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -75,7 +78,12 @@ export default function CredentialDetailPage({
         setLoading(false);
       } catch (err) {
         if (!isMounted) return;
-        setError(sanitizeErrorMessage(err, "Failed to decrypt credential. Verify vault is unlocked."));
+        setError(
+          sanitizeErrorMessage(
+            err,
+            "Failed to decrypt credential. Verify vault is unlocked.",
+          ),
+        );
         setLoading(false);
       }
     }
@@ -97,7 +105,9 @@ export default function CredentialDetailPage({
   const handleCopyPassword = () => {
     if (credential) {
       copy(credential.password, "password", { clearAfterMs: 30000 });
-      announce(`Password for ${credential.title} copied to clipboard. Clipboard will be cleared in 30 seconds.`);
+      announce(
+        `Password for ${credential.title} copied to clipboard. Clipboard will be cleared in 30 seconds.`,
+      );
     }
   };
 
@@ -127,7 +137,9 @@ export default function CredentialDetailPage({
     try {
       await markAsLoggedIn(id);
       setCredential((prev) =>
-        prev ? { ...prev, lastLoginAt: new Date(), updatedAt: new Date() } : null
+        prev
+          ? { ...prev, lastLoginAt: new Date(), updatedAt: new Date() }
+          : null,
       );
       announce(`Marked ${credential.title} as logged in`);
     } catch (err) {
@@ -198,7 +210,12 @@ export default function CredentialDetailPage({
           <Button
             variant="outline"
             size="sm"
-            render={<Link href={`/credentials/${id}/edit`} aria-label={`Edit ${credential.title}`} />}
+            render={
+              <Link
+                href={`/credentials/${id}/edit`}
+                aria-label={`Edit ${credential.title}`}
+              />
+            }
             className="gap-1.5"
           >
             <Edit className="size-3.5" aria-hidden="true" />
@@ -276,7 +293,9 @@ export default function CredentialDetailPage({
           {/* Username */}
           <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div className="space-y-0.5 min-w-0 flex-1">
-              <p className="text-xs font-medium text-muted-foreground">Username / Email</p>
+              <p className="text-xs font-medium text-muted-foreground">
+                Username / Email
+              </p>
               <p className="text-sm font-mono select-all text-foreground break-all">
                 {credential.username}
               </p>
@@ -292,7 +311,10 @@ export default function CredentialDetailPage({
             >
               {isCopied("username") ? (
                 <>
-                  <Check className="size-3.5 text-emerald-500" aria-hidden="true" />
+                  <Check
+                    className="size-3.5 text-emerald-500"
+                    aria-hidden="true"
+                  />
                   Copied
                 </>
               ) : (
@@ -307,7 +329,9 @@ export default function CredentialDetailPage({
           {/* Password */}
           <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div className="space-y-0.5 min-w-0 flex-1">
-              <p className="text-xs font-medium text-muted-foreground">Password</p>
+              <p className="text-xs font-medium text-muted-foreground">
+                Password
+              </p>
               <p className="text-sm font-mono select-all text-foreground break-all">
                 {showPassword ? credential.password : "••••••••••••••••"}
               </p>
@@ -343,7 +367,10 @@ export default function CredentialDetailPage({
               >
                 {isCopied("password") ? (
                   <>
-                    <Check className="size-3.5 text-emerald-500" aria-hidden="true" />
+                    <Check
+                      className="size-3.5 text-emerald-500"
+                      aria-hidden="true"
+                    />
                     Copied
                   </>
                 ) : (
@@ -360,7 +387,9 @@ export default function CredentialDetailPage({
           {credential.websiteUrl && (
             <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <div className="space-y-0.5 min-w-0 flex-1">
-                <p className="text-xs font-medium text-muted-foreground">Website URL</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Website URL
+                </p>
                 <button
                   type="button"
                   onClick={handleOpenWebsite}
@@ -368,7 +397,10 @@ export default function CredentialDetailPage({
                   aria-label={`Open ${credential.websiteUrl} in new tab`}
                 >
                   <span className="truncate">{credential.websiteUrl}</span>
-                  <ExternalLink className="size-3 shrink-0" aria-hidden="true" />
+                  <ExternalLink
+                    className="size-3 shrink-0"
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
               <div className="flex items-center gap-1.5 w-full sm:w-auto shrink-0">
@@ -395,7 +427,10 @@ export default function CredentialDetailPage({
                 >
                   {isCopied("website") ? (
                     <>
-                      <Check className="size-3.5 text-emerald-500" aria-hidden="true" />
+                      <Check
+                        className="size-3.5 text-emerald-500"
+                        aria-hidden="true"
+                      />
                       Copied
                     </>
                   ) : (
@@ -413,7 +448,9 @@ export default function CredentialDetailPage({
           {credential.notes && (
             <div className="pt-4 space-y-1.5">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium text-muted-foreground">Notes</p>
+                <p className="text-xs font-medium text-muted-foreground">
+                  Notes
+                </p>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -442,7 +479,9 @@ export default function CredentialDetailPage({
           {/* Last Login Section */}
           <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div className="space-y-0.5">
-              <p className="text-xs font-medium text-muted-foreground">Last Login</p>
+              <p className="text-xs font-medium text-muted-foreground">
+                Last Login
+              </p>
               <div className="flex items-center gap-1.5 text-sm text-foreground">
                 <Clock className="size-3.5 text-muted-foreground" />
                 <span>{formatDaysSinceLastLogin(credential.lastLoginAt)}</span>

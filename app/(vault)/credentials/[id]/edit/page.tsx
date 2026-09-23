@@ -17,9 +17,12 @@ export default function EditCredentialPage({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const { getCredential, decryptCredential, updateCredential } = useCredentials();
+  const { getCredential, decryptCredential, updateCredential } =
+    useCredentials();
 
-  const [initialData, setInitialData] = useState<CredentialFormData | null>(null);
+  const [initialData, setInitialData] = useState<CredentialFormData | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,7 +54,12 @@ export default function EditCredentialPage({
         setLoading(false);
       } catch (err) {
         if (!isMounted) return;
-        setError(sanitizeErrorMessage(err, "Failed to decrypt credential for editing."));
+        setError(
+          sanitizeErrorMessage(
+            err,
+            "Failed to decrypt credential for editing.",
+          ),
+        );
         setLoading(false);
       }
     }

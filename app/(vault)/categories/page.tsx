@@ -38,7 +38,9 @@ export default function CategoriesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [categoryToEdit, setCategoryToEdit] = useState<Category | null>(null);
-  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+    null,
+  );
 
   // Compute credentials count per category
   const countsByCategory = useMemo(() => {
@@ -114,8 +116,12 @@ export default function CategoriesPage() {
             <Layers className="size-4" />
           </div>
           <div>
-            <div className="text-xs text-muted-foreground">System Categories</div>
-            <div className="text-lg font-semibold">{systemCategories.length}</div>
+            <div className="text-xs text-muted-foreground">
+              System Categories
+            </div>
+            <div className="text-lg font-semibold">
+              {systemCategories.length}
+            </div>
           </div>
         </div>
 
@@ -124,8 +130,12 @@ export default function CategoriesPage() {
             <Sparkles className="size-4" />
           </div>
           <div>
-            <div className="text-xs text-muted-foreground">Custom Categories</div>
-            <div className="text-lg font-semibold">{customCategories.length}</div>
+            <div className="text-xs text-muted-foreground">
+              Custom Categories
+            </div>
+            <div className="text-lg font-semibold">
+              {customCategories.length}
+            </div>
           </div>
         </div>
 
@@ -190,7 +200,9 @@ export default function CategoriesPage() {
       {!loading && (
         <>
           {/* Global Search Empty Result across all categories */}
-          {searchQuery && filteredCustom.length === 0 && filteredSystem.length === 0 ? (
+          {searchQuery &&
+          filteredCustom.length === 0 &&
+          filteredSystem.length === 0 ? (
             <EmptyState
               icon={SearchX}
               title="No categories found"

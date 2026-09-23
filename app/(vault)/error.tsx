@@ -20,7 +20,7 @@ export default function VaultError({
 
   const safeMessage = sanitizeErrorMessage(
     error,
-    "An error occurred while managing your encrypted vault data. Your stored credentials remain secure."
+    "An error occurred while managing your encrypted vault data. Your stored credentials remain secure.",
   );
 
   return (
@@ -67,4 +67,3 @@ export default function VaultError({
     </div>
   );
 }
-

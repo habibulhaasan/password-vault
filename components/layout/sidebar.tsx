@@ -3,12 +3,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import {
-  LayoutDashboard,
-  FolderOpen,
-  Tag,
-  Settings,
-} from "lucide-react";
+import { LayoutDashboard, FolderOpen, Tag, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCategories } from "@/hooks/use-categories";
 import { CategoryIcon } from "@/lib/constants/categories";
@@ -32,11 +27,15 @@ function SidebarContent({ onNavigate }: SidebarProps) {
   const { categories } = useCategories();
 
   return (
-    <nav className="flex h-full flex-col gap-1 p-3" aria-label="Main navigation">
+    <nav
+      className="flex h-full flex-col gap-1 p-3"
+      aria-label="Main navigation"
+    >
       <div className="flex flex-col gap-0.5">
         {mainNav.map((item) => {
           const isActive =
-            pathname === item.href && (!currentCategory || item.href !== "/dashboard");
+            pathname === item.href &&
+            (!currentCategory || item.href !== "/dashboard");
           return (
             <Link
               key={item.href}
@@ -47,7 +46,7 @@ function SidebarContent({ onNavigate }: SidebarProps) {
                 "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
                 isActive
                   ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground"
+                  : "text-muted-foreground",
               )}
             >
               <item.icon className="size-4" />
@@ -88,16 +87,22 @@ function SidebarContent({ onNavigate }: SidebarProps) {
                 "flex items-center justify-between rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
                 isActive
                   ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground"
+                  : "text-muted-foreground",
               )}
             >
               <div className="flex items-center gap-2 truncate">
-                <CategoryIcon name={category.icon} className="size-3.5 shrink-0" />
+                <CategoryIcon
+                  name={category.icon}
+                  className="size-3.5 shrink-0"
+                />
                 <span className="truncate">{category.label}</span>
               </div>
               {category.isCustom && (
                 <>
-                  <span className="size-1.5 rounded-full bg-primary/70 shrink-0" aria-hidden="true" />
+                  <span
+                    className="size-1.5 rounded-full bg-primary/70 shrink-0"
+                    aria-hidden="true"
+                  />
                   <span className="sr-only">(custom)</span>
                 </>
               )}
@@ -111,7 +116,9 @@ function SidebarContent({ onNavigate }: SidebarProps) {
 
 export function Sidebar({ onNavigate }: SidebarProps) {
   return (
-    <Suspense fallback={<nav className="h-full p-3" aria-label="Main navigation" />}>
+    <Suspense
+      fallback={<nav className="h-full p-3" aria-label="Main navigation" />}
+    >
       <SidebarContent onNavigate={onNavigate} />
     </Suspense>
   );

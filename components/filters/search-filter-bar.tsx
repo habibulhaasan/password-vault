@@ -165,26 +165,46 @@ export function SearchFilterBar({
           <div className="relative w-full sm:w-auto sm:min-w-36">
             <select
               value={selectedLastLogin}
-              onChange={(e) => onLastLoginChange(e.target.value as LastLoginFilter)}
+              onChange={(e) =>
+                onLastLoginChange(e.target.value as LastLoginFilter)
+              }
               className="flex h-9 sm:h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
               aria-label="Filter by last login"
             >
-              <option value="all" className="bg-popover text-popover-foreground">
+              <option
+                value="all"
+                className="bg-popover text-popover-foreground"
+              >
                 All Logins
               </option>
-              <option value="today" className="bg-popover text-popover-foreground">
+              <option
+                value="today"
+                className="bg-popover text-popover-foreground"
+              >
                 Logged in Today
               </option>
-              <option value="7days" className="bg-popover text-popover-foreground">
+              <option
+                value="7days"
+                className="bg-popover text-popover-foreground"
+              >
                 Within 7 days
               </option>
-              <option value="30days" className="bg-popover text-popover-foreground">
+              <option
+                value="30days"
+                className="bg-popover text-popover-foreground"
+              >
                 Within 30 days
               </option>
-              <option value="over30days" className="bg-popover text-popover-foreground">
+              <option
+                value="over30days"
+                className="bg-popover text-popover-foreground"
+              >
                 More than 30 days
               </option>
-              <option value="never" className="bg-popover text-popover-foreground">
+              <option
+                value="never"
+                className="bg-popover text-popover-foreground"
+              >
                 Never logged in
               </option>
             </select>
@@ -198,22 +218,40 @@ export function SearchFilterBar({
               className="flex h-9 sm:h-8 w-full rounded-lg border border-input bg-transparent px-2.5 py-1 text-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
               aria-label="Sort credentials"
             >
-              <option value="updated-desc" className="bg-popover text-popover-foreground">
+              <option
+                value="updated-desc"
+                className="bg-popover text-popover-foreground"
+              >
                 Updated (Newest)
               </option>
-              <option value="updated-asc" className="bg-popover text-popover-foreground">
+              <option
+                value="updated-asc"
+                className="bg-popover text-popover-foreground"
+              >
                 Updated (Oldest)
               </option>
-              <option value="title-asc" className="bg-popover text-popover-foreground">
+              <option
+                value="title-asc"
+                className="bg-popover text-popover-foreground"
+              >
                 Title (A-Z)
               </option>
-              <option value="title-desc" className="bg-popover text-popover-foreground">
+              <option
+                value="title-desc"
+                className="bg-popover text-popover-foreground"
+              >
                 Title (Z-A)
               </option>
-              <option value="login-desc" className="bg-popover text-popover-foreground">
+              <option
+                value="login-desc"
+                className="bg-popover text-popover-foreground"
+              >
                 Last Login (Recent)
               </option>
-              <option value="login-asc" className="bg-popover text-popover-foreground">
+              <option
+                value="login-asc"
+                className="bg-popover text-popover-foreground"
+              >
                 Last Login (Oldest)
               </option>
             </select>
@@ -224,7 +262,9 @@ export function SearchFilterBar({
       {/* Active Filter Chips & Reset Button */}
       {hasActiveFilters && (
         <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-xs">
-          <span className="text-muted-foreground mr-1 text-[11px]">Filters:</span>
+          <span className="text-muted-foreground mr-1 text-[11px]">
+            Filters:
+          </span>
 
           {searchQuery.trim() && (
             <Badge variant="secondary" className="gap-1 pr-1 text-xs">
@@ -311,4 +351,3 @@ export function SearchFilterBar({
     </div>
   );
 }
-

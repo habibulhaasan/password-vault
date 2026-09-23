@@ -113,8 +113,12 @@ export default function TagsPage() {
             <Layers className="size-4" />
           </div>
           <div>
-            <div className="text-xs text-muted-foreground">Tagged Credentials</div>
-            <div className="text-lg font-semibold">{totalTaggedCredentials}</div>
+            <div className="text-xs text-muted-foreground">
+              Tagged Credentials
+            </div>
+            <div className="text-lg font-semibold">
+              {totalTaggedCredentials}
+            </div>
           </div>
         </div>
 
@@ -155,7 +159,10 @@ export default function TagsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <label htmlFor="tag-sort" className="text-xs text-muted-foreground whitespace-nowrap">
+          <label
+            htmlFor="tag-sort"
+            className="text-xs text-muted-foreground whitespace-nowrap"
+          >
             Sort by:
           </label>
           <select
@@ -164,16 +171,28 @@ export default function TagsPage() {
             onChange={(e) => setSortBy(e.target.value as TagSortOption)}
             className="flex h-8 rounded-lg border border-input bg-transparent px-2.5 py-1 text-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
           >
-            <option value="count-desc" className="bg-popover text-popover-foreground">
+            <option
+              value="count-desc"
+              className="bg-popover text-popover-foreground"
+            >
               Most Used
             </option>
-            <option value="count-asc" className="bg-popover text-popover-foreground">
+            <option
+              value="count-asc"
+              className="bg-popover text-popover-foreground"
+            >
               Least Used
             </option>
-            <option value="name-asc" className="bg-popover text-popover-foreground">
+            <option
+              value="name-asc"
+              className="bg-popover text-popover-foreground"
+            >
               Name (A to Z)
             </option>
-            <option value="name-desc" className="bg-popover text-popover-foreground">
+            <option
+              value="name-desc"
+              className="bg-popover text-popover-foreground"
+            >
               Name (Z to A)
             </option>
           </select>

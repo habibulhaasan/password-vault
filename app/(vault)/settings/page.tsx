@@ -27,7 +27,8 @@ export default function SettingsPage() {
             </span>
           </div>
           <p className="text-xs text-muted-foreground sm:text-sm">
-            Configure vault encryption, auto-lock timeouts, appearance, and account credentials
+            Configure vault encryption, auto-lock timeouts, appearance, and
+            account credentials
           </p>
         </div>
 
