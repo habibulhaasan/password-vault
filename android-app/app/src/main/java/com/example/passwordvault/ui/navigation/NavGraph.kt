@@ -94,7 +94,7 @@ fun AppNavGraph(
         }
 
         composable(Screen.Settings.route) {
-            SettingsScreen()
+            SettingsScreen(onLogout = { authViewModel.logout() })
         }
     }
 }

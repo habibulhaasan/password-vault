@@ -3,6 +3,13 @@ plugins {
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.google.services)
+
+  
+  id("com.google.devtools.ksp") version "2.3.6"
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 android {
@@ -40,9 +47,7 @@ android {
     }
 }
 
-kotlin {
-    jvmToolchain(17)
-}
+
 
 dependencies {
   val composeBom = platform(libs.androidx.compose.bom)
@@ -56,7 +61,7 @@ dependencies {
 
     // Biometrics
   implementation("androidx.biometric:biometric:1.1.0")
-  implementation("androidx.appcompat:appcompat:1.6.1")
+  implementation(libs.androidx.appcompat)
 
   // Core Android dependencies
   implementation(libs.androidx.core.ktx)
@@ -74,7 +79,8 @@ dependencies {
   implementation(libs.androidx.compose.ui)
   implementation(libs.androidx.compose.ui.tooling.preview)
   implementation(libs.androidx.compose.material3)
-  // Tooling
+      implementation("androidx.compose.ui:ui-text")
+    // Tooling
   debugImplementation(libs.androidx.compose.ui.tooling)
   // Instrumented tests
   androidTestImplementation(libs.androidx.compose.ui.test.junit4)
@@ -93,8 +99,11 @@ dependencies {
     // Navigation Compose
   implementation(libs.androidx.navigation.compose)
 
-  // Navigation
-  implementation(libs.androidx.navigation3.ui)
-  implementation(libs.androidx.navigation3.runtime)
-  implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+        // Room (local cache)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.9.0")
+
+    implementation("org.xerial:sqlite-jdbc:${libs.versions.sqliteJdbc.get()}")
 }

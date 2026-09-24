@@ -60,8 +60,33 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun sendPasswordReset(email: String, onResult: (Boolean, String?) -> Unit) {
+        viewModelScope.launch {
+            try {
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email).await()
+                onResult(true, null)
+            } catch (e: Exception) {
+                onResult(false, e.message)
+            }
+}
+}
+
+    fun register(email: String, password: String, onResult: (Boolean, String?) -> Unit) {
+        viewModelScope.launch {
+            try {
+                // Simple registration using Firebase Auth; replace with real logic as needed
+                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password).await()
+                onResult(true, null)
+            } catch (e: Exception) {
+                onResult(false, e.message)
+            }
+        }
+    }
+
     fun logout() {
-        auth.signOut()
-        _authState.value = AuthState.Idle
+        viewModelScope.launch {
+            auth.signOut()
+            _authState.value = AuthState.Idle
+        }
     }
 }
