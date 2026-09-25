@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   credentialFormSchema,
@@ -68,7 +68,15 @@ export function CredentialForm({
       categoryId: initialValues?.categoryId || "",
       tags: initialValues?.tags || [],
       notes: initialValues?.notes || "",
+      recoveryEmail: initialValues?.recoveryEmail || "",
+      mobile: initialValues?.mobile || "",
+      securityQuestions: initialValues?.securityQuestions || [],
     },
+  });
+
+  const { fields: sqFields, append: appendSq, remove: removeSq } = useFieldArray({
+    control,
+    name: "securityQuestions"
   });
 
   const { isCopied, copy } = useClipboardState(2000);
@@ -121,7 +129,7 @@ export function CredentialForm({
   };
 
   const handleFormSubmit = async (values: CredentialFormValues) => {
-    setError(null);
+          setError(null);
     try {
       await onSubmit({
         title: values.title,
@@ -132,6 +140,9 @@ export function CredentialForm({
         categoryId: values.categoryId || undefined,
         tags: values.tags,
         notes: values.notes || undefined,
+        recoveryEmail: values.recoveryEmail || undefined,
+        mobile: values.mobile || undefined,
+        securityQuestions: values.securityQuestions?.length ? values.securityQuestions : undefined,
       });
     } catch {
       setError(
@@ -400,10 +411,101 @@ export function CredentialForm({
                   {...register("notes")}
                 />
               </div>
+
+              {/* Security/Recovery Fields */}
+              <div className="space-y-4 pt-4 mt-6 border-t border-border/50">
+                <h4 className="text-sm font-medium text-foreground">Recovery & Security</h4>
+                
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="recoveryEmail">Recovery Email</Label>
+                    <Input
+                      id="recoveryEmail"
+                      type="email"
+                      placeholder="recovery@example.com"
+                      disabled={isSubmitting}
+                      {...register("recoveryEmail")}
+                    />
+                    {errors.recoveryEmail && (
+                      <p className="text-xs text-destructive">{errors.recoveryEmail.message}</p>
+                    )}
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="mobile">Mobile Number</Label>
+                    <Input
+                      id="mobile"
+                      type="tel"
+                      placeholder="+1 234 567 8900"
+                      disabled={isSubmitting}
+                      {...register("mobile")}
+                    />
+                    {errors.mobile && (
+                      <p className="text-xs text-destructive">{errors.mobile.message}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-3 pt-2">
+                  <div className="flex items-center justify-between">
+                    <Label>Security Questions</Label>
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-7 text-xs" 
+                      onClick={() => appendSq({ question: "", answer: "" })}
+                    >
+                      <Plus className="size-3 mr-1" /> Add Question
+                    </Button>
+                  </div>
+                  
+                  {sqFields.length === 0 && (
+                    <p className="text-xs text-muted-foreground italic">No security questions added.</p>
+                  )}
+                  
+                  <div className="space-y-4">
+                    {sqFields.map((field, index) => (
+                      <div key={field.id} className="relative grid grid-cols-1 gap-3 sm:grid-cols-2 p-3 border rounded-md bg-muted/20">
+                        <Button 
+                          type="button" 
+                          variant="ghost" 
+                          size="sm" 
+                          className="absolute right-1 top-1 h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+                          onClick={() => removeSq(index)}
+                        >
+                          <X className="size-3.5" />
+                        </Button>
+                        <div className="space-y-1.5 pr-6 sm:pr-0">
+                          <Label className="text-xs">Question</Label>
+                          <Input
+                            placeholder="e.g. Mother's maiden name"
+                            disabled={isSubmitting}
+                            {...register(`securityQuestions.${index}.question` as const)}
+                          />
+                          {errors.securityQuestions?.[index]?.question && (
+                            <p className="text-xs text-destructive">{errors.securityQuestions?.[index]?.question?.message}</p>
+                          )}
+                        </div>
+                        <div className="space-y-1.5">
+                          <Label className="text-xs">Answer</Label>
+                          <Input
+                            placeholder="Answer"
+                            disabled={isSubmitting}
+                            {...register(`securityQuestions.${index}.answer` as const)}
+                          />
+                          {errors.securityQuestions?.[index]?.answer && (
+                            <p className="text-xs text-destructive">{errors.securityQuestions?.[index]?.answer?.message}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </CardContent>
 
-          <CardFooter className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 border-t pt-4">
+          <CardFooter className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 border-t pt-4 mt-6">
             <Button
               type="button"
               variant="outline"

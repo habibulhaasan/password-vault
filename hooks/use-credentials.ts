@@ -69,11 +69,15 @@ export function useCredentials() {
       const encryptedFields = await encryptCredentialFields(input, vaultKey);
       const websiteUrl = normalizeWebsiteUrl(input.websiteUrl);
 
-      const docRef = await addDoc(getCredentialsRef(user.uid), {
+              const docRef = await addDoc(getCredentialsRef(user.uid), {
         title: input.title.trim(),
         encryptedUsername: encryptedFields.encryptedUsername,
         encryptedPassword: encryptedFields.encryptedPassword,
         encryptedNotes: encryptedFields.encryptedNotes || "",
+        encryptedRecoveryEmail: encryptedFields.encryptedRecoveryEmail || "",
+        encryptedMobile: encryptedFields.encryptedMobile || "",
+        encryptedSecurityQuestions: encryptedFields.encryptedSecurityQuestions || "",
+        
         websiteUrl: websiteUrl || "",
         categoryId: input.categoryId || "",
         tags: input.tags || [],
@@ -97,11 +101,15 @@ export function useCredentials() {
       const websiteUrl = normalizeWebsiteUrl(input.websiteUrl);
 
       const docRef = getCredentialDocRef(user.uid, id);
-      await updateDoc(docRef, {
+              await updateDoc(docRef, {
         title: input.title.trim(),
         encryptedUsername: encryptedFields.encryptedUsername,
         encryptedPassword: encryptedFields.encryptedPassword,
         encryptedNotes: encryptedFields.encryptedNotes || "",
+          encryptedRecoveryEmail: encryptedFields.encryptedRecoveryEmail || "",
+          encryptedMobile: encryptedFields.encryptedMobile || "",
+          encryptedSecurityQuestions: encryptedFields.encryptedSecurityQuestions || "",
+          
         websiteUrl: websiteUrl || "",
         categoryId: input.categoryId || "",
         tags: input.tags || [],
@@ -151,6 +159,9 @@ export function useCredentials() {
         username: decryptedFields.username,
         password: decryptedFields.password,
         notes: decryptedFields.notes,
+          recoveryEmail: decryptedFields.recoveryEmail,
+          mobile: decryptedFields.mobile,
+          securityQuestions: decryptedFields.securityQuestions,
         websiteUrl: encrypted.websiteUrl,
         categoryId: encrypted.categoryId,
         tags: encrypted.tags || [],

@@ -263,7 +263,7 @@ export function ChangeMasterPasswordDialog({
                 />
               </div>
 
-              <DialogFooter className="pt-2 gap-2 sm:gap-0">
+              <DialogFooter className="pt-2 mt-6 gap-2 sm:gap-0">
                 <Button
                   type="button"
                   variant="outline"

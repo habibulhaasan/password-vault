@@ -438,7 +438,7 @@ export function PasswordGeneratorDialog({
           </div>
         </div>
 
-        <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-0">
+        <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-0 mt-6">
           {onSelectPassword ? (
             <>
               <Button

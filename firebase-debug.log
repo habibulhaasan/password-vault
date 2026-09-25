@@ -483,3 +483,81 @@
 [debug] [2026-09-23T06:23:33.168Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/-/androidApps/1:296520474076:android:658e912cab39cc9f5cc319/config 200
 [debug] [2026-09-23T06:23:33.169Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/-/androidApps/1:296520474076:android:658e912cab39cc9f5cc319/config {"configFilename":"google-services.json","configFileContents":"ewogICJwcm9qZWN0X2luZm8iOiB7CiAgICAicHJvamVjdF9udW1iZXIiOiAiMjk2NTIwNDc0MDc2IiwKICAgICJwcm9qZWN0X2lkIjogInBhc3MtdmF1bHQtbWFuYWdlciIsCiAgICAic3RvcmFnZV9idWNrZXQiOiAicGFzcy12YXVsdC1tYW5hZ2VyLmZpcmViYXNlc3RvcmFnZS5hcHAiCiAgfSwKICAiY2xpZW50IjogWwogICAgewogICAgICAiY2xpZW50X2luZm8iOiB7CiAgICAgICAgIm1vYmlsZXNka19hcHBfaWQiOiAiMToyOTY1MjA0NzQwNzY6YW5kcm9pZDo2NThlOTEyY2FiMzljYzlmNWNjMzE5IiwKICAgICAgICAiYW5kcm9pZF9jbGllbnRfaW5mbyI6IHsKICAgICAgICAgICJwYWNrYWdlX25hbWUiOiAiY29tLmV4YW1wbGUucGFzc3dvcmR2YXVsdCIKICAgICAgICB9CiAgICAgIH0sCiAgICAgICJvYXV0aF9jbGllbnQiOiBbXSwKICAgICAgImFwaV9rZXkiOiBbCiAgICAgICAgewogICAgICAgICAgImN1cnJlbnRfa2V5IjogIkFJemFTeUJxRnIwLUUwTkRoMVZmTFdldXNIX1B1anJMZXNDSXUwWSIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJzZXJ2aWNlcyI6IHsKICAgICAgICAiYXBwaW52aXRlX3NlcnZpY2UiOiB7CiAgICAgICAgICAib3RoZXJfcGxhdGZvcm1fb2F1dGhfY2xpZW50IjogW10KICAgICAgICB9CiAgICAgIH0KICAgIH0KICBdLAogICJjb25maWd1cmF0aW9uX3ZlcnNpb24iOiAiMSIKfQ=="}
 [info] App configuration is written in android-app/app/google-services.json
+[debug] [2026-09-25T11:54:04.012Z] ----------------------------------------------------------------------
+[debug] [2026-09-25T11:54:04.030Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\habib\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only firestore:rules
+[debug] [2026-09-25T11:54:04.035Z] CLI Version:   15.30.0
+[debug] [2026-09-25T11:54:04.035Z] Platform:      win32
+[debug] [2026-09-25T11:54:04.036Z] Node Version:  v24.11.1
+[debug] [2026-09-25T11:54:04.037Z] Detected Agent: antigravity
+[debug] [2026-09-25T11:54:04.039Z] Time:          Fri Sep 25 2026 17:54:04 GMT+0600 (Bangladesh Standard Time)
+[debug] [2026-09-25T11:54:04.040Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-09-25T11:54:04.227Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-09-25T11:55:13.706Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-09-25T11:55:13.707Z] > authorizing via signed-in user (hasanthp@gmail.com)
+[debug] [2026-09-25T11:55:13.707Z] [iam] checking project pass-vault-manager for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2026-09-25T11:55:13.710Z] Checked if tokens are valid: false, expires at: 1790146212113
+[debug] [2026-09-25T11:55:13.710Z] Checked if tokens are valid: false, expires at: 1790146212113
+[debug] [2026-09-25T11:55:13.710Z] > refreshing access token with scopes: []
+[debug] [2026-09-25T11:55:13.746Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-09-25T11:55:13.746Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-09-25T11:55:14.351Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-09-25T11:55:14.351Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-09-25T11:55:14.405Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager:testIamPermissions [none]
+[debug] [2026-09-25T11:55:14.405Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager:testIamPermissions  x-goog-user-project=pass-vault-manager
+[debug] [2026-09-25T11:55:14.406Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[debug] [2026-09-25T11:55:14.688Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-09-25T11:55:14.688Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-09-25T11:55:16.075Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager:testIamPermissions 200
+[debug] [2026-09-25T11:55:16.075Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/pass-vault-manager:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[info] 
+[info] === Deploying to 'pass-vault-manager'...
+[info] 
+[info] i  deploying firestore 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2026-09-25T11:55:16.082Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:16.083Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:16.083Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default) [none]
+[debug] [2026-09-25T11:55:16.799Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default) 200
+[debug] [2026-09-25T11:55:16.799Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/pass-vault-manager/databases/(default) {"name":"projects/pass-vault-manager/databases/(default)","uid":"fdc43e63-ce91-40b3-86c9-2034279b84ee","createTime":"2026-09-22T05:30:04.399261Z","updateTime":"2026-09-22T05:30:04.399261Z","locationId":"asia-south1","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2026-09-25T10:55:17.920684Z","appEngineIntegrationMode":"DISABLED","keyPrefix":"j","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"realtimeUpdatesMode":"REALTIME_UPDATES_MODE_ENABLED","enhancedTextSearchQueryMode":"ENHANCED_QUERY_MODE_ENABLED","etag":"IMe8857WiZcDMLme48y6gZcD"}
+[info] i  firestore: reading indexes from firestore.indexes.json... 
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2026-09-25T11:55:16.802Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:16.802Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:16.802Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager:test [none]
+[debug] [2026-09-25T11:55:16.803Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager:test [omitted]
+[debug] [2026-09-25T11:55:18.480Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager:test 200
+[debug] [2026-09-25T11:55:18.480Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager:test {}
+[info] +  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2026-09-25T11:55:18.498Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:18.498Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:18.503Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases pageSize=10&pageToken=
+[debug] [2026-09-25T11:55:19.916Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases 200
+[debug] [2026-09-25T11:55:19.916Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases {"releases":[{"name":"projects/pass-vault-manager/releases/cloud.firestore","rulesetName":"projects/pass-vault-manager/rulesets/b60d61ce-3eb1-4c4f-953e-1a24b821b6b4","createTime":"2026-09-22T05:30:09.419827Z","updateTime":"2026-09-23T05:50:20.707601Z"}]}
+[debug] [2026-09-25T11:55:19.916Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:19.916Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:19.916Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets/b60d61ce-3eb1-4c4f-953e-1a24b821b6b4 [none]
+[debug] [2026-09-25T11:55:21.328Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets/b60d61ce-3eb1-4c4f-953e-1a24b821b6b4 200
+[debug] [2026-09-25T11:55:21.329Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets/b60d61ce-3eb1-4c4f-953e-1a24b821b6b4 [omitted]
+[info] i  firestore: uploading rules firestore.rules... 
+[debug] [2026-09-25T11:55:21.331Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:21.332Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:21.332Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets [none]
+[debug] [2026-09-25T11:55:21.332Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets [omitted]
+[debug] [2026-09-25T11:55:22.861Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets 200
+[debug] [2026-09-25T11:55:22.861Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/rulesets {"name":"projects/pass-vault-manager/rulesets/0c86ae72-81b5-4dac-bce1-3490bfb1c4dc","source":{"files":[{"content":"rules_version = '2';\n\nservice cloud.firestore {\n  match /databases/{database}/documents {\n\n    // Helper functions\n    function isAuthenticated() {\n      return request.auth != null;\n    }\n\n    function isOwner(userId) {\n      return isAuthenticated() && request.auth.uid == userId;\n    }\n\n    function isNonEmptyString(val, maxLen) {\n      return val is string && val.size() > 0 && val.size() <= maxLen;\n    }\n\n    function isOptionalString(data, field, maxLen) {\n      return !(field in data) || data[field] == null || (data[field] is string && data[field].size() <= maxLen);\n    }\n\n    function isValidTagList(tags) {\n      return tags is list && tags.size() <= 20;\n    }\n\n    // Default deny for all unmatched collections\n    match /{document=**} {\n      allow read, write: if false;\n    }\n\n    // User scope: All user-specific data lives strictly under /users/{userId}\n    match /users/{userId} {\n      // User root doc: basic profile/metadata\n      allow read, write: if isOwner(userId);\n\n      // Credentials collection\n      match /credentials/{credentialId} {\n        allow read, delete: if isOwner(userId);\n\n        allow create: if isOwner(userId)\n          && isNonEmptyString(request.resource.data.title, 100)\n          && isNonEmptyString(request.resource.data.encryptedUsername, 2048)\n          && isNonEmptyString(request.resource.data.encryptedPassword, 4096)\n          && isOptionalString(request.resource.data, 'encryptedNotes', 10000)\n          && isOptionalString(request.resource.data, 'encryptedRecoveryEmail', 2048)\n          && isOptionalString(request.resource.data, 'encryptedMobile', 1024)\n          && isOptionalString(request.resource.data, 'encryptedSecurityQuestions', 10000)\n          && isOptionalString(request.resource.data, 'websiteUrl', 2048)\n          && isOptionalString(request.resource.data, 'categoryId', 50)\n          && (!('tags' in request.resource.data) || isValidTagList(request.resource.data.tags))\n          && (!('lastLoginAt' in request.resource.data) || request.resource.data.lastLoginAt == null || request.resource.data.lastLoginAt is timestamp)\n          && request.resource.data.createdAt is timestamp\n          && request.resource.data.updatedAt is timestamp;\n\n        allow update: if isOwner(userId)\n          && isNonEmptyString(request.resource.data.title, 100)\n          && isNonEmptyString(request.resource.data.encryptedUsername, 2048)\n          && isNonEmptyString(request.resource.data.encryptedPassword, 4096)\n          && isOptionalString(request.resource.data, 'encryptedNotes', 10000)\n          && isOptionalString(request.resource.data, 'encryptedRecoveryEmail', 2048)\n          && isOptionalString(request.resource.data, 'encryptedMobile', 1024)\n          && isOptionalString(request.resource.data, 'encryptedSecurityQuestions', 10000)\n          && isOptionalString(request.resource.data, 'websiteUrl', 2048)\n          && isOptionalString(request.resource.data, 'categoryId', 50)\n          && (!('tags' in request.resource.data) || isValidTagList(request.resource.data.tags))\n          && (!('lastLoginAt' in request.resource.data) || request.resource.data.lastLoginAt == null || request.resource.data.lastLoginAt is timestamp)\n          && request.resource.data.createdAt == resource.data.createdAt\n          && request.resource.data.updatedAt is timestamp;\n      }\n\n      // Categories collection (for user-created custom categories & system overrides)\n      match /categories/{categoryId} {\n        allow read, delete: if isOwner(userId);\n\n        allow create, update: if isOwner(userId)\n          && (\n               (!('label' in request.resource.data) && request.resource.data.isDeleted == true)\n               || isNonEmptyString(request.resource.data.label, 50)\n             )\n          && isOptionalString(request.resource.data, 'icon', 50);\n      }\n\n      // Settings collection (e.g. vault preferences)\n      match /settings/{settingId} {\n        allow read, write: if isOwner(userId);\n      }\n    }\n  }\n}\n\n","name":"firestore.rules"}]},"createTime":"2026-09-25T11:55:23.956559Z","metadata":{"services":["cloud.firestore"]}}
+[debug] [2026-09-25T11:55:22.869Z] [rules] created ruleset projects/pass-vault-manager/rulesets/0c86ae72-81b5-4dac-bce1-3490bfb1c4dc
+[debug] [2026-09-25T11:55:22.870Z] [rules] releasing cloud.firestore with ruleset projects/pass-vault-manager/rulesets/0c86ae72-81b5-4dac-bce1-3490bfb1c4dc
+[debug] [2026-09-25T11:55:22.870Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:22.870Z] Checked if tokens are valid: true, expires at: 1790340913352
+[debug] [2026-09-25T11:55:22.870Z] >>> [apiv2][query] PATCH https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases/cloud.firestore [none]
+[debug] [2026-09-25T11:55:22.871Z] >>> [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases/cloud.firestore {"release":{"name":"projects/pass-vault-manager/releases/cloud.firestore","rulesetName":"projects/pass-vault-manager/rulesets/0c86ae72-81b5-4dac-bce1-3490bfb1c4dc"}}
+[debug] [2026-09-25T11:55:24.606Z] <<< [apiv2][status] PATCH https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases/cloud.firestore 200
+[debug] [2026-09-25T11:55:24.606Z] <<< [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/pass-vault-manager/releases/cloud.firestore {"name":"projects/pass-vault-manager/releases/cloud.firestore","rulesetName":"projects/pass-vault-manager/rulesets/0c86ae72-81b5-4dac-bce1-3490bfb1c4dc","createTime":"2026-09-22T05:30:09.419827Z","updateTime":"2026-09-25T11:55:25.502519Z"}
+[debug] [2026-09-25T11:55:24.607Z] [rules] updated release projects/pass-vault-manager/releases/cloud.firestore
+[info] +  firestore: released rules firestore.rules to cloud.firestore 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/pass-vault-manager/overview

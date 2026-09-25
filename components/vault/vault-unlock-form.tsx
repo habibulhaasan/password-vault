@@ -112,7 +112,7 @@ export function VaultUnlockForm() {
             </div>
           </CardContent>
 
-          <CardFooter>
+          <CardFooter className="mt-6">
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>

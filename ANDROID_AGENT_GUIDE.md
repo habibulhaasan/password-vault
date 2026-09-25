@@ -1,0 +1,418 @@
+# Password Vault Android Agent Guide
+
+## Purpose
+
+Build a native Android application with feature and data compatibility with the existing Password Vault web application in this repository. The Android app must use Kotlin, Jetpack Compose, Firebase Authentication, Cloud Firestore, and Android cryptography APIs.
+
+This document is the implementation contract for the Android agent. The existing web app is the behavioral reference. Do not weaken the zero-knowledge model to make an Android feature easier.
+
+Reference implementation areas:
+
+- Crypto: `lib/crypto/key-derivation.ts`, `lib/crypto/encryption.ts`, `lib/crypto/vault.ts`
+- Persistence: `lib/firebase/firestore.ts`, `lib/firebase/converters.ts`, `hooks/use-credentials.ts`, `hooks/use-categories.ts`
+- Models: `types/credential.ts`, `types/category.ts`, `types/tag.ts`
+- Validation: `lib/validations/auth.ts`, `lib/validations/credential.ts`
+- Product behavior: `AI_AGENT_GUIDE.md`, `README.md`, `app/(vault)/`
+- Security boundary: `firestore.rules`
+
+## Non-Negotiable Security Rules
+
+1. Firebase Authentication identifies the user; it is not the vault encryption key.
+2. The master password must never be stored in plaintext, sent to Firebase, placed in a URL, or logged.
+3. Plaintext username, password, and notes must never be persisted to Firestore.
+4. Never log decrypted credentials, keys, clipboard values, tokens, or Firestore documents containing secrets.
+5. Use platform cryptography only. Never invent encryption, use `Math.random()`, reuse an AES-GCM IV, or silently fall back to plaintext.
+6. Locking the vault must clear the in-memory key and all decrypted credential state.
+7. Firestore access must remain scoped to `/users/{authenticatedUid}/...`; frontend filtering is not authorization.
+8. Clipboard support is required, but automatic clearing is best-effort and must not be treated as a security guarantee.
+9. Show generic unlock/decryption failures. Do not reveal whether a particular secret or account exists.
+10. Document the client-side threat model honestly: a fully compromised device, OS, or running process can defeat client-side protection.
+
+## Recommended Android Architecture
+
+- Kotlin and Jetpack Compose with Material 3.
+- MVVM or unidirectional state flow: Compose UI -> ViewModel -> repository/use case -> Firebase or crypto service.
+- Kotlin coroutines and `StateFlow` for auth, vault, credentials, categories, tags, and settings.
+- Firebase Auth Android SDK with email/password providers.
+- Firebase Firestore Android SDK with snapshot listeners for live credential/category updates.
+- Android Keystore for protecting any locally persisted session-wrapping key.
+- Encrypted DataStore only for non-secret preferences and wrapped session metadata.
+- Optional Room cache only for encrypted records. Never cache decrypted credentials.
+- Use WorkManager only for resumable, carefully designed maintenance work; do not run secret-bearing work after the vault is locked.
+
+Keep cryptography, Firestore mapping, validation, clipboard handling, and UI state in separate modules so they can be tested independently.
+
+## Authentication And App States
+
+Implement these screens and states:
+
+- Login: email and password.
+- Registration: email, password, confirmation; password minimum is 8 characters.
+- Forgot password: valid email and Firebase password-reset email. Avoid account enumeration in the success/error UI.
+- Auth loading, signed out, signed in, and auth error states.
+
+After Firebase sign-in, the app must enter a vault gate. The vault gate has these states:
+
+```text
+Loading -> Uninitialized -> Unlocked
+                    \\-> Locked -> Unlocked
+                    \\-> error
+Unlocked -> Locked
+Unlocked -> error
+```
+
+All vault screens must be inaccessible while the vault is locked. Signing out must lock the vault, cancel active listeners where appropriate, clear decrypted state, and clear session material.
+
+## Cryptographic Compatibility Contract
+
+The Android implementation must read records created by the web app. Preserve this exact current format unless a versioned migration is deliberately added.
+
+### Key derivation
+
+- KDF: PBKDF2 with HMAC-SHA-256.
+- Iterations: `600000` (`DEFAULT_PBKDF2_ITERATIONS`).
+- Salt: 16 random bytes, stored as standard Base64.
+- Password bytes: UTF-8.
+- Output: 256-bit AES-GCM key.
+- Key usages: encrypt and decrypt.
+
+### AES-GCM payload
+
+```text
+Base64(12-byte random IV || AES-GCM ciphertext || 16-byte authentication tag)
+```
+
+- IV: exactly 12 random bytes per encryption.
+- Authentication tag: exactly 128 bits.
+- No AAD is currently used.
+- Encoding: standard Base64, not Base64URL.
+- No version byte or field prefix is currently present.
+- Decrypt payloads only after checking the decoded minimum size of 28 bytes.
+- Treat malformed Base64, short payloads, authentication failures, and invalid keys as the same user-facing decryption failure.
+
+The Android agent must add golden-vector tests using ciphertext generated by the web implementation and must verify Android-generated ciphertext can be decrypted by the web implementation. Random IVs mean ciphertext equality must not be expected.
+
+### Encrypted and visible fields
+
+Each sensitive field is encrypted independently with a fresh IV:
+
+```text
+encryptedUsername: required Base64 AES-GCM payload
+encryptedPassword: required Base64 AES-GCM payload
+encryptedNotes: optional Base64 AES-GCM payload
+```
+
+Currently encrypted: username, password, and non-empty notes.
+
+Currently not encrypted: title, website URL, logo URL (the web hook currently does not persist it), category ID, tags, `lastLoginAt`, `createdAt`, and `updatedAt`.
+
+Do not expand plaintext metadata casually. Any new sensitive field must be encrypted before persistence.
+
+### Vault verification
+
+Use the exact canary plaintext:
+
+```text
+PASSWORD_VAULT_CANARY_VERIFICATION_V1
+```
+
+Vault settings at `/users/{uid}/settings/vault` contain:
+
+```text
+salt: String              // standard Base64, 16 decoded bytes
+verificationToken: String // AES-GCM payload of the canary
+autoLockMinutes: Number   // 0, 5, 15, or 30 in the current UI
+createdAt: Timestamp
+updatedAt: Timestamp
+```
+
+Setup generates a new salt, derives the key, encrypts the canary, and writes settings. Unlock derives a candidate key using the stored salt, decrypts the canary, and compares the exact plaintext. Never test an unlock attempt by decrypting an arbitrary credential first.
+
+### Key lifecycle decision
+
+The web code currently derives an extractable key and stores its raw Base64 export in `sessionStorage.vaultKey`; this conflicts with its own non-extractable-key documentation. Do not copy this raw-key storage design to Android.
+
+Preferred Android behavior:
+
+- Keep the derived AES key in memory while unlocked.
+- For an optional same-process/background session, wrap the key with an Android Keystore AES key and store only the wrapped bytes plus expiry in Encrypted DataStore.
+- Require the master password again after process death unless an explicit, reviewed biometric unlock design is implemented.
+- On lock, sign-out, expiry, or fatal error, zero/replace byte arrays where practical, discard the key reference, remove wrapped session data, and purge decrypted ViewModel state.
+
+## Master Password Rotation
+
+The current web flow:
+
+1. Verify the current password against the old canary.
+2. Generate a new 16-byte salt and derive a new AES-256 key.
+3. Decrypt every credential with the old key.
+4. Re-encrypt username, password, and notes with the new key.
+5. Update credentials in Firestore batches of 400.
+6. Replace the vault salt/canary and active session key.
+
+The current process is not globally atomic: a failure can leave a mixture of old-key and new-key records. The Android implementation must not silently claim atomicity. Prefer a resumable rotation design with a persisted rotation marker/version and an explicit recovery path. At minimum:
+
+- Require the vault to be unlocked and the device to remain available.
+- Do not delete or overwrite the old vault settings until all records are verified under the new key.
+- Chunk writes below Firestore's 500-operation limit.
+- Re-read and verify representative/all updated records before committing completion.
+- On interruption, show a recoverable rotation state rather than pretending the vault is healthy.
+- Never leave decrypted records in persistent storage to make rotation easier.
+
+## Firestore Data Contract
+
+Use the existing Firebase project and these paths:
+
+```text
+/users/{uid}
+/users/{uid}/credentials/{credentialId}
+/users/{uid}/categories/{categoryId}
+/users/{uid}/settings/vault
+```
+
+Credential document:
+
+```text
+id: String                         // document ID
+title: String                      // 1-100 characters
+encryptedUsername: String          // required
+encryptedPassword: String          // required
+encryptedNotes: String?            // encrypted, optional
+websiteUrl: String?                // HTTP/HTTPS metadata
+logoUrl: String?                   // compatibility field; web hook may omit it
+categoryId: String?                // max 50
+tags: List<String>                 // max 20
+lastLoginAt: Timestamp?            // nullable
+createdAt: Timestamp
+updatedAt: Timestamp
+```
+
+Decrypted UI model:
+
+```text
+id, title, username, password, notes,
+websiteUrl, logoUrl, categoryId, tags,
+lastLoginAt, createdAt, updatedAt
+```
+
+Use Firestore server timestamps where compatible with the web behavior. Preserve Firestore timestamp semantics when converting to Kotlin `Instant`/`Date`.
+
+Firestore rules currently enforce owner access, default deny for unmatched paths, encrypted field presence/size, timestamp types, tag count, and immutable `createdAt`. Do not loosen those rules. Review rules if adding Android-only collections.
+
+## Credential Features And Behavior
+
+Implement create, read, update, delete, and live synchronization. The dashboard must support:
+
+- Search by title, website URL, tag, and category label.
+- Category filter.
+- Tag filter.
+- Last-login filters: all, today, last 7 days, over 30 days, never.
+- Sort by updated ascending/descending, title ascending/descending, and last login ascending/descending.
+- Grid and table/list views.
+- Persist the view preference locally.
+
+Credential actions:
+
+- Show/hide password.
+- Copy username, password, website, and notes.
+- Open website only after HTTP/HTTPS validation.
+- Add `https://` to a bare domain on save/open normalization.
+- Mark as logged in now.
+- Generate and replace a password.
+- Delete with confirmation.
+
+Password clipboard contents should have a best-effort 30-second clearing timer. Never log clipboard contents. Provide accessible confirmation such as `Password copied`.
+
+Validation parity:
+
+- Title: trimmed, 1-100 characters.
+- Username: 1-250 characters.
+- Password: 1-500 characters.
+- Notes: maximum 5,000 characters.
+- Each tag: trimmed, 1-30 characters; maximum 20 tags.
+- Category ID: maximum 50 characters.
+- Website and logo URLs: maximum 2,048 characters and HTTP/HTTPS only.
+- Reject `javascript:`, `data:`, `vbscript:`, `file:`, and all other schemes.
+- Lowercase and deduplicate tags before saving.
+
+## Password Generator
+
+Use `SecureRandom` backed by the Android platform CSPRNG, never `kotlin.random.Random` for password generation.
+
+Match these current character pools when parity matters:
+
+```text
+Uppercase: ABCDEFGHIJKLMNOPQRSTUVWXYZ
+Lowercase: abcdefghijklmnopqrstuvwxyz
+Numbers:   0123456789
+Symbols:   !@#$%^&*()_+-=[]{}|;:,.<>?
+Ambiguous: i l 1 L o 0 O
+```
+
+Behavior:
+
+- Default length 20; clamp requested length to 4-128.
+- Options: uppercase, lowercase, numbers, symbols, avoid ambiguous.
+- Guarantee at least one character from every selected non-empty set.
+- If no set is selected, fall back to alphanumeric.
+- Use unbiased random selection and a secure Fisher-Yates shuffle.
+- Preserve the existing strength calculation if UI parity is required: theoretical entropy is `length * log2(pool size)`, with scores 0-4.
+
+## Categories
+
+Always expose these system category IDs and defaults:
+
+```text
+personal, work, finance, social, shopping, education,
+development, government, health, entertainment, other
+```
+
+Support:
+
+- Search categories.
+- Credential count per category.
+- Create custom categories.
+- Rename custom categories.
+- Override system category label/icon.
+- Soft-delete system categories with `isDeleted`.
+- Permanently delete custom categories.
+- On category deletion, clear `categoryId` from affected credentials.
+- Reject duplicate category names case-insensitively.
+
+Category labels are 1-50 characters. Icon identifiers are 1-50 characters. Use Android Material icons or a stable icon-name mapping; preserve stored icon names where possible.
+
+## Tags
+
+Aggregate tags from the in-memory decrypted credential list and display usage counts. Support:
+
+- Search tags.
+- Sort by usage ascending/descending.
+- Sort by name ascending/descending.
+- Rename a tag globally, trimming and deduplicating each affected credential.
+- Delete a tag globally.
+- Suggest existing tags and these defaults:
+
+```text
+personal, work, financial, 2FA, important, subscription, rarely-used
+```
+
+Global rename/delete operations must be chunked and must handle partial failure visibly. Never assume the entire operation is atomic.
+
+## Settings And Preferences
+
+Settings screen must provide:
+
+- Lock vault immediately.
+- Change master password.
+- Auto-lock: 5, 15, 30 minutes, or never.
+- Theme: light, dark, or system.
+- Accent color: zinc, indigo, rose, or emerald.
+- Toggle auto-lock timer visibility.
+- Toggle clipboard timer visibility.
+- Account and security information.
+
+Theme, accent, dashboard view, and visibility preferences are local-only in the current web app. Vault auto-lock configuration is stored in Firestore settings. Make this distinction explicit in the Android repository.
+
+Auto-lock must reset on meaningful user activity according to the chosen product policy, expire reliably while the app is backgrounded, and never display an unlocked screen after expiry without the key being available and valid.
+
+## UI And Accessibility
+
+Use a focused productivity UI, not a marketing dashboard. Required navigation destinations are Dashboard, Categories, Tags, and Settings, with credential create/detail/edit flows.
+
+Support:
+
+- Responsive phone layouts and large font sizes.
+- Screen-reader labels for every icon-only action.
+- Clear focus order and error announcements.
+- Touch targets of at least 48dp.
+- Password fields that do not expose content in previews or screenshots where practical.
+- Loading, empty, locked, error, and offline states for every data-driven screen.
+- Confirmation for destructive actions.
+
+Do not put secrets in notification text, analytics, crash reports, logs, deep links, screenshots, or autofill/debug output.
+
+## Delivery Phases
+
+### Phase 1: Foundation
+
+- Create native Android project and package structure.
+- Configure Firebase Auth and Firestore for the same project.
+- Add security-conscious logging and crash-report redaction policy.
+- Implement authentication and vault gate states.
+
+### Phase 2: Crypto Interoperability
+
+- Implement PBKDF2-SHA256, AES-GCM payload packing, canary verification, and field encryption.
+- Add web-generated golden vectors and tamper/incorrect-key tests.
+- Implement in-memory key lifecycle and Keystore-backed optional session wrapping.
+
+### Phase 3: Core Vault
+
+- Implement live credential repository, dashboard search/filter/sort, create/edit/detail/delete, copy, URL opening, and secure generator.
+- Verify Firestore documents remain ciphertext-only for sensitive fields.
+
+### Phase 4: Organization
+
+- Implement categories, category deletion behavior, tags, global tag operations, and counts.
+
+### Phase 5: Settings And Hardening
+
+- Implement auto-lock, lock/sign-out cleanup, theme/preferences, master-password rotation, offline/background behavior, accessibility, and failure recovery.
+
+### Phase 6: Validation
+
+- Run unit, integration, emulator, security, and UI tests.
+- Test migration against records created by the web app and records created by Android.
+
+## Required Test Matrix
+
+Crypto tests:
+
+- PBKDF2 known-answer vector.
+- Same password plus different salts produces different keys.
+- AES-GCM decrypts web payloads on Android.
+- Android payloads decrypt on the web app.
+- Fresh IV for every encryption.
+- Tampered IV/ciphertext/tag fails.
+- Wrong key fails without revealing plaintext.
+- Malformed Base64 and short payloads fail safely.
+
+Vault tests:
+
+- Setup writes only salt, canary, and settings metadata.
+- Wrong password cannot unlock.
+- Lock clears key and decrypted state.
+- Auto-lock works after backgrounding and timeout.
+- Sign-out clears session material.
+- Rotation handles interruption and does not silently mix unusable records.
+
+Data/security tests:
+
+- Firestore access is owner-scoped.
+- Sensitive fields are never written in plaintext.
+- URLs reject dangerous schemes.
+- Tags and categories enforce limits and deduplication.
+- Category/tag bulk operations handle large collections and partial errors.
+- No secret appears in logs, crash payloads, clipboard diagnostics, URLs, or UI error messages.
+
+UI tests:
+
+- Auth flows and reset-password behavior.
+- Locked/unlocked/uninitialized/empty/loading/error states.
+- Credential CRUD and all copy actions.
+- Search, filters, sorting, category/tag management.
+- Theme and preference persistence.
+- Accessibility labels, keyboard/switch navigation where applicable, and large text layout.
+
+## Definition Of Done
+
+The Android app is ready for parity review only when:
+
+1. A user can register/sign in, initialize or unlock the vault, and use all credential workflows without a backend ever receiving plaintext secrets.
+2. Android can decrypt existing web-created records and the web app can decrypt Android-created records.
+3. Firestore rules continue to prevent cross-user reads/writes.
+4. Locking, timeout, backgrounding, process death, and sign-out have documented and tested key behavior.
+5. Master-password rotation has a tested recovery strategy for interruption.
+6. Categories, tags, filters, sorting, generator, clipboard actions, themes, and preferences match the feature list above.
+7. Automated tests cover crypto vectors, tampering, validation, ownership, secret redaction, and the critical UI states.
+8. The final release build contains no debug secret logging and no plaintext credential persistence.

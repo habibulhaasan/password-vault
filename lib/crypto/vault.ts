@@ -37,12 +37,20 @@ export interface EncryptedCredentialPayload {
   encryptedUsername: string;
   encryptedPassword: string;
   encryptedNotes?: string;
+  encryptedRecoveryEmail?: string;
+  encryptedMobile?: string;
+  encryptedSecurityQuestions?: string;
+  
 }
 
 export interface DecryptedCredentialPayload {
   username: string;
   password: string;
   notes?: string;
+  recoveryEmail?: string;
+  mobile?: string;
+  securityQuestions?: { question: string, answer: string }[];
+  
 }
 
 /**
@@ -61,10 +69,29 @@ export async function encryptCredentialFields(
     encryptedNotes = await encryptString(input.notes, key);
   }
 
+  let encryptedRecoveryEmail: string | undefined = undefined;
+  if (input.recoveryEmail && input.recoveryEmail.trim().length > 0) {
+    encryptedRecoveryEmail = await encryptString(input.recoveryEmail, key);
+  }
+
+  let encryptedMobile: string | undefined = undefined;
+  if (input.mobile && input.mobile.trim().length > 0) {
+    encryptedMobile = await encryptString(input.mobile, key);
+  }
+
+let encryptedSecurityQuestions: string | undefined = undefined;
+  if (input.securityQuestions && input.securityQuestions.length > 0) {
+    encryptedSecurityQuestions = await encryptString(JSON.stringify(input.securityQuestions), key);
+  }
+
   return {
     encryptedUsername,
     encryptedPassword,
     encryptedNotes,
+    encryptedRecoveryEmail,
+    encryptedMobile,
+    encryptedSecurityQuestions,
+    
   };
 }
 
@@ -84,9 +111,31 @@ export async function decryptCredentialFields(
     notes = await decryptString(encrypted.encryptedNotes, key);
   }
 
+  let recoveryEmail: string | undefined = undefined;
+  if (encrypted.encryptedRecoveryEmail) {
+    recoveryEmail = await decryptString(encrypted.encryptedRecoveryEmail, key);
+  }
+
+  let mobile: string | undefined = undefined;
+  if (encrypted.encryptedMobile) {
+    mobile = await decryptString(encrypted.encryptedMobile, key);
+  }
+
+  let securityQuestions: { question: string, answer: string }[] | undefined = undefined;
+  if (encrypted.encryptedSecurityQuestions) {
+    const dec = await decryptString(encrypted.encryptedSecurityQuestions, key);
+    try {
+      securityQuestions = JSON.parse(dec);
+    } catch(e) {}
+  }
+
   return {
     username,
     password,
     notes,
+    recoveryEmail,
+    mobile,
+    securityQuestions,
+    
   };
 }

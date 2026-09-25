@@ -1,3 +1,8 @@
+export interface SecurityQuestion {
+  question: string;
+  answer: string;
+}
+
 import type { Timestamp } from "firebase/firestore";
 
 /**
@@ -14,6 +19,10 @@ export interface EncryptedCredential {
   encryptedUsername: string;
   encryptedPassword: string;
   encryptedNotes?: string | null;
+  encryptedRecoveryEmail?: string | null;
+  encryptedMobile?: string | null;
+  encryptedSecurityQuestions?: string | null;
+  
 
   // Non-sensitive metadata queryable for filtering and organization
   websiteUrl?: string;
@@ -44,6 +53,10 @@ export interface DecryptedCredential {
   username: string;
   password: string;
   notes?: string | null;
+  recoveryEmail?: string | null;
+  mobile?: string | null;
+  securityQuestions?: SecurityQuestion[] | null;
+  
 
   websiteUrl?: string;
   logoUrl?: string | null;
@@ -63,6 +76,10 @@ export interface CredentialFormData {
   username: string;
   password: string;
   notes?: string;
+  recoveryEmail?: string;
+  mobile?: string;
+  securityQuestions?: SecurityQuestion[];
+  
   websiteUrl?: string;
   logoUrl?: string;
   categoryId?: string;

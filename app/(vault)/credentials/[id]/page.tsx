@@ -53,7 +53,7 @@ export default function CredentialDetailPage({
   const [credential, setCredential] = useState<DecryptedCredential | null>(
     null,
   );
-  const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -75,6 +75,7 @@ export default function CredentialDetailPage({
 
         const decrypted = await decryptCredential(encrypted);
         if (!isMounted) return;
+        console.log("Decrypted Credential:", decrypted);
         setCredential(decrypted);
         setLoading(false);
       } catch (err) {
@@ -306,6 +307,7 @@ export default function CredentialDetailPage({
 
         <CardContent className="space-y-4 divide-y divide-border">
           {/* Username */}
+          
           <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div className="space-y-0.5 min-w-0 flex-1">
               <p className="text-xs font-medium text-muted-foreground">
@@ -455,6 +457,35 @@ export default function CredentialDetailPage({
                     </>
                   )}
                 </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Recovery Fields */}
+          {credential.recoveryEmail && (
+            <div className="pt-4 space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">Recovery Email</p>
+              <p className="text-sm font-mono text-foreground break-all">{credential.recoveryEmail}</p>
+            </div>
+          )}
+
+          {credential.mobile && (
+            <div className="pt-4 space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">Mobile Number</p>
+              <p className="text-sm font-mono text-foreground break-all">{credential.mobile}</p>
+            </div>
+          )}
+
+          {credential.securityQuestions && credential.securityQuestions.length > 0 && (
+            <div className="pt-4 space-y-2">
+              <p className="text-xs font-medium text-muted-foreground">Security Questions</p>
+              <div className="space-y-3">
+                {credential.securityQuestions.map((sq, i) => (
+                  <div key={i} className="rounded-md border bg-muted/20 p-3 space-y-1">
+                    <p className="text-xs font-medium text-foreground">{sq.question}</p>
+                    <p className="text-sm font-mono text-muted-foreground break-all">{sq.answer}</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}

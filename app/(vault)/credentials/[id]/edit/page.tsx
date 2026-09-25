@@ -50,6 +50,9 @@ export default function EditCredentialPage({
           categoryId: decrypted.categoryId || "",
           tags: decrypted.tags || [],
           notes: decrypted.notes || "",
+          recoveryEmail: decrypted.recoveryEmail || "",
+          mobile: decrypted.mobile || "",
+          securityQuestions: decrypted.securityQuestions || [],
         });
         setLoading(false);
       } catch (err) {

@@ -82,6 +82,23 @@ export const credentialFormSchema = z.object({
     .max(5000, "Notes must be 5000 characters or less")
     .optional()
     .or(z.literal("")),
+  recoveryEmail: z
+    .string()
+    .email("Must be a valid email address")
+    .optional()
+    .or(z.literal("")),
+  mobile: z
+    .string()
+    .max(50, "Mobile number is too long")
+    .optional()
+    .or(z.literal("")),
+
+  securityQuestions: z.array(
+    z.object({
+      question: z.string().max(250, "Security question is too long"),
+      answer: z.string().max(250, "Answer is too long")
+    })
+  ).optional(),
 });
 
 export type CredentialFormValues = z.infer<typeof credentialFormSchema>;

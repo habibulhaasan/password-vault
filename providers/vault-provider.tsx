@@ -306,16 +306,24 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
       encryptedUsername: string;
       encryptedPassword: string;
       encryptedNotes: string | null;
+      encryptedRecoveryEmail: string | null;
+      encryptedMobile: string | null;
+      encryptedSecurityQuestions: string | null;
+      
     }[] = [];
 
     for (const docSnap of credsSnap.docs) {
-      const cred = docSnap.data();
+      const cred = docSnap.data() as any;
       const decrypted = await decryptCredentialFields(cred, vaultKey);
       const reEncrypted = await encryptCredentialFields(
         {
           username: decrypted.username,
           password: decrypted.password,
           notes: decrypted.notes,
+          recoveryEmail: decrypted.recoveryEmail,
+          mobile: decrypted.mobile,
+          securityQuestions: decrypted.securityQuestions,
+          
         },
         newKey
       );
@@ -324,6 +332,10 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
         encryptedUsername: reEncrypted.encryptedUsername,
         encryptedPassword: reEncrypted.encryptedPassword,
         encryptedNotes: reEncrypted.encryptedNotes ?? null,
+        encryptedRecoveryEmail: reEncrypted.encryptedRecoveryEmail ?? null,
+        encryptedMobile: reEncrypted.encryptedMobile ?? null,
+        encryptedSecurityQuestions: reEncrypted.encryptedSecurityQuestions ?? null,
+        
       });
     }
 
@@ -347,6 +359,10 @@ export function VaultProvider({ children }: { children: React.ReactNode }) {
             encryptedUsername: item.encryptedUsername,
             encryptedPassword: item.encryptedPassword,
             encryptedNotes: item.encryptedNotes,
+            encryptedRecoveryEmail: item.encryptedRecoveryEmail,
+            encryptedMobile: item.encryptedMobile,
+            encryptedSecurityQuestions: item.encryptedSecurityQuestions,
+            
             updatedAt: serverTimestamp(),
           });
         }
