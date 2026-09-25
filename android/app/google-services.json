@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "296520474076",
+    "project_id": "pass-vault-manager",
+    "storage_bucket": "pass-vault-manager.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296520474076:android:658e912cab39cc9f5cc319",
+        "android_client_info": {
+          "package_name": "com.example.passwordvault"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqFr0-E0NDh1VfLWeusH_PujrLesCIu0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296520474076:android:710fd69d2f14b5a65cc319",
+        "android_client_info": {
+          "package_name": "com.passwordvault"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqFr0-E0NDh1VfLWeusH_PujrLesCIu0Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
