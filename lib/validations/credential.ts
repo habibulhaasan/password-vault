@@ -93,6 +93,16 @@ export const credentialFormSchema = z.object({
     .optional()
     .or(z.literal("")),
 
+  customFields: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string().min(1, "Name required").max(100, "Too long"),
+      value: z.string().max(2000, "Too long"),
+      isSecret: z.boolean().optional(),
+        isMultiline: z.boolean().optional()
+    })
+  ).optional(),
+
   securityQuestions: z.array(
     z.object({
       question: z.string().max(250, "Security question is too long"),

@@ -3,14 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, FolderOpen, Tag, Settings, KeyRound } from "lucide-react";
+import { LayoutDashboard, Settings, KeyRound , Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PasswordGeneratorDialog } from "@/components/password-generator/password-generator-dialog";
 
 const navItems = [
   { href: "/dashboard", label: "Home", icon: LayoutDashboard },
-  { href: "/categories", label: "Categories", icon: FolderOpen },
-  { href: "/tags", label: "Tags", icon: Tag },
+  { href: "/secure", label: "Secure", icon: Shield },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 

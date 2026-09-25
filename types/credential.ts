@@ -1,3 +1,11 @@
+export interface CustomField {
+  id: string;
+  name: string;
+  value: string;
+  isSecret?: boolean;
+  isMultiline?: boolean;
+}
+
 export interface SecurityQuestion {
   question: string;
   answer: string;
@@ -22,6 +30,7 @@ export interface EncryptedCredential {
   encryptedRecoveryEmail?: string | null;
   encryptedMobile?: string | null;
   encryptedSecurityQuestions?: string | null;
+  encryptedCustomFields?: string | null;
   
 
   // Non-sensitive metadata queryable for filtering and organization
@@ -56,6 +65,7 @@ export interface DecryptedCredential {
   recoveryEmail?: string | null;
   mobile?: string | null;
   securityQuestions?: SecurityQuestion[] | null;
+  customFields?: CustomField[] | null;
   
 
   websiteUrl?: string;
@@ -79,6 +89,7 @@ export interface CredentialFormData {
   recoveryEmail?: string;
   mobile?: string;
   securityQuestions?: SecurityQuestion[];
+  customFields?: CustomField[];
   
   websiteUrl?: string;
   logoUrl?: string;

@@ -3,7 +3,7 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { LayoutDashboard, FolderOpen, Tag, Settings, KeyRound } from "lucide-react";
+import { LayoutDashboard, FolderOpen, Tag, Settings, KeyRound, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCategories } from "@/hooks/use-categories";
 import { CategoryIcon } from "@/lib/constants/categories";
@@ -12,6 +12,7 @@ import { PasswordGeneratorDialog } from "@/components/password-generator/passwor
 
 const mainNav = [
   { href: "/dashboard", label: "All Credentials", icon: LayoutDashboard },
+  { href: "/secure", label: "Secure", icon: Shield },
   { href: "/categories", label: "Categories", icon: FolderOpen },
   { href: "/tags", label: "Tags", icon: Tag },
   { href: "/settings", label: "Settings", icon: Settings },

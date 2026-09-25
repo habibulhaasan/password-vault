@@ -2,25 +2,25 @@
 
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCredentials } from "@/hooks/use-credentials";
-import { CredentialForm } from "@/components/credentials/credential-form";
-import { CredentialFormSkeleton } from "@/components/credentials/credential-form-skeleton";
+import { useSecure } from "@/hooks/use-secure";
+import { SecureForm } from "@/components/secure/secure-form";
+import { SecureFormSkeleton } from "@/components/secure/secure-form-skeleton";
 import { sanitizeErrorMessage } from "@/lib/utils/error-sanitizer";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import type { CredentialFormData } from "@/types/credential";
+import type { SecureFormData } from "@/types/secure";
 
-export default function EditCredentialPage({
+export default function EditIdentityPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const { getCredential, decryptCredential, updateCredential } =
-    useCredentials();
+  const { getSecure, decryptSecure, updateSecure } =
+    useSecure();
 
-  const [initialData, setInitialData] = useState<CredentialFormData | null>(
+  const [initialData, setInitialData] = useState<SecureFormData | null>(
     null,
   );
   const [loading, setLoading] = useState(true);
@@ -31,29 +31,21 @@ export default function EditCredentialPage({
 
     async function load() {
       try {
-        const encrypted = await getCredential(id);
+        const encrypted = await getSecure(id);
         if (!isMounted) return;
         if (!encrypted) {
-          setError("Credential not found");
+          setError("Identity not found");
           setLoading(false);
           return;
         }
 
-        const decrypted = await decryptCredential(encrypted);
+        const decrypted = await decryptSecure(encrypted);
         if (!isMounted) return;
 
         setInitialData({
           title: decrypted.title,
-          username: decrypted.username,
-          password: decrypted.password,
-          websiteUrl: decrypted.websiteUrl || "",
-          categoryId: decrypted.categoryId || "",
           tags: decrypted.tags || [],
-          notes: decrypted.notes || "",
-          recoveryEmail: decrypted.recoveryEmail || "",
-          mobile: decrypted.mobile || "",
-          securityQuestions: decrypted.securityQuestions || [],
-          customFields: decrypted.customFields || [],
+        customFields: decrypted.customFields || [],
         });
         setLoading(false);
       } catch (err) {
@@ -61,7 +53,7 @@ export default function EditCredentialPage({
         setError(
           sanitizeErrorMessage(
             err,
-            "Failed to decrypt credential for editing.",
+            "Failed to decrypt secureItem for editing.",
           ),
         );
         setLoading(false);
@@ -73,22 +65,22 @@ export default function EditCredentialPage({
     return () => {
       isMounted = false;
     };
-  }, [id, getCredential, decryptCredential]);
+  }, [id, getSecure, decryptSecure]);
 
-  const handleUpdate = async (data: CredentialFormData) => {
-    await updateCredential(id, data);
-    router.push(`/credentials/${id}`);
+  const handleUpdate = async (data: SecureFormData) => {
+    await updateSecure(id, data);
+    router.push(`/secure/${id}`);
   };
 
   if (loading) {
-    return <CredentialFormSkeleton />;
+    return <SecureFormSkeleton />;
   }
 
   if (error || !initialData) {
     return (
       <div className="container max-w-2xl py-8 px-4">
         <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-4 text-center text-sm text-destructive">
-          <p>{error || "Credential not found"}</p>
+          <p>{error || "Identity not found"}</p>
           <Button
             variant="outline"
             size="sm"
@@ -104,11 +96,11 @@ export default function EditCredentialPage({
 
   return (
     <div className="container max-w-3xl py-6 px-4">
-      <CredentialForm
+      <SecureForm
         isEdit
         initialValues={initialData}
         onSubmit={handleUpdate}
-        onCancel={() => router.push(`/credentials/${id}`)}
+        onCancel={() => router.push(`/secure/${id}`)}
       />
     </div>
   );

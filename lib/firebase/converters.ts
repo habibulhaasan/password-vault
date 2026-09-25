@@ -5,6 +5,7 @@ import type {
   DocumentData,
 } from "firebase/firestore";
 import type { EncryptedCredential } from "@/types/credential";
+import type { EncryptedSecure } from "@/types/secure";
 import type { Category } from "@/types/category";
 
 /**
@@ -31,6 +32,7 @@ export const credentialConverter: FirestoreDataConverter<EncryptedCredential> = 
       encryptedRecoveryEmail: data.encryptedRecoveryEmail || undefined,
       encryptedMobile: data.encryptedMobile || undefined,
       encryptedSecurityQuestions: data.encryptedSecurityQuestions || undefined,
+      encryptedCustomFields: data.encryptedCustomFields || undefined,
       websiteUrl: data.websiteUrl || undefined,
       categoryId: data.categoryId || undefined,
       tags: Array.isArray(data.tags) ? data.tags : [],
@@ -62,6 +64,31 @@ export const categoryConverter: FirestoreDataConverter<Category> = {
       isCustom: data.isCustom !== undefined ? data.isCustom : true,
       isDeleted: data.isDeleted,
       userId: data.userId,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    };
+  },
+};
+
+
+
+export const secureConverter = {
+  toFirestore(secureItem: EncryptedSecure): DocumentData {
+    const data: Partial<EncryptedSecure> = { ...secureItem };
+    delete data.id;
+    return data as DocumentData;
+  },
+  fromFirestore(
+    snapshot: QueryDocumentSnapshot,
+    options?: SnapshotOptions
+  ): EncryptedSecure {
+    const data = snapshot.data(options);
+    return {
+      id: snapshot.id,
+      title: data.title,
+      encryptedCustomFields: data.encryptedCustomFields || undefined,
+      categoryId: data.categoryId || undefined,
+      tags: Array.isArray(data.tags) ? data.tags : [],
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
     };

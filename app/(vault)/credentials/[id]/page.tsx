@@ -522,6 +522,66 @@ export default function CredentialDetailPage({
             </div>
           )}
 
+          {/* Custom Fields */}
+          {credential.customFields && credential.customFields.length > 0 && (
+            <div className="pt-4 space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">
+                Custom Fields
+              </p>
+              <div className="space-y-3">
+                {credential.customFields.map((field, idx) => (
+                  <div key={field.id} className="rounded-md border bg-muted/20 p-3 space-y-1">
+                    <p className="text-xs font-medium text-foreground">{field.name}</p>
+                    <div className="flex items-center justify-between">
+                      {field.isSecret ? (
+                        <div className="flex items-center space-x-2 w-full">
+                          <p className="text-sm font-mono text-muted-foreground break-all tracking-widest mt-1">
+                            ••••••••
+                          </p>
+                          <div className="flex-1" />
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-7 px-2 text-xs gap-1 text-muted-foreground hover:text-foreground"
+                            onClick={() => {
+                              copy(field.value, field.id);
+                              announce(`${field.name} copied to clipboard`);
+                            }}
+                          >
+                            {isCopied(field.id) ? (
+                              <><Check className="size-3 text-emerald-500" /> Copied</>
+                            ) : (
+                              <><Copy className="size-3" /> Copy</>
+                            )}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between w-full">
+                          <p className="text-sm font-mono text-foreground break-all">{field.value}</p>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-7 px-2 text-xs gap-1 text-muted-foreground hover:text-foreground ml-2"
+                            onClick={() => {
+                              copy(field.value, field.id);
+                              announce(`${field.name} copied to clipboard`);
+                            }}
+                          >
+                            {isCopied(field.id) ? (
+                              <><Check className="size-3 text-emerald-500" /> Copied</>
+                            ) : (
+                              <><Copy className="size-3" /> Copy</>
+                            )}
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Last Login Section */}
           <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div className="space-y-0.5">

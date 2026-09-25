@@ -20,8 +20,9 @@ import {
   type DocumentData,
 } from "firebase/firestore";
 import { app } from "./config";
-import { credentialConverter, categoryConverter } from "./converters";
+import { credentialConverter, categoryConverter, secureConverter } from "./converters";
 import type { EncryptedCredential } from "@/types/credential";
+import type { EncryptedSecure } from "@/types/secure";
 import type { Category } from "@/types/category";
 
 export const db = getFirestore(app);
@@ -126,3 +127,12 @@ export {
   writeBatch,
   type Timestamp,
 };
+
+
+export function getIdentitiesRef(uid: string) {
+  return collection(db, "users", uid, "secureItems").withConverter(secureConverter);
+}
+
+export function getSecureDocRef(uid: string, docId: string) {
+  return doc(db, "users", uid, "secureItems", docId).withConverter(secureConverter);
+}

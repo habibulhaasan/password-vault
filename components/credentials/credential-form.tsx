@@ -71,7 +71,13 @@ export function CredentialForm({
       recoveryEmail: initialValues?.recoveryEmail || "",
       mobile: initialValues?.mobile || "",
       securityQuestions: initialValues?.securityQuestions || [],
+        customFields: initialValues?.customFields || [],
     },
+  });
+
+  const { fields: cfFields, append: appendCf, remove: removeCf } = useFieldArray({
+    control,
+    name: "customFields"
   });
 
   const { fields: sqFields, append: appendSq, remove: removeSq } = useFieldArray({
@@ -143,6 +149,7 @@ export function CredentialForm({
         recoveryEmail: values.recoveryEmail || undefined,
         mobile: values.mobile || undefined,
         securityQuestions: values.securityQuestions?.length ? values.securityQuestions : undefined,
+          customFields: values.customFields?.length ? values.customFields : undefined,
       });
     } catch {
       setError(
@@ -501,6 +508,72 @@ export function CredentialForm({
                     ))}
                   </div>
                 </div>
+
+                  <div className="space-y-3 pt-6 border-t border-border/50">
+                    <div className="flex items-center justify-between">
+                      <Label>Custom Fields (TIN, NID, PINs, etc.)</Label>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-7 text-xs" 
+                        onClick={() => appendCf({ id: crypto.randomUUID(), name: "", value: "", isSecret: false })}
+                      >
+                        <Plus className="size-3 mr-1" /> Add Field
+                      </Button>
+                    </div>
+                    
+                    {cfFields.length === 0 && (
+                      <p className="text-xs text-muted-foreground italic">No custom fields added.</p>
+                    )}
+                    
+                    <div className="space-y-4">
+                      {cfFields.map((field, index) => (
+                        <div key={field.id} className="relative grid grid-cols-1 gap-3 sm:grid-cols-2 p-3 border rounded-md bg-muted/20">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute right-1 top-1 h-6 w-6 p-0 text-muted-foreground hover:text-destructive"
+                            onClick={() => removeCf(index)}
+                          >
+                            <X className="size-3.5" />
+                          </Button>
+                          <div className="space-y-1.5 pr-6 sm:pr-0">
+                            <Label className="text-xs">Field Name</Label>
+                            <Input
+                              placeholder="e.g. Card PIN"
+                              disabled={isSubmitting}
+                              {...register(`customFields.${index}.name` as const)}
+                            />
+                            {errors.customFields?.[index]?.name && (
+                              <p className="text-xs text-destructive">{errors.customFields?.[index]?.name?.message}</p>
+                            )}
+                            <div className="flex items-center space-x-2 pt-1">
+                              <input 
+                                type="checkbox" 
+                                id={`secret-${field.id}`}
+                                className="size-3 rounded border-gray-300"
+                                {...register(`customFields.${index}.isSecret` as const)}
+                              />
+                              <label htmlFor={`secret-${field.id}`} className="text-xs text-muted-foreground cursor-pointer">Secret (mask value)</label>
+                            </div>
+                          </div>
+                          <div className="space-y-1.5 mt-1 sm:mt-0">
+                            <Label className="text-xs">Value</Label>
+                            <Input
+                              placeholder="Value"
+                              disabled={isSubmitting}
+                              {...register(`customFields.${index}.value` as const)}
+                            />
+                            {errors.customFields?.[index]?.value && (
+                              <p className="text-xs text-destructive">{errors.customFields?.[index]?.value?.message}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
               </div>
             </div>
           </CardContent>

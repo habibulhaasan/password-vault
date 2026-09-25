@@ -77,8 +77,8 @@ export function useCredentials() {
         encryptedRecoveryEmail: encryptedFields.encryptedRecoveryEmail || "",
         encryptedMobile: encryptedFields.encryptedMobile || "",
         encryptedSecurityQuestions: encryptedFields.encryptedSecurityQuestions || "",
-        
-        websiteUrl: websiteUrl || "",
+            encryptedCustomFields: encryptedFields.encryptedCustomFields || "",
+websiteUrl: websiteUrl || "",
         categoryId: input.categoryId || "",
         tags: input.tags || [],
         lastLoginAt: null,
@@ -162,6 +162,7 @@ export function useCredentials() {
           recoveryEmail: decryptedFields.recoveryEmail,
           mobile: decryptedFields.mobile,
           securityQuestions: decryptedFields.securityQuestions,
+          customFields: decryptedFields.customFields,
         websiteUrl: encrypted.websiteUrl,
         categoryId: encrypted.categoryId,
         tags: encrypted.tags || [],

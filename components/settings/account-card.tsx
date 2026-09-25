@@ -95,7 +95,7 @@ export function AccountCard() {
               Account & Authentication
             </CardTitle>
             <CardDescription className="text-xs">
-              Manage your Firebase account identity and authentication
+              Manage your Firebase account secureItem and authentication
               credentials
             </CardDescription>
           </div>

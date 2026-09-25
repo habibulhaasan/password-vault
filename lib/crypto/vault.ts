@@ -40,6 +40,7 @@ export interface EncryptedCredentialPayload {
   encryptedRecoveryEmail?: string;
   encryptedMobile?: string;
   encryptedSecurityQuestions?: string;
+  encryptedCustomFields?: string;
   
 }
 
@@ -50,6 +51,7 @@ export interface DecryptedCredentialPayload {
   recoveryEmail?: string;
   mobile?: string;
   securityQuestions?: { question: string, answer: string }[];
+  customFields?: { id: string, name: string, value: string, isSecret?: boolean }[];
   
 }
 
@@ -84,6 +86,11 @@ let encryptedSecurityQuestions: string | undefined = undefined;
     encryptedSecurityQuestions = await encryptString(JSON.stringify(input.securityQuestions), key);
   }
 
+  let encryptedCustomFields: string | undefined = undefined;
+  if (input.customFields && input.customFields.length > 0) {
+    encryptedCustomFields = await encryptString(JSON.stringify(input.customFields), key);
+  }
+
   return {
     encryptedUsername,
     encryptedPassword,
@@ -91,7 +98,7 @@ let encryptedSecurityQuestions: string | undefined = undefined;
     encryptedRecoveryEmail,
     encryptedMobile,
     encryptedSecurityQuestions,
-    
+    encryptedCustomFields,
   };
 }
 
@@ -129,6 +136,12 @@ export async function decryptCredentialFields(
     } catch(e) {}
   }
 
+  let customFields: { id: string, name: string, value: string, isSecret?: boolean }[] | undefined = undefined;
+  if (encrypted.encryptedCustomFields) {
+    const dec = await decryptString(encrypted.encryptedCustomFields, key);
+    try { customFields = JSON.parse(dec); } catch(e) {}
+  }
+
   return {
     username,
     password,
@@ -136,6 +149,29 @@ export async function decryptCredentialFields(
     recoveryEmail,
     mobile,
     securityQuestions,
-    
+    customFields,
   };
+}
+
+
+import type { SecureFormData, EncryptedSecure, DecryptedSecure } from "@/types/secure";
+
+export async function encryptSecureFields(
+  input: SecureFormData,
+  key: CryptoKey
+) {
+  return {
+    encryptedCustomFields: input.customFields && input.customFields.length > 0 ? await encryptString(JSON.stringify(input.customFields), key) : "",
+  };
+}
+
+export async function decryptSecureFields(
+  encrypted: EncryptedSecure,
+  key: CryptoKey
+) {
+  let customFields = undefined;
+  if (encrypted.encryptedCustomFields) {
+    try { customFields = JSON.parse(await decryptString(encrypted.encryptedCustomFields, key)); } catch(e) {}
+  }
+  return { customFields };
 }
