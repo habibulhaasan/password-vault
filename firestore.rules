@@ -73,19 +73,12 @@ service cloud.firestore {
 
       
       // Identities collection
-      match /secure/{identityId} {
+      match /secureItems/{id} {
         allow read, delete: if isOwner(userId);
 
         allow create: if isOwner(userId)
           && isNonEmptyString(request.resource.data.title, 100)
-          && isOptionalString(request.resource.data, 'encryptedTin', 2048)
-          && isOptionalString(request.resource.data, 'encryptedNid', 2048)
-          && isOptionalString(request.resource.data, 'encryptedBrn', 2048)
-          && isOptionalString(request.resource.data, 'encryptedAccountNo', 2048)
-          && isOptionalString(request.resource.data, 'encryptedCardPin', 2048)
-          && isOptionalString(request.resource.data, 'encryptedBackupCodes', 10000)
-          && isOptionalString(request.resource.data, 'encryptedSpecialNote', 20000)
-          && isOptionalString(request.resource.data, 'encryptedCustomFields', 20000)
+                                                                         && isOptionalString(request.resource.data, 'encryptedCustomFields', 20000)
           && isOptionalString(request.resource.data, 'categoryId', 50)
           && (!('tags' in request.resource.data) || isValidTagList(request.resource.data.tags))
           && request.resource.data.createdAt is timestamp
@@ -93,14 +86,7 @@ service cloud.firestore {
 
         allow update: if isOwner(userId)
           && isNonEmptyString(request.resource.data.title, 100)
-          && isOptionalString(request.resource.data, 'encryptedTin', 2048)
-          && isOptionalString(request.resource.data, 'encryptedNid', 2048)
-          && isOptionalString(request.resource.data, 'encryptedBrn', 2048)
-          && isOptionalString(request.resource.data, 'encryptedAccountNo', 2048)
-          && isOptionalString(request.resource.data, 'encryptedCardPin', 2048)
-          && isOptionalString(request.resource.data, 'encryptedBackupCodes', 10000)
-          && isOptionalString(request.resource.data, 'encryptedSpecialNote', 20000)
-          && isOptionalString(request.resource.data, 'encryptedCustomFields', 20000)
+                                                                         && isOptionalString(request.resource.data, 'encryptedCustomFields', 20000)
           && isOptionalString(request.resource.data, 'categoryId', 50)
           && (!('tags' in request.resource.data) || isValidTagList(request.resource.data.tags))
           && request.resource.data.createdAt == resource.data.createdAt
