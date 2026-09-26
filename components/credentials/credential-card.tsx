@@ -154,8 +154,8 @@ export function CredentialCard({ credential }: CredentialCardProps) {
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-              <CategoryIcon name={categoryObj?.icon} className="size-4" />
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted group-hover:bg-primary/10 transition-colors overflow-hidden">
+              <CredentialIcon credential={credential} size={20} className="size-8 bg-transparent" />
             </div>
             <div className="min-w-0">
               <Link
@@ -378,3 +378,4 @@ export function CredentialCard({ credential }: CredentialCardProps) {
     </Card>
   );
 }
+
