@@ -9,7 +9,7 @@ import { useCredentials } from "@/hooks/use-credentials";
 import { useCategories } from "@/hooks/use-categories";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CategoryIcon } from "@/lib/constants/categories";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -149,9 +149,11 @@ function TableRow({ credential }: { credential: EncryptedCredential }) {
     <tr className="hover:bg-muted/30 transition-colors group">
       <td className="px-4 py-3 align-middle">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-            <CategoryIcon name={categoryObj?.icon} className="size-4" />
-          </div>
+          <CredentialIcon 
+            credential={credential} 
+            size={20} 
+            className="size-8 rounded-lg group-hover:bg-primary/10 group-hover:text-primary transition-colors" 
+          />
           <div className="min-w-0 flex flex-col">
             <Link
               href={`/credentials/${credential.id}`}
