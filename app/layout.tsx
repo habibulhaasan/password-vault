@@ -68,7 +68,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
       </head>
-      <body className="min-h-full flex flex-col touch-manipulation">
+      <body className="h-full flex flex-col touch-manipulation">
         <SkipToContent />
         <A11yAnnouncer />
         <ThemeProvider
@@ -85,3 +85,4 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     </html>
   );
 }
+

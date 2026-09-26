@@ -15,7 +15,7 @@ export default function VaultLayout({
   return (
     <AuthGuard>
       <VaultProvider>
-        <div className="flex h-screen flex-col">
+        <div className="fixed inset-0 flex flex-col bg-background overflow-hidden">
           <Header />
           <div className="flex flex-1 overflow-hidden">
             <aside className="hidden w-60 shrink-0 overflow-y-auto border-r md:block">
@@ -38,3 +38,6 @@ export default function VaultLayout({
     </AuthGuard>
   );
 }
+
+
+
